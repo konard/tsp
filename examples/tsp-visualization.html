@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TSP Visual Solver - Sonar & Moore Curve Algorithms</title>
+    <script
+      src="https://unpkg.com/react@18/umd/react.development.js"
+      crossorigin
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+      crossorigin
+    ></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+          sans-serif;
+        background: #f8f9fa;
+        min-height: 100vh;
+        color: #212529;
+      }
+
+      .app {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 24px;
+        color: #212529;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        margin-bottom: 24px;
+        padding: 16px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+
+      .control-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .control-group label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+
+      .control-group input,
+      .control-group select {
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        min-width: 120px;
+      }
+
+      .control-group input:focus,
+      .control-group select:focus {
+        outline: none;
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+      }
+
+      .buttons {
+        display: flex;
+        gap: 8px;
+        align-items: flex-end;
+      }
+
+      button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition:
+          background-color 0.2s,
+          transform 0.1s;
+      }
+
+      button:active {
+        transform: scale(0.98);
+      }
+
+      .btn-primary {
+        background: #0d6efd;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background: #0b5ed7;
+      }
+
+      .btn-primary:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5c636a;
+      }
+
+      .btn-outline {
+        background: white;
+        color: #0d6efd;
+        border: 1px solid #0d6efd;
+      }
+
+      .btn-outline:hover {
+        background: #0d6efd;
+        color: white;
+      }
+
+      .visualization-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 24px;
+      }
+
+      .visualization {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .visualization-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .visualization-header h2 {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+
+      .visualization-stats {
+        font-size: 0.75rem;
+        color: #6c757d;
+      }
+
+      .canvas-wrapper {
+        padding: 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      canvas {
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+      }
+
+      .step-info {
+        padding: 12px 16px;
+        border-top: 1px solid #dee2e6;
+        font-size: 0.875rem;
+        color: #495057;
+        background: #f8f9fa;
+      }
+
+      .legend {
+        display: flex;
+        gap: 16px;
+        padding: 12px 16px;
+        border-top: 1px solid #dee2e6;
+        font-size: 0.75rem;
+      }
+
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .legend-color {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+      }
+
+      .speed-control {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .speed-control input[type='range'] {
+        width: 100px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState, useEffect, useRef, useCallback } = React;
+
+      // Utility functions
+      const generateRandomPoints = (gridSize, numPoints) => {
+        const points = [];
+        const usedPositions = new Set();
+        const maxPoints = Math.min(numPoints, gridSize * gridSize);
+
+        while (points.length < maxPoints) {
+          const x = Math.random() * gridSize;
+          const y = Math.random() * gridSize;
+          const key = `${Math.floor(x * 1000)},${Math.floor(y * 1000)}`;
+
+          if (!usedPositions.has(key)) {
+            usedPositions.add(key);
+            points.push({ x, y, id: points.length });
+          }
+        }
+        return points;
+      };
+
+      const distance = (p1, p2) => Math.hypot(p2.x - p1.x, p2.y - p1.y);
+
+      const calculateTotalDistance = (tour, points) => {
+        if (tour.length < 2) return 0;
+        let total = 0;
+        for (let i = 0; i < tour.length - 1; i++) {
+          total += distance(points[tour[i]], points[tour[i + 1]]);
+        }
+        // Close the loop
+        total += distance(points[tour[tour.length - 1]], points[tour[0]]);
+        return total;
+      };
+
+      // Sonar Algorithm (Radial Sweep)
+      const sonarAlgorithmSteps = (points) => {
+        if (points.length === 0) return [];
+
+        // Find centroid
+        const cx = points.reduce((sum, p) => sum + p.x, 0) / points.length;
+        const cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
+
+        // Calculate angles from centroid
+        const pointsWithAngles = points.map((p, idx) => ({
+          ...p,
+          idx,
+          angle: Math.atan2(p.y - cy, p.x - cx),
+        }));
+
+        // Sort by angle
+        pointsWithAngles.sort((a, b) => a.angle - b.angle);
+
+        // Generate steps
+        const steps = [];
+        const tour = [];
+
+        for (let i = 0; i < pointsWithAngles.length; i++) {
+          const currentAngle = pointsWithAngles[i].angle;
+          tour.push(pointsWithAngles[i].idx);
+
+          steps.push({
+            type: 'sweep',
+            angle: currentAngle,
+            tour: [...tour],
+            description: `Sweep angle: ${(((currentAngle * 180) / Math.PI + 360) % 360).toFixed(1)}°, found point ${pointsWithAngles[i].idx}`,
+            centroid: { x: cx, y: cy },
+          });
+        }
+
+        return steps;
+      };
+
+      // Sonar Optimization (2-opt style zigzag)
+      const sonarOptimizationSteps = (points, initialTour) => {
+        if (initialTour.length < 4) return [];
+
+        const steps = [];
+        const tour = [...initialTour];
+        let improved = true;
+        let iteration = 0;
+        const maxIterations = 100;
+
+        while (improved && iteration < maxIterations) {
+          improved = false;
+          iteration++;
+
+          for (let i = 0; i < tour.length - 2; i++) {
+            const p1 = points[tour[i]];
+            const p2 = points[tour[i + 1]];
+            const p3 = points[tour[(i + 2) % tour.length]];
+            const p4 = points[tour[(i + 3) % tour.length]];
+
+            const currentDist = distance(p1, p2) + distance(p3, p4);
+            const newDist = distance(p1, p3) + distance(p2, p4);
+
+            if (newDist < currentDist - 0.001) {
+              // Swap p2 and p3 positions in tour
+              const idx2 = (i + 1) % tour.length;
+              const idx3 = (i + 2) % tour.length;
+              [tour[idx2], tour[idx3]] = [tour[idx3], tour[idx2]];
+
+              steps.push({
+                type: 'optimize',
+                tour: [...tour],
+                swapped: [tour[idx2], tour[idx3]],
+                improvement: currentDist - newDist,
+                description: `Zigzag optimization: swapped points, saved ${(currentDist - newDist).toFixed(2)} units`,
+              });
+
+              improved = true;
+            }
+          }
+        }
+
+        return steps;
+      };
+
+      // Moore Curve Algorithm
+      const generateMooreCurve = (iterations) => {
+        // L-system rules for Moore curve
+        // Axiom: LFL+F+LFL
+        // L -> -RF+LFL+FR-
+        // R -> +LF-RFR-FL+
+
+        let sequence = 'LFL+F+LFL';
+
+        for (let i = 0; i < iterations; i++) {
+          let newSequence = '';
+          for (const char of sequence) {
+            if (char === 'L') {
+              newSequence += '-RF+LFL+FR-';
+            } else if (char === 'R') {
+              newSequence += '+LF-RFR-FL+';
+            } else {
+              newSequence += char;
+            }
+          }
+          sequence = newSequence;
+        }
+
+        return sequence;
+      };
+
+      const mooreCurveToPoints = (sequence, gridSize) => {
+        const curvePoints = [];
+        let x = gridSize / 2;
+        let y = gridSize;
+        let angle = -Math.PI / 2; // Start facing up
+        const step =
+          gridSize /
+          Math.pow(
+            2,
+            Math.floor(Math.log2(sequence.match(/F/g)?.length || 1) / 2) + 1
+          );
+
+        curvePoints.push({ x, y });
+
+        for (const char of sequence) {
+          if (char === 'F') {
+            x += step * Math.cos(angle);
+            y += step * Math.sin(angle);
+            curvePoints.push({ x, y });
+          } else if (char === '+') {
+            angle += Math.PI / 2;
+          } else if (char === '-') {
+            angle -= Math.PI / 2;
+          }
+        }
+
+        return curvePoints;
+      };
+
+      const mooreAlgorithmSteps = (points, gridSize) => {
+        if (points.length === 0) return [];
+
+        // Determine appropriate Moore curve iteration based on grid size
+        const iterations = Math.max(
+          1,
+          Math.min(4, Math.floor(Math.log2(gridSize)))
+        );
+        const curveSequence = generateMooreCurve(iterations);
+        const curvePoints = mooreCurveToPoints(curveSequence, gridSize);
+
+        // Map each point to its position along the curve
+        const pointsWithCurvePos = points.map((p, idx) => {
+          let minDist = Infinity;
+          let curvePos = 0;
+
+          for (let i = 0; i < curvePoints.length; i++) {
+            const d = distance(p, curvePoints[i]);
+            if (d < minDist) {
+              minDist = d;
+              curvePos = i;
+            }
+          }
+
+          return { ...p, idx, curvePos };
+        });
+
+        // Sort points by their position along the curve
+        pointsWithCurvePos.sort((a, b) => a.curvePos - b.curvePos);
+
+        // Generate steps
+        const steps = [];
+        const tour = [];
+
+        // First step: show the Moore curve
+        steps.push({
+          type: 'curve',
+          curvePoints,
+          tour: [],
+          description: `Moore curve generated (${iterations} iterations)`,
+        });
+
+        for (let i = 0; i < pointsWithCurvePos.length; i++) {
+          tour.push(pointsWithCurvePos[i].idx);
+
+          steps.push({
+            type: 'visit',
+            curvePoints,
+            curvePosition: pointsWithCurvePos[i].curvePos,
+            tour: [...tour],
+            description: `Following curve: visiting point ${pointsWithCurvePos[i].idx}`,
+          });
+        }
+
+        return steps;
+      };
+
+      // Moore Optimization (2-opt)
+      const mooreOptimizationSteps = (points, initialTour) => {
+        if (initialTour.length < 4) return [];
+
+        const steps = [];
+        const tour = [...initialTour];
+        let improved = true;
+        let iteration = 0;
+        const maxIterations = 50;
+
+        while (improved && iteration < maxIterations) {
+          improved = false;
+          iteration++;
+
+          for (let i = 0; i < tour.length - 1; i++) {
+            for (let j = i + 2; j < tour.length; j++) {
+              if (i === 0 && j === tour.length - 1) continue;
+
+              const a = points[tour[i]];
+              const b = points[tour[i + 1]];
+              const c = points[tour[j]];
+              const d = points[tour[(j + 1) % tour.length]];
+
+              const currentDist = distance(a, b) + distance(c, d);
+              const newDist = distance(a, c) + distance(b, d);
+
+              if (newDist < currentDist - 0.001) {
+                // Reverse the segment between i+1 and j
+                const segment = tour.slice(i + 1, j + 1).reverse();
+                tour.splice(i + 1, j - i, ...segment);
+
+                steps.push({
+                  type: 'optimize',
+                  tour: [...tour],
+                  reversed: [i + 1, j],
+                  improvement: currentDist - newDist,
+                  description: `2-opt: reversed segment [${i + 1}, ${j}], saved ${(currentDist - newDist).toFixed(2)} units`,
+                });
+
+                improved = true;
+                break;
+              }
+            }
+            if (improved) break;
+          }
+        }
+
+        return steps;
+      };
+
+      // Canvas Renderer Component
+      const TSPCanvas = ({
+        points,
+        steps,
+        currentStep,
+        algorithm,
+        gridSize,
+        showOptimization,
+      }) => {
+        const canvasRef = useRef(null);
+        const size = 400;
+        const padding = 20;
+
+        useEffect(() => {
+          const canvas = canvasRef.current;
+          if (!canvas) return;
+
+          const ctx = canvas.getContext('2d');
+          const scale = (size - 2 * padding) / gridSize;
+
+          // Clear canvas
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, size, size);
+
+          // Draw grid
+          ctx.strokeStyle = '#e9ecef';
+          ctx.lineWidth = 1;
+          for (let i = 0; i <= gridSize; i++) {
+            const pos = padding + i * scale;
+            ctx.beginPath();
+            ctx.moveTo(pos, padding);
+            ctx.lineTo(pos, size - padding);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(padding, pos);
+            ctx.lineTo(size - padding, pos);
+            ctx.stroke();
+          }
+
+          const toCanvasCoords = (p) => ({
+            x: padding + p.x * scale,
+            y: padding + p.y * scale,
+          });
+
+          // Get current step data
+          const step =
+            currentStep >= 0 && currentStep < steps.length
+              ? steps[currentStep]
+              : null;
+
+          // Draw Moore curve if applicable
+          if (algorithm === 'moore' && step?.curvePoints) {
+            ctx.strokeStyle = '#dee2e6';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            const curveStart = toCanvasCoords(step.curvePoints[0]);
+            ctx.moveTo(curveStart.x, curveStart.y);
+            for (let i = 1; i < step.curvePoints.length; i++) {
+              const cp = toCanvasCoords(step.curvePoints[i]);
+              ctx.lineTo(cp.x, cp.y);
+            }
+            ctx.stroke();
+          }
+
+          // Draw sweep line for Sonar
+          if (
+            algorithm === 'sonar' &&
+            step?.type === 'sweep' &&
+            step?.centroid
+          ) {
+            const center = toCanvasCoords(step.centroid);
+            const lineLength = size;
+
+            ctx.strokeStyle = 'rgba(13, 110, 253, 0.3)';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(center.x, center.y);
+            ctx.lineTo(
+              center.x + lineLength * Math.cos(step.angle),
+              center.y + lineLength * Math.sin(step.angle)
+            );
+            ctx.stroke();
+
+            // Draw centroid
+            ctx.fillStyle = '#0d6efd';
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, 4, 0, 2 * Math.PI);
+            ctx.fill();
+          }
+
+          // Draw tour connections
+          if (step?.tour && step.tour.length > 1) {
+            const isOptimization = step.type === 'optimize' || showOptimization;
+            ctx.strokeStyle = isOptimization ? '#198754' : '#0d6efd';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            const startPoint = toCanvasCoords(points[step.tour[0]]);
+            ctx.moveTo(startPoint.x, startPoint.y);
+
+            for (let i = 1; i < step.tour.length; i++) {
+              const p = toCanvasCoords(points[step.tour[i]]);
+              ctx.lineTo(p.x, p.y);
+            }
+
+            // Close the loop if tour is complete
+            if (step.tour.length === points.length) {
+              ctx.lineTo(startPoint.x, startPoint.y);
+            }
+
+            ctx.stroke();
+          }
+
+          // Draw points
+          points.forEach((point, idx) => {
+            const p = toCanvasCoords(point);
+            const isInTour = step?.tour?.includes(idx);
+            const isLastAdded =
+              step?.tour && step.tour[step.tour.length - 1] === idx;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, isLastAdded ? 6 : 4, 0, 2 * Math.PI);
+
+            if (isLastAdded) {
+              ctx.fillStyle = '#dc3545';
+            } else if (isInTour) {
+              ctx.fillStyle = '#0d6efd';
+            } else {
+              ctx.fillStyle = '#6c757d';
+            }
+            ctx.fill();
+          });
+        }, [points, steps, currentStep, algorithm, gridSize, showOptimization]);
+
+        return <canvas ref={canvasRef} width={size} height={size} />;
+      };
+
+      // Main App Component
+      const App = () => {
+        const [gridSize, setGridSize] = useState(10);
+        const [numPoints, setNumPoints] = useState(15);
+        const [points, setPoints] = useState([]);
+        const [speed, setSpeed] = useState(500);
+        const [isRunning, setIsRunning] = useState(false);
+        const [showOptimization, setShowOptimization] = useState(false);
+
+        // Sonar state
+        const [sonarSteps, setSonarSteps] = useState([]);
+        const [sonarOptSteps, setSonarOptSteps] = useState([]);
+        const [sonarCurrentStep, setSonarCurrentStep] = useState(-1);
+
+        // Moore state
+        const [mooreSteps, setMooreSteps] = useState([]);
+        const [mooreOptSteps, setMooreOptSteps] = useState([]);
+        const [mooreCurrentStep, setMooreCurrentStep] = useState(-1);
+
+        const animationRef = useRef(null);
+
+        const generatePoints = useCallback(() => {
+          const newPoints = generateRandomPoints(gridSize, numPoints);
+          setPoints(newPoints);
+          setSonarSteps([]);
+          setSonarOptSteps([]);
+          setSonarCurrentStep(-1);
+          setMooreSteps([]);
+          setMooreOptSteps([]);
+          setMooreCurrentStep(-1);
+          setIsRunning(false);
+          setShowOptimization(false);
+        }, [gridSize, numPoints]);
+
+        useEffect(() => {
+          generatePoints();
+        }, []);
+
+        const startSolution = useCallback(() => {
+          if (points.length === 0) return;
+
+          // Generate steps for both algorithms
+          const newSonarSteps = sonarAlgorithmSteps(points);
+          const newMooreSteps = mooreAlgorithmSteps(points, gridSize);
+
+          setSonarSteps(newSonarSteps);
+          setMooreSteps(newMooreSteps);
+          setSonarCurrentStep(0);
+          setMooreCurrentStep(0);
+          setShowOptimization(false);
+          setIsRunning(true);
+        }, [points, gridSize]);
+
+        const stopAnimation = useCallback(() => {
+          setIsRunning(false);
+          if (animationRef.current) {
+            clearTimeout(animationRef.current);
+          }
+        }, []);
+
+        const startOptimization = useCallback(() => {
+          if (sonarSteps.length === 0 || mooreSteps.length === 0) return;
+
+          const sonarTour = sonarSteps[sonarSteps.length - 1]?.tour || [];
+          const mooreTour = mooreSteps[mooreSteps.length - 1]?.tour || [];
+
+          const newSonarOptSteps = sonarOptimizationSteps(points, sonarTour);
+          const newMooreOptSteps = mooreOptimizationSteps(points, mooreTour);
+
+          setSonarOptSteps(newSonarOptSteps);
+          setMooreOptSteps(newMooreOptSteps);
+          setSonarCurrentStep(0);
+          setMooreCurrentStep(0);
+          setShowOptimization(true);
+          setIsRunning(true);
+        }, [points, sonarSteps, mooreSteps]);
+
+        // Animation loop
+        useEffect(() => {
+          if (!isRunning) return;
+
+          const currentSonarSteps = showOptimization
+            ? sonarOptSteps
+            : sonarSteps;
+          const currentMooreSteps = showOptimization
+            ? mooreOptSteps
+            : mooreSteps;
+
+          const sonarDone = sonarCurrentStep >= currentSonarSteps.length - 1;
+          const mooreDone = mooreCurrentStep >= currentMooreSteps.length - 1;
+
+          if (sonarDone && mooreDone) {
+            setIsRunning(false);
+            return;
+          }
+
+          animationRef.current = setTimeout(() => {
+            if (!sonarDone) {
+              setSonarCurrentStep((prev) =>
+                Math.min(prev + 1, currentSonarSteps.length - 1)
+              );
+            }
+            if (!mooreDone) {
+              setMooreCurrentStep((prev) =>
+                Math.min(prev + 1, currentMooreSteps.length - 1)
+              );
+            }
+          }, speed);
+
+          return () => {
+            if (animationRef.current) {
+              clearTimeout(animationRef.current);
+            }
+          };
+        }, [
+          isRunning,
+          sonarCurrentStep,
+          mooreCurrentStep,
+          speed,
+          showOptimization,
+          sonarSteps,
+          mooreSteps,
+          sonarOptSteps,
+          mooreOptSteps,
+        ]);
+
+        const getSonarStep = () => {
+          const steps = showOptimization ? sonarOptSteps : sonarSteps;
+          return steps[sonarCurrentStep];
+        };
+
+        const getMooreStep = () => {
+          const steps = showOptimization ? mooreOptSteps : mooreSteps;
+          return steps[mooreCurrentStep];
+        };
+
+        const calculateSonarDistance = () => {
+          const step = getSonarStep();
+          if (!step?.tour || step.tour.length < 2) return 0;
+          return calculateTotalDistance(step.tour, points);
+        };
+
+        const calculateMooreDistance = () => {
+          const step = getMooreStep();
+          if (!step?.tour || step.tour.length < 2) return 0;
+          return calculateTotalDistance(step.tour, points);
+        };
+
+        const canOptimize =
+          sonarSteps.length > 0 &&
+          mooreSteps.length > 0 &&
+          !isRunning &&
+          !showOptimization &&
+          sonarCurrentStep === sonarSteps.length - 1;
+
+        return (
+          <div className="app">
+            <h1>TSP Visual Solver</h1>
+
+            <div className="controls">
+              <div className="control-group">
+                <label>Grid Size (N)</label>
+                <input
+                  type="number"
+                  min="5"
+                  max="50"
+                  value={gridSize}
+                  onChange={(e) =>
+                    setGridSize(
+                      Math.max(5, Math.min(50, parseInt(e.target.value) || 5))
+                    )
+                  }
+                  disabled={isRunning}
+                />
+              </div>
+
+              <div className="control-group">
+                <label>Points (M)</label>
+                <input
+                  type="number"
+                  min="3"
+                  max={gridSize * gridSize}
+                  value={numPoints}
+                  onChange={(e) =>
+                    setNumPoints(Math.max(3, parseInt(e.target.value) || 3))
+                  }
+                  disabled={isRunning}
+                />
+              </div>
+
+              <div className="control-group">
+                <label>Animation Speed</label>
+                <div className="speed-control">
+                  <span>Fast</span>
+                  <input
+                    type="range"
+                    min="50"
+                    max="1000"
+                    value={speed}
+                    onChange={(e) => setSpeed(parseInt(e.target.value))}
+                  />
+                  <span>Slow</span>
+                </div>
+              </div>
+
+              <div className="buttons">
+                <button
+                  className="btn-outline"
+                  onClick={generatePoints}
+                  disabled={isRunning}
+                >
+                  New Points
+                </button>
+
+                {!isRunning ? (
+                  <>
+                    <button
+                      className="btn-primary"
+                      onClick={startSolution}
+                      disabled={points.length === 0}
+                    >
+                      Start
+                    </button>
+
+                    {canOptimize && (
+                      <button
+                        className="btn-secondary"
+                        onClick={startOptimization}
+                      >
+                        Optimize
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <button className="btn-secondary" onClick={stopAnimation}>
+                    Stop
+                  </button>
+                )}
+              </div>
+            </div>
+
+            <div className="visualization-container">
+              <div className="visualization">
+                <div className="visualization-header">
+                  <h2>Sonar Algorithm (Radial Sweep)</h2>
+                  <span className="visualization-stats">
+                    Distance: {calculateSonarDistance().toFixed(2)}
+                  </span>
+                </div>
+                <div className="canvas-wrapper">
+                  <TSPCanvas
+                    points={points}
+                    steps={showOptimization ? sonarOptSteps : sonarSteps}
+                    currentStep={sonarCurrentStep}
+                    algorithm="sonar"
+                    gridSize={gridSize}
+                    showOptimization={showOptimization}
+                  />
+                </div>
+                <div className="step-info">
+                  {getSonarStep()?.description || 'Click Start to begin'}
+                </div>
+                <div className="legend">
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: '#6c757d' }}
+                    ></div>
+                    <span>Unvisited</span>
+                  </div>
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: '#0d6efd' }}
+                    ></div>
+                    <span>In Tour</span>
+                  </div>
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: '#dc3545' }}
+                    ></div>
+                    <span>Current</span>
+                  </div>
+                  {showOptimization && (
+                    <div className="legend-item">
+                      <div
+                        className="legend-color"
+                        style={{ background: '#198754' }}
+                      ></div>
+                      <span>Optimized</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="visualization">
+                <div className="visualization-header">
+                  <h2>Moore Curve Algorithm</h2>
+                  <span className="visualization-stats">
+                    Distance: {calculateMooreDistance().toFixed(2)}
+                  </span>
+                </div>
+                <div className="canvas-wrapper">
+                  <TSPCanvas
+                    points={points}
+                    steps={showOptimization ? mooreOptSteps : mooreSteps}
+                    currentStep={mooreCurrentStep}
+                    algorithm="moore"
+                    gridSize={gridSize}
+                    showOptimization={showOptimization}
+                  />
+                </div>
+                <div className="step-info">
+                  {getMooreStep()?.description || 'Click Start to begin'}
+                </div>
+                <div className="legend">
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: '#dee2e6' }}
+                    ></div>
+                    <span>Moore Curve</span>
+                  </div>
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: '#0d6efd' }}
+                    ></div>
+                    <span>Tour Path</span>
+                  </div>
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: '#dc3545' }}
+                    ></div>
+                    <span>Current</span>
+                  </div>
+                  {showOptimization && (
+                    <div className="legend-item">
+                      <div
+                        className="legend-color"
+                        style={{ background: '#198754' }}
+                      ></div>
+                      <span>Optimized</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+      };
+
+      ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+    </script>
+  </body>
+</html>
