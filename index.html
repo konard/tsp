@@ -33,24 +33,28 @@
         max-width: 1200px;
         margin: 0 auto;
         padding: 24px;
+        padding: clamp(12px, 3vw, 24px);
       }
 
       h1 {
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 4vw, 1.5rem);
         font-weight: 600;
-        margin-bottom: 24px;
+        margin-bottom: clamp(16px, 3vw, 24px);
         color: #212529;
+        text-align: center;
       }
 
       .controls {
         display: flex;
         flex-wrap: wrap;
-        gap: 16px;
-        margin-bottom: 24px;
-        padding: 16px;
+        gap: clamp(8px, 2vw, 16px);
+        margin-bottom: clamp(16px, 3vw, 24px);
+        padding: clamp(12px, 2vw, 16px);
         background: white;
         border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        justify-content: center;
+        align-items: flex-end;
       }
 
       .control-group {
@@ -73,7 +77,8 @@
         border: 1px solid #dee2e6;
         border-radius: 4px;
         font-size: 0.875rem;
-        min-width: 120px;
+        min-width: 80px;
+        max-width: 120px;
       }
 
       .control-group input:focus,
@@ -141,8 +146,8 @@
 
       .visualization-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-        gap: 24px;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+        gap: clamp(16px, 3vw, 24px);
       }
 
       .visualization {
@@ -161,7 +166,7 @@
       }
 
       .visualization-header h2 {
-        font-size: 1rem;
+        font-size: clamp(0.875rem, 2.5vw, 1rem);
         font-weight: 600;
       }
 
@@ -171,15 +176,18 @@
       }
 
       .canvas-wrapper {
-        padding: 16px;
+        padding: clamp(8px, 2vw, 16px);
         display: flex;
         justify-content: center;
         align-items: center;
+        overflow: hidden;
       }
 
       canvas {
         border: 1px solid #dee2e6;
         border-radius: 4px;
+        max-width: 100%;
+        height: auto;
       }
 
       .step-info {
@@ -192,10 +200,12 @@
 
       .legend {
         display: flex;
-        gap: 16px;
-        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: clamp(8px, 2vw, 16px);
+        padding: clamp(8px, 2vw, 12px) clamp(12px, 2vw, 16px);
         border-top: 1px solid #dee2e6;
-        font-size: 0.75rem;
+        font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+        justify-content: center;
       }
 
       .legend-item {
@@ -219,6 +229,66 @@
       .speed-control input[type='range'] {
         width: 100px;
       }
+
+      .algorithm-aliases {
+        padding: 6px 16px;
+        font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+        color: #868e96;
+        background: #f1f3f5;
+        font-style: italic;
+        text-align: center;
+      }
+
+      /* Mobile-first responsive adjustments */
+      @media (max-width: 480px) {
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .control-group {
+          width: 100%;
+        }
+
+        .control-group input,
+        .control-group select {
+          width: 100%;
+          max-width: none;
+        }
+
+        .buttons {
+          width: 100%;
+          justify-content: center;
+        }
+
+        .speed-control {
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .speed-control input[type='range'] {
+          flex: 1;
+          width: auto;
+        }
+
+        .visualization-header {
+          flex-direction: column;
+          gap: 4px;
+          text-align: center;
+        }
+      }
+
+      @media (min-width: 481px) and (max-width: 768px) {
+        .controls {
+          justify-content: space-around;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .visualization-container {
+          grid-template-columns: 1fr;
+        }
+      }
     </style>
   </head>
   <body>
@@ -231,12 +301,14 @@
       const generateRandomPoints = (gridSize, numPoints) => {
         const points = [];
         const usedPositions = new Set();
-        const maxPoints = Math.min(numPoints, gridSize * gridSize);
+        // Points are placed at grid intersections (0 to gridSize inclusive)
+        const maxPoints = Math.min(numPoints, (gridSize + 1) * (gridSize + 1));
 
         while (points.length < maxPoints) {
-          const x = Math.random() * gridSize;
-          const y = Math.random() * gridSize;
-          const key = `${Math.floor(x * 1000)},${Math.floor(y * 1000)}`;
+          // Generate integer coordinates aligned to grid
+          const x = Math.floor(Math.random() * (gridSize + 1));
+          const y = Math.floor(Math.random() * (gridSize + 1));
+          const key = `${x},${y}`;
 
           if (!usedPositions.has(key)) {
             usedPositions.add(key);
@@ -343,7 +415,8 @@
       };
 
       // Moore Curve Algorithm
-      const generateMooreCurve = (iterations) => {
+      // Moore curve is a variant of Hilbert curve that starts and ends at the same location
+      const generateMooreCurve = (order) => {
         // L-system rules for Moore curve
         // Axiom: LFL+F+LFL
         // L -> -RF+LFL+FR-
@@ -351,7 +424,7 @@
 
         let sequence = 'LFL+F+LFL';
 
-        for (let i = 0; i < iterations; i++) {
+        for (let i = 0; i < order; i++) {
           let newSequence = '';
           for (const char of sequence) {
             if (char === 'L') {
@@ -369,16 +442,22 @@
       };
 
       const mooreCurveToPoints = (sequence, gridSize) => {
+        // Calculate the order of the curve from the sequence
+        const numMoves = (sequence.match(/F/g) || []).length;
+        // Moore curve of order n has 4^(n+1) - 1 F moves, but we use simpler calc
+        // The curve fills a 2^(n+1) x 2^(n+1) grid
+        const curveOrder = Math.round(Math.log2(Math.sqrt(numMoves + 1)));
+        const curveSize = Math.pow(2, curveOrder);
+
+        // Calculate step size to fit within the grid
+        // We want the curve to span from 0 to gridSize
+        const step = gridSize / curveSize;
+
         const curvePoints = [];
+        // Start at bottom center, one step up
         let x = gridSize / 2;
-        let y = gridSize;
+        let y = gridSize - step / 2;
         let angle = -Math.PI / 2; // Start facing up
-        const step =
-          gridSize /
-          Math.pow(
-            2,
-            Math.floor(Math.log2(sequence.match(/F/g)?.length || 1) / 2) + 1
-          );
 
         curvePoints.push({ x, y });
 
@@ -386,7 +465,11 @@
           if (char === 'F') {
             x += step * Math.cos(angle);
             y += step * Math.sin(angle);
-            curvePoints.push({ x, y });
+            // Round to grid alignment
+            curvePoints.push({
+              x: Math.round(x * 1000) / 1000,
+              y: Math.round(y * 1000) / 1000
+            });
           } else if (char === '+') {
             angle += Math.PI / 2;
           } else if (char === '-') {
@@ -400,13 +483,15 @@
       const mooreAlgorithmSteps = (points, gridSize) => {
         if (points.length === 0) return [];
 
-        // Determine appropriate Moore curve iteration based on grid size
-        const iterations = Math.max(
+        // Determine appropriate Moore curve order based on grid size
+        // We want the curve to have enough resolution to distinguish points
+        const order = Math.max(
           1,
           Math.min(4, Math.floor(Math.log2(gridSize)))
         );
-        const curveSequence = generateMooreCurve(iterations);
+        const curveSequence = generateMooreCurve(order);
         const curvePoints = mooreCurveToPoints(curveSequence, gridSize);
+        const totalCurveLength = curvePoints.length;
 
         // Map each point to its position along the curve
         const pointsWithCurvePos = points.map((p, idx) => {
@@ -435,19 +520,23 @@
         steps.push({
           type: 'curve',
           curvePoints,
+          curveProgress: 0,
           tour: [],
-          description: `Moore curve generated (${iterations} iterations)`,
+          description: `Moore curve generated (order ${order}, ${totalCurveLength} points)`,
         });
 
         for (let i = 0; i < pointsWithCurvePos.length; i++) {
           tour.push(pointsWithCurvePos[i].idx);
+          // Calculate progress along the curve as a percentage
+          const curveProgress = ((pointsWithCurvePos[i].curvePos / (totalCurveLength - 1)) * 100).toFixed(1);
 
           steps.push({
             type: 'visit',
             curvePoints,
             curvePosition: pointsWithCurvePos[i].curvePos,
+            curveProgress: parseFloat(curveProgress),
             tour: [...tour],
-            description: `Following curve: visiting point ${pointsWithCurvePos[i].idx}`,
+            description: `Curve progress: ${curveProgress}%, visiting point ${pointsWithCurvePos[i].idx}`,
           });
         }
 
@@ -514,8 +603,27 @@
         showOptimization,
       }) => {
         const canvasRef = useRef(null);
-        const size = 400;
+        const containerRef = useRef(null);
+        const [canvasSize, setCanvasSize] = useState(400);
         const padding = 20;
+
+        // Responsive canvas sizing
+        useEffect(() => {
+          const updateSize = () => {
+            if (containerRef.current) {
+              const containerWidth = containerRef.current.clientWidth;
+              // Max size 400, min size 280, responsive to container
+              const newSize = Math.min(400, Math.max(280, containerWidth - 32));
+              setCanvasSize(newSize);
+            }
+          };
+
+          updateSize();
+          window.addEventListener('resize', updateSize);
+          return () => window.removeEventListener('resize', updateSize);
+        }, []);
+
+        const size = canvasSize;
 
         useEffect(() => {
           const canvas = canvasRef.current;
@@ -636,9 +744,13 @@
             }
             ctx.fill();
           });
-        }, [points, steps, currentStep, algorithm, gridSize, showOptimization]);
+        }, [points, steps, currentStep, algorithm, gridSize, showOptimization, canvasSize]);
 
-        return <canvas ref={canvasRef} width={size} height={size} />;
+        return (
+          <div ref={containerRef} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <canvas ref={canvasRef} width={size} height={size} />
+          </div>
+        );
       };
 
       // Main App Component
@@ -885,10 +997,13 @@
             <div className="visualization-container">
               <div className="visualization">
                 <div className="visualization-header">
-                  <h2>Sonar Algorithm (Radial Sweep)</h2>
+                  <h2>Sonar Visit Algorithm</h2>
                   <span className="visualization-stats">
                     Distance: {calculateSonarDistance().toFixed(2)}
                   </span>
+                </div>
+                <div className="algorithm-aliases">
+                  Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering
                 </div>
                 <div className="canvas-wrapper">
                   <TSPCanvas
@@ -943,6 +1058,9 @@
                   <span className="visualization-stats">
                     Distance: {calculateMooreDistance().toFixed(2)}
                   </span>
+                </div>
+                <div className="algorithm-aliases">
+                  Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering
                 </div>
                 <div className="canvas-wrapper">
                   <TSPCanvas
