@@ -345,6 +345,7 @@
       };
 
       // Sonar Algorithm (Radial Sweep)
+      // Starts from the bottom (positive Y direction) and sweeps clockwise
       const sonarAlgorithmSteps = (points) => {
         if (points.length === 0) return [];
 
@@ -353,14 +354,29 @@
         const cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
 
         // Calculate angles from centroid
-        const pointsWithAngles = points.map((p, idx) => ({
-          ...p,
-          idx,
-          angle: Math.atan2(p.y - cy, p.x - cx),
-        }));
+        // We want to start from the bottom (positive Y direction = Math.PI/2)
+        // and sweep clockwise (increasing angle in SVG coordinate system)
+        const startAngle = Math.PI / 2; // Bottom direction
 
-        // Sort by angle
-        pointsWithAngles.sort((a, b) => a.angle - b.angle);
+        const pointsWithAngles = points.map((p, idx) => {
+          const rawAngle = Math.atan2(p.y - cy, p.x - cx);
+          // Normalize angle relative to start angle (bottom)
+          // This makes angles go from 0 (bottom) clockwise around
+          let normalizedAngle = rawAngle - startAngle;
+          // Ensure positive values: wrap negative angles to positive
+          if (normalizedAngle < 0) {
+            normalizedAngle += 2 * Math.PI;
+          }
+          return {
+            ...p,
+            idx,
+            angle: rawAngle, // Keep original for display
+            sortAngle: normalizedAngle, // Use normalized for sorting
+          };
+        });
+
+        // Sort by normalized angle (starting from bottom, going clockwise)
+        pointsWithAngles.sort((a, b) => a.sortAngle - b.sortAngle);
 
         // Generate steps
         const steps = [];
@@ -774,32 +790,66 @@
           );
         }
 
-        // Generate Moore curve path
+        // Generate Moore curve path - progressive animation
+        // Draw visited portion in green, remaining portion in gray
         let mooreCurvePath = null;
+        let mooreCurveGrayPath = null;
         if (
           algorithm === 'moore' &&
           step?.curvePoints &&
           step.curvePoints.length > 0
         ) {
-          const pathData = step.curvePoints
-            .map((p, i) => {
-              // Curve points are in Moore grid coordinates
-              const coords = toSvgCoords(p);
-              return i === 0
-                ? `M ${coords.x} ${coords.y}`
-                : `L ${coords.x} ${coords.y}`;
-            })
-            .join(' ');
-          mooreCurvePath = (
-            <path
-              d={pathData}
-              fill="none"
-              stroke="rgba(34, 197, 94, 0.4)"
-              strokeWidth="3"
-              strokeLinecap="square"
-              strokeLinejoin="miter"
-            />
-          );
+          // Determine the curve position up to which we've progressed
+          const curvePosition =
+            step.curvePosition !== undefined ? step.curvePosition : 0;
+
+          // Split curve into visited (green) and unvisited (gray) portions
+          const visitedPoints = step.curvePoints.slice(0, curvePosition + 1);
+          const unvisitedPoints = step.curvePoints.slice(curvePosition);
+
+          // Draw the unvisited (gray) portion first (so green appears on top)
+          if (unvisitedPoints.length > 1) {
+            const grayPathData = unvisitedPoints
+              .map((p, i) => {
+                const coords = toSvgCoords(p);
+                return i === 0
+                  ? `M ${coords.x} ${coords.y}`
+                  : `L ${coords.x} ${coords.y}`;
+              })
+              .join(' ');
+            mooreCurveGrayPath = (
+              <path
+                d={grayPathData}
+                fill="none"
+                stroke="rgba(156, 163, 175, 0.5)"
+                strokeWidth="3"
+                strokeLinecap="square"
+                strokeLinejoin="miter"
+              />
+            );
+          }
+
+          // Draw the visited (green) portion
+          if (visitedPoints.length > 0) {
+            const greenPathData = visitedPoints
+              .map((p, i) => {
+                const coords = toSvgCoords(p);
+                return i === 0
+                  ? `M ${coords.x} ${coords.y}`
+                  : `L ${coords.x} ${coords.y}`;
+              })
+              .join(' ');
+            mooreCurvePath = (
+              <path
+                d={greenPathData}
+                fill="none"
+                stroke="rgba(34, 197, 94, 0.6)"
+                strokeWidth="3"
+                strokeLinecap="square"
+                strokeLinejoin="miter"
+              />
+            );
+          }
         }
 
         // Generate sweep line for Sonar
@@ -889,7 +939,8 @@
             >
               {/* Grid lines */}
               <g>{gridLines}</g>
-              {/* Moore curve (drawn before tour so tour appears on top) */}
+              {/* Moore curve - gray (unvisited) portion first, then green (visited) on top */}
+              {mooreCurveGrayPath}
               {mooreCurvePath}
               {/* Sweep line for Sonar */}
               {sweepLine}
@@ -1239,9 +1290,16 @@
                   <div className="legend-item">
                     <div
                       className="legend-color"
-                      style={{ background: 'rgba(34, 197, 94, 0.4)' }}
+                      style={{ background: 'rgba(34, 197, 94, 0.6)' }}
                     ></div>
-                    <span>Moore Curve</span>
+                    <span>Visited Curve</span>
+                  </div>
+                  <div className="legend-item">
+                    <div
+                      className="legend-color"
+                      style={{ background: 'rgba(156, 163, 175, 0.5)' }}
+                    ></div>
+                    <span>Unvisited Curve</span>
                   </div>
                   <div className="legend-item">
                     <div
