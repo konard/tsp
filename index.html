@@ -800,7 +800,8 @@
           step.curvePoints.length > 0
         ) {
           // Determine the curve position up to which we've progressed
-          const curvePosition = step.curvePosition !== undefined ? step.curvePosition : 0;
+          const curvePosition =
+            step.curvePosition !== undefined ? step.curvePosition : 0;
 
           // Split curve into visited (green) and unvisited (gray) portions
           const visitedPoints = step.curvePoints.slice(0, curvePosition + 1);
