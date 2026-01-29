@@ -53,7 +53,9 @@ const Controls = ({
           max="50"
           value={gridSize}
           onChange={(e) =>
-            setGridSize(Math.max(5, Math.min(50, parseInt(e.target.value) || 5)))
+            setGridSize(
+              Math.max(5, Math.min(50, parseInt(e.target.value) || 5))
+            )
           }
           disabled={isRunning}
         />

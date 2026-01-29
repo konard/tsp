@@ -38,7 +38,9 @@ const VisualizationPanel = ({
       </div>
       <div className="algorithm-aliases">{aliases}</div>
       <div className="canvas-wrapper">{visualization}</div>
-      <div className="step-info">{stepDescription || 'Click Start to begin'}</div>
+      <div className="step-info">
+        {stepDescription || 'Click Start to begin'}
+      </div>
       {legend}
     </div>
   );
