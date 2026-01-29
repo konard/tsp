@@ -13,296 +13,17 @@
       crossorigin
     ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-      }
-
-      body {
-        font-family:
-          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-          sans-serif;
-        background: #f8f9fa;
-        min-height: 100vh;
-        color: #212529;
-      }
-
-      .app {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 24px;
-        padding: clamp(12px, 3vw, 24px);
-      }
-
-      h1 {
-        font-size: clamp(1.25rem, 4vw, 1.5rem);
-        font-weight: 600;
-        margin-bottom: clamp(16px, 3vw, 24px);
-        color: #212529;
-        text-align: center;
-      }
-
-      .controls {
-        display: flex;
-        flex-wrap: wrap;
-        gap: clamp(8px, 2vw, 16px);
-        margin-bottom: clamp(16px, 3vw, 24px);
-        padding: clamp(12px, 2vw, 16px);
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        justify-content: center;
-        align-items: flex-end;
-      }
-
-      .control-group {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .control-group label {
-        font-size: 0.75rem;
-        font-weight: 500;
-        color: #6c757d;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-      }
-
-      .control-group input,
-      .control-group select {
-        padding: 8px 12px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        min-width: 80px;
-        max-width: 120px;
-      }
-
-      .control-group input:focus,
-      .control-group select:focus {
-        outline: none;
-        border-color: #0d6efd;
-        box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
-      }
-
-      .buttons {
-        display: flex;
-        gap: 8px;
-        align-items: flex-end;
-      }
-
-      button {
-        padding: 8px 16px;
-        border: none;
-        border-radius: 4px;
-        font-size: 0.875rem;
-        font-weight: 500;
-        cursor: pointer;
-        transition:
-          background-color 0.2s,
-          transform 0.1s;
-      }
-
-      button:active {
-        transform: scale(0.98);
-      }
-
-      .btn-primary {
-        background: #0d6efd;
-        color: white;
-      }
-
-      .btn-primary:hover {
-        background: #0b5ed7;
-      }
-
-      .btn-primary:disabled {
-        background: #6c757d;
-        cursor: not-allowed;
-      }
-
-      .btn-secondary {
-        background: #6c757d;
-        color: white;
-      }
-
-      .btn-secondary:hover {
-        background: #5c636a;
-      }
-
-      .btn-outline {
-        background: white;
-        color: #0d6efd;
-        border: 1px solid #0d6efd;
-      }
-
-      .btn-outline:hover {
-        background: #0d6efd;
-        color: white;
-      }
-
-      .visualization-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
-        gap: clamp(16px, 3vw, 24px);
-      }
-
-      .visualization {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-      }
-
-      .visualization-header {
-        padding: 12px 16px;
-        border-bottom: 1px solid #dee2e6;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-
-      .visualization-header h2 {
-        font-size: clamp(0.875rem, 2.5vw, 1rem);
-        font-weight: 600;
-      }
-
-      .visualization-stats {
-        font-size: 0.75rem;
-        color: #6c757d;
-      }
-
-      .canvas-wrapper {
-        padding: clamp(8px, 2vw, 16px);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-      }
-
-      canvas,
-      svg {
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        max-width: 100%;
-        height: auto;
-      }
-
-      .step-info {
-        padding: 12px 16px;
-        border-top: 1px solid #dee2e6;
-        font-size: 0.875rem;
-        color: #495057;
-        background: #f8f9fa;
-      }
-
-      .legend {
-        display: flex;
-        flex-wrap: wrap;
-        gap: clamp(8px, 2vw, 16px);
-        padding: clamp(8px, 2vw, 12px) clamp(12px, 2vw, 16px);
-        border-top: 1px solid #dee2e6;
-        font-size: clamp(0.65rem, 1.5vw, 0.75rem);
-        justify-content: center;
-      }
-
-      .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
-
-      .legend-color {
-        width: 12px;
-        height: 12px;
-        border-radius: 2px;
-      }
-
-      .speed-control {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-      }
-
-      .speed-control input[type='range'] {
-        width: 100px;
-      }
-
-      .algorithm-aliases {
-        padding: 6px 16px;
-        font-size: clamp(0.6rem, 1.5vw, 0.7rem);
-        color: #868e96;
-        background: #f1f3f5;
-        font-style: italic;
-        text-align: center;
-      }
-
-      /* Mobile-first responsive adjustments */
-      @media (max-width: 480px) {
-        .controls {
-          flex-direction: column;
-          align-items: stretch;
-        }
-
-        .control-group {
-          width: 100%;
-        }
-
-        .control-group input,
-        .control-group select {
-          width: 100%;
-          max-width: none;
-        }
-
-        .buttons {
-          width: 100%;
-          justify-content: center;
-        }
-
-        .speed-control {
-          width: 100%;
-          justify-content: space-between;
-        }
-
-        .speed-control input[type='range'] {
-          flex: 1;
-          width: auto;
-        }
-
-        .visualization-header {
-          flex-direction: column;
-          gap: 4px;
-          text-align: center;
-        }
-      }
-
-      @media (min-width: 481px) and (max-width: 768px) {
-        .controls {
-          justify-content: space-around;
-        }
-      }
-
-      @media (max-width: 768px) {
-        .visualization-container {
-          grid-template-columns: 1fr;
-        }
-      }
-    </style>
+    <link rel="stylesheet" href="src/ui/styles.css" />
   </head>
   <body>
     <div id="root"></div>
 
-    <script type="text/babel">
-      const { useState, useEffect, useRef, useCallback } = React;
+    <!-- Load algorithm modules -->
+    <script type="text/babel" data-type="module">
+      // ============================================================
+      // ALGORITHMS - Utility Functions
+      // ============================================================
 
-      // Utility functions
-
-      // Calculate the Moore grid size based on user-specified grid size
-      // Moore curve of order n fills a 2^(n+1) x 2^(n+1) grid
-      // We choose order such that mooreGridSize >= gridSize
       const calculateMooreGridSize = (gridSize) => {
         const order = Math.max(1, Math.min(4, Math.floor(Math.log2(gridSize))));
         return Math.pow(2, order + 1);
@@ -311,14 +32,12 @@
       const generateRandomPoints = (mooreGridSize, numPoints) => {
         const points = [];
         const usedPositions = new Set();
-        // Points are placed at grid intersections (0 to mooreGridSize inclusive)
         const maxPoints = Math.min(
           numPoints,
           (mooreGridSize + 1) * (mooreGridSize + 1)
         );
 
         while (points.length < maxPoints) {
-          // Generate integer coordinates aligned to Moore grid vertices
           const x = Math.floor(Math.random() * (mooreGridSize + 1));
           const y = Math.floor(Math.random() * (mooreGridSize + 1));
           const key = `${x},${y}`;
@@ -339,46 +58,32 @@
         for (let i = 0; i < tour.length - 1; i++) {
           total += distance(points[tour[i]], points[tour[i + 1]]);
         }
-        // Close the loop
         total += distance(points[tour[tour.length - 1]], points[tour[0]]);
         return total;
       };
 
-      // Sonar Algorithm (Radial Sweep)
-      // Starts from the bottom (positive Y direction) and sweeps clockwise
+      // ============================================================
+      // ALGORITHMS - Sonar (Radial Sweep)
+      // ============================================================
+
       const sonarAlgorithmSteps = (points) => {
         if (points.length === 0) return [];
 
-        // Find centroid
         const cx = points.reduce((sum, p) => sum + p.x, 0) / points.length;
         const cy = points.reduce((sum, p) => sum + p.y, 0) / points.length;
-
-        // Calculate angles from centroid
-        // We want to start from the bottom (positive Y direction = Math.PI/2)
-        // and sweep clockwise (increasing angle in SVG coordinate system)
-        const startAngle = Math.PI / 2; // Bottom direction
+        const startAngle = Math.PI / 2;
 
         const pointsWithAngles = points.map((p, idx) => {
           const rawAngle = Math.atan2(p.y - cy, p.x - cx);
-          // Normalize angle relative to start angle (bottom)
-          // This makes angles go from 0 (bottom) clockwise around
           let normalizedAngle = rawAngle - startAngle;
-          // Ensure positive values: wrap negative angles to positive
           if (normalizedAngle < 0) {
             normalizedAngle += 2 * Math.PI;
           }
-          return {
-            ...p,
-            idx,
-            angle: rawAngle, // Keep original for display
-            sortAngle: normalizedAngle, // Use normalized for sorting
-          };
+          return { ...p, idx, angle: rawAngle, sortAngle: normalizedAngle };
         });
 
-        // Sort by normalized angle (starting from bottom, going clockwise)
         pointsWithAngles.sort((a, b) => a.sortAngle - b.sortAngle);
 
-        // Generate steps
         const steps = [];
         const tour = [];
 
@@ -398,7 +103,137 @@
         return steps;
       };
 
-      // Sonar Optimization (2-opt style zigzag)
+      // ============================================================
+      // ALGORITHMS - Moore Curve
+      // ============================================================
+
+      const generateMooreCurve = (order) => {
+        let sequence = 'LFL+F+LFL';
+
+        for (let i = 0; i < order; i++) {
+          let newSequence = '';
+          for (const char of sequence) {
+            if (char === 'L') {
+              newSequence += '-RF+LFL+FR-';
+            } else if (char === 'R') {
+              newSequence += '+LF-RFR-FL+';
+            } else {
+              newSequence += char;
+            }
+          }
+          sequence = newSequence;
+        }
+
+        return sequence;
+      };
+
+      const mooreCurveToPoints = (sequence, mooreGridSize) => {
+        const stepSize = 1;
+        const curvePoints = [];
+        let x = 0;
+        let y = 0;
+        let direction = 0;
+
+        curvePoints.push({ x, y });
+
+        for (const char of sequence) {
+          if (char === 'F') {
+            if (direction === 0) y -= stepSize;
+            else if (direction === 1) x += stepSize;
+            else if (direction === 2) y += stepSize;
+            else if (direction === 3) x -= stepSize;
+            curvePoints.push({ x, y });
+          } else if (char === '+') {
+            direction = (direction + 1) % 4;
+          } else if (char === '-') {
+            direction = (direction + 3) % 4;
+          }
+        }
+
+        let minX = Infinity,
+          maxX = -Infinity,
+          minY = Infinity,
+          maxY = -Infinity;
+        for (const p of curvePoints) {
+          minX = Math.min(minX, p.x);
+          maxX = Math.max(maxX, p.x);
+          minY = Math.min(minY, p.y);
+          maxY = Math.max(maxY, p.y);
+        }
+
+        const curveWidth = maxX - minX;
+        const curveHeight = maxY - minY;
+
+        const normalizedPoints = curvePoints.map((p) => ({
+          x: Math.round(((p.x - minX) / curveWidth) * mooreGridSize),
+          y: Math.round(((p.y - minY) / curveHeight) * mooreGridSize),
+        }));
+
+        return normalizedPoints;
+      };
+
+      const mooreAlgorithmSteps = (points, mooreGridSize) => {
+        if (points.length === 0) return [];
+
+        const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
+        const curveSequence = generateMooreCurve(order);
+        const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
+        const totalCurveLength = curvePoints.length;
+
+        const pointsWithCurvePos = points.map((p, idx) => {
+          let minDist = Infinity;
+          let curvePos = 0;
+
+          for (let i = 0; i < curvePoints.length; i++) {
+            const d = distance(p, curvePoints[i]);
+            if (d < minDist) {
+              minDist = d;
+              curvePos = i;
+            }
+          }
+
+          return { ...p, idx, curvePos };
+        });
+
+        pointsWithCurvePos.sort((a, b) => a.curvePos - b.curvePos);
+
+        const steps = [];
+        const tour = [];
+
+        steps.push({
+          type: 'curve',
+          curvePoints,
+          mooreGridSize,
+          curveProgress: 0,
+          tour: [],
+          description: `Moore curve generated (order ${order}, ${mooreGridSize}×${mooreGridSize} grid)`,
+        });
+
+        for (let i = 0; i < pointsWithCurvePos.length; i++) {
+          tour.push(pointsWithCurvePos[i].idx);
+          const curveProgress = (
+            (pointsWithCurvePos[i].curvePos / (totalCurveLength - 1)) *
+            100
+          ).toFixed(1);
+
+          steps.push({
+            type: 'visit',
+            curvePoints,
+            mooreGridSize,
+            curvePosition: pointsWithCurvePos[i].curvePos,
+            curveProgress: parseFloat(curveProgress),
+            tour: [...tour],
+            description: `Curve progress: ${curveProgress}%, visiting point ${pointsWithCurvePos[i].idx}`,
+          });
+        }
+
+        return steps;
+      };
+
+      // ============================================================
+      // ALGORITHMS - Optimizations
+      // ============================================================
+
       const sonarOptimizationSteps = (points, initialTour) => {
         if (initialTour.length < 4) return [];
 
@@ -422,7 +257,6 @@
             const newDist = distance(p1, p3) + distance(p2, p4);
 
             if (newDist < currentDist - 0.001) {
-              // Swap p2 and p3 positions in tour
               const idx2 = (i + 1) % tour.length;
               const idx3 = (i + 2) % tour.length;
               [tour[idx2], tour[idx3]] = [tour[idx3], tour[idx2]];
@@ -443,225 +277,6 @@
         return steps;
       };
 
-      // Moore Curve Algorithm
-      // Moore curve is a variant of Hilbert curve that starts and ends at the same location
-      // Generate Hilbert curve points using recursive algorithm for perfect grid alignment
-      const hilbertD2xy = (n, d) => {
-        // Convert Hilbert curve index d to (x, y) coordinates
-        // n is the size of the grid (must be power of 2)
-        let x = 0,
-          y = 0;
-        let rx,
-          ry,
-          s,
-          t = d;
-
-        for (s = 1; s < n; s *= 2) {
-          rx = 1 & (t / 2);
-          ry = 1 & (t ^ rx);
-
-          // Rotate quadrant
-          if (ry === 0) {
-            if (rx === 1) {
-              x = s - 1 - x;
-              y = s - 1 - y;
-            }
-            [x, y] = [y, x];
-          }
-
-          x += s * rx;
-          y += s * ry;
-          t = Math.floor(t / 4);
-        }
-
-        return { x, y };
-      };
-
-      const generateMooreCurvePoints = (gridSize) => {
-        // For Moore curve, we need a power of 2 grid size
-        // Find the largest power of 2 that fits within gridSize
-        const order = Math.max(1, Math.floor(Math.log2(gridSize)));
-        const curveGridSize = Math.pow(2, order);
-        const totalPoints = curveGridSize * curveGridSize;
-
-        // Scale factor to map curve coordinates to actual grid
-        const scale = gridSize / curveGridSize;
-
-        // Generate all points along the Hilbert curve
-        const points = [];
-        for (let i = 0; i < totalPoints; i++) {
-          const { x, y } = hilbertD2xy(curveGridSize, i);
-          // Map to grid coordinates - center each cell, then scale
-          points.push({
-            x: (x + 0.5) * scale,
-            y: (y + 0.5) * scale,
-          });
-        }
-
-        // For Moore curve, we need to create a closed loop
-        // Moore curve consists of 4 Hilbert curves rotated and connected
-        // For simplicity, we'll use a single Hilbert curve which is also space-filling
-        return { points, order, curveGridSize };
-      };
-
-      // Alternative: Generate Moore curve using L-system for exact Moore pattern
-      const generateMooreCurve = (order) => {
-        // L-system rules for Moore curve
-        // Axiom: LFL+F+LFL
-        // L -> -RF+LFL+FR-
-        // R -> +LF-RFR-FL+
-
-        let sequence = 'LFL+F+LFL';
-
-        for (let i = 0; i < order; i++) {
-          let newSequence = '';
-          for (const char of sequence) {
-            if (char === 'L') {
-              newSequence += '-RF+LFL+FR-';
-            } else if (char === 'R') {
-              newSequence += '+LF-RFR-FL+';
-            } else {
-              newSequence += char;
-            }
-          }
-          sequence = newSequence;
-        }
-
-        return sequence;
-      };
-
-      const mooreCurveToPoints = (sequence, mooreGridSize) => {
-        // Moore curve vertices land exactly on grid intersections
-        // Step size is 1 (each move goes to the next grid line)
-        const stepSize = 1;
-
-        const curvePoints = [];
-        // Moore curve starts at the bottom center of the grid
-        // For a 16x16 grid (mooreGridSize=16), the curve spans 0 to 16
-        // Start at bottom center: x = mooreGridSize/2, y = mooreGridSize (just below visible area)
-        // We'll trace the curve first, then normalize to fit within grid
-        let x = 0;
-        let y = 0;
-
-        // Direction: 0=up, 1=right, 2=down, 3=left
-        let direction = 0; // Start facing up
-
-        curvePoints.push({ x, y });
-
-        for (const char of sequence) {
-          if (char === 'F') {
-            // Move one step in current direction
-            if (direction === 0)
-              y -= stepSize; // up
-            else if (direction === 1)
-              x += stepSize; // right
-            else if (direction === 2)
-              y += stepSize; // down
-            else if (direction === 3) x -= stepSize; // left
-
-            curvePoints.push({ x, y });
-          } else if (char === '+') {
-            direction = (direction + 1) % 4; // Turn right
-          } else if (char === '-') {
-            direction = (direction + 3) % 4; // Turn left
-          }
-        }
-
-        // Find bounding box of the curve
-        let minX = Infinity,
-          maxX = -Infinity,
-          minY = Infinity,
-          maxY = -Infinity;
-        for (const p of curvePoints) {
-          minX = Math.min(minX, p.x);
-          maxX = Math.max(maxX, p.x);
-          minY = Math.min(minY, p.y);
-          maxY = Math.max(maxY, p.y);
-        }
-
-        // The curve naturally spans (curveWidth) x (curveHeight) in step units
-        const curveWidth = maxX - minX;
-        const curveHeight = maxY - minY;
-
-        // Shift curve so it starts at (0,0), vertices stay on integer grid
-        // Then scale to fit the mooreGridSize (vertices land on grid lines)
-        const normalizedPoints = curvePoints.map((p) => ({
-          x: Math.round(((p.x - minX) / curveWidth) * mooreGridSize),
-          y: Math.round(((p.y - minY) / curveHeight) * mooreGridSize),
-        }));
-
-        return normalizedPoints;
-      };
-
-      const mooreAlgorithmSteps = (points, mooreGridSize) => {
-        if (points.length === 0) return [];
-
-        // Determine appropriate Moore curve order based on Moore grid size
-        // mooreGridSize = 2^(order+1), so order = log2(mooreGridSize) - 1
-        const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
-        const curveSequence = generateMooreCurve(order);
-        // Generate curve points using the Moore grid size for perfect alignment
-        const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
-        const totalCurveLength = curvePoints.length;
-
-        // Points are already on Moore grid coordinates, no scaling needed
-        // Map each point to its position along the curve
-        const pointsWithCurvePos = points.map((p, idx) => {
-          let minDist = Infinity;
-          let curvePos = 0;
-
-          // Points are already in Moore grid coordinates
-          for (let i = 0; i < curvePoints.length; i++) {
-            const d = distance(p, curvePoints[i]);
-            if (d < minDist) {
-              minDist = d;
-              curvePos = i;
-            }
-          }
-
-          return { ...p, idx, curvePos };
-        });
-
-        // Sort points by their position along the curve
-        pointsWithCurvePos.sort((a, b) => a.curvePos - b.curvePos);
-
-        // Generate steps
-        const steps = [];
-        const tour = [];
-
-        // First step: show the Moore curve
-        steps.push({
-          type: 'curve',
-          curvePoints,
-          mooreGridSize,
-          curveProgress: 0,
-          tour: [],
-          description: `Moore curve generated (order ${order}, ${mooreGridSize}×${mooreGridSize} grid)`,
-        });
-
-        for (let i = 0; i < pointsWithCurvePos.length; i++) {
-          tour.push(pointsWithCurvePos[i].idx);
-          // Calculate progress along the curve as a percentage
-          const curveProgress = (
-            (pointsWithCurvePos[i].curvePos / (totalCurveLength - 1)) *
-            100
-          ).toFixed(1);
-
-          steps.push({
-            type: 'visit',
-            curvePoints,
-            mooreGridSize,
-            curvePosition: pointsWithCurvePos[i].curvePos,
-            curveProgress: parseFloat(curveProgress),
-            tour: [...tour],
-            description: `Curve progress: ${curveProgress}%, visiting point ${pointsWithCurvePos[i].idx}`,
-          });
-        }
-
-        return steps;
-      };
-
-      // Moore Optimization (2-opt)
       const mooreOptimizationSteps = (points, initialTour) => {
         if (initialTour.length < 4) return [];
 
@@ -688,7 +303,6 @@
               const newDist = distance(a, c) + distance(b, d);
 
               if (newDist < currentDist - 0.001) {
-                // Reverse the segment between i+1 and j
                 const segment = tour.slice(i + 1, j + 1).reverse();
                 tour.splice(i + 1, j - i, ...segment);
 
@@ -711,7 +325,13 @@
         return steps;
       };
 
-      // SVG Renderer Component - replaces Canvas for better quality and scalability
+      // ============================================================
+      // UI COMPONENTS
+      // ============================================================
+
+      const { useState, useEffect, useRef, useCallback } = React;
+
+      // TSPVisualization Component
       const TSPVisualization = ({
         points,
         steps,
@@ -724,12 +344,10 @@
         const [svgSize, setSvgSize] = useState(400);
         const padding = 20;
 
-        // Responsive SVG sizing
         useEffect(() => {
           const updateSize = () => {
             if (containerRef.current) {
               const containerWidth = containerRef.current.clientWidth;
-              // Max size 400, min size 280, responsive to container
               const newSize = Math.min(400, Math.max(280, containerWidth - 32));
               setSvgSize(newSize);
             }
@@ -741,28 +359,18 @@
         }, []);
 
         const size = svgSize;
-
-        // Get current step data
         const step =
           currentStep >= 0 && currentStep < steps.length
             ? steps[currentStep]
             : null;
-
-        // Both algorithms use the same Moore grid size for perfect alignment
         const displayGridSize = mooreGridSize;
-
         const scale = (size - 2 * padding) / displayGridSize;
 
-        // Convert coordinates to SVG space
-        // All points and curve vertices are in Moore grid coordinates
-        const toSvgCoords = (p) => {
-          return {
-            x: padding + p.x * scale,
-            y: padding + p.y * scale,
-          };
-        };
+        const toSvgCoords = (p) => ({
+          x: padding + p.x * scale,
+          y: padding + p.y * scale,
+        });
 
-        // Generate grid lines
         const gridLines = [];
         for (let i = 0; i <= displayGridSize; i++) {
           const pos = padding + i * scale;
@@ -790,8 +398,6 @@
           );
         }
 
-        // Generate Moore curve path - progressive animation
-        // Draw visited portion in green, remaining portion in gray
         let mooreCurvePath = null;
         let mooreCurveGrayPath = null;
         if (
@@ -799,15 +405,11 @@
           step?.curvePoints &&
           step.curvePoints.length > 0
         ) {
-          // Determine the curve position up to which we've progressed
           const curvePosition =
             step.curvePosition !== undefined ? step.curvePosition : 0;
-
-          // Split curve into visited (green) and unvisited (gray) portions
           const visitedPoints = step.curvePoints.slice(0, curvePosition + 1);
           const unvisitedPoints = step.curvePoints.slice(curvePosition);
 
-          // Draw the unvisited (gray) portion first (so green appears on top)
           if (unvisitedPoints.length > 1) {
             const grayPathData = unvisitedPoints
               .map((p, i) => {
@@ -829,7 +431,6 @@
             );
           }
 
-          // Draw the visited (green) portion
           if (visitedPoints.length > 0) {
             const greenPathData = visitedPoints
               .map((p, i) => {
@@ -852,7 +453,6 @@
           }
         }
 
-        // Generate sweep line for Sonar
         let sweepLine = null;
         let centroidCircle = null;
         if (algorithm === 'sonar' && step?.type === 'sweep' && step?.centroid) {
@@ -873,7 +473,6 @@
           );
         }
 
-        // Generate tour path
         let tourPath = null;
         if (step?.tour && step.tour.length > 1) {
           const isOptimization = step.type === 'optimize' || showOptimization;
@@ -881,7 +480,6 @@
           let pathData = tourPoints
             .map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`))
             .join(' ');
-          // Close the loop if tour is complete
           if (step.tour.length === points.length) {
             pathData += ' Z';
           }
@@ -897,7 +495,6 @@
           );
         }
 
-        // Generate point circles
         const pointCircles = points.map((point, idx) => {
           const p = toSvgCoords(point);
           const isInTour = step?.tour?.includes(idx);
@@ -937,24 +534,18 @@
                 background: '#ffffff',
               }}
             >
-              {/* Grid lines */}
               <g>{gridLines}</g>
-              {/* Moore curve - gray (unvisited) portion first, then green (visited) on top */}
               {mooreCurveGrayPath}
               {mooreCurvePath}
-              {/* Sweep line for Sonar */}
               {sweepLine}
               {centroidCircle}
-              {/* Tour path */}
               {tourPath}
-              {/* Points */}
               <g>{pointCircles}</g>
             </svg>
           </div>
         );
       };
 
-      // Keep TSPCanvas as alias for backward compatibility
       const TSPCanvas = TSPVisualization;
 
       // Main App Component
@@ -966,16 +557,12 @@
         const [isRunning, setIsRunning] = useState(false);
         const [showOptimization, setShowOptimization] = useState(false);
 
-        // Calculate Moore grid size - this is the unified grid both algorithms use
-        // This ensures points land on grid vertices and both algorithms use identical grids
         const mooreGridSize = calculateMooreGridSize(gridSize);
 
-        // Sonar state
         const [sonarSteps, setSonarSteps] = useState([]);
         const [sonarOptSteps, setSonarOptSteps] = useState([]);
         const [sonarCurrentStep, setSonarCurrentStep] = useState(-1);
 
-        // Moore state
         const [mooreSteps, setMooreSteps] = useState([]);
         const [mooreOptSteps, setMooreOptSteps] = useState([]);
         const [mooreCurrentStep, setMooreCurrentStep] = useState(-1);
@@ -983,7 +570,6 @@
         const animationRef = useRef(null);
 
         const generatePoints = useCallback(() => {
-          // Generate points on the Moore grid - both algorithms use the same grid
           const newPoints = generateRandomPoints(mooreGridSize, numPoints);
           setPoints(newPoints);
           setSonarSteps([]);
@@ -1003,7 +589,6 @@
         const startSolution = useCallback(() => {
           if (points.length === 0) return;
 
-          // Generate steps for both algorithms using the same Moore grid
           const newSonarSteps = sonarAlgorithmSteps(points);
           const newMooreSteps = mooreAlgorithmSteps(points, mooreGridSize);
 
@@ -1039,7 +624,6 @@
           setIsRunning(true);
         }, [points, sonarSteps, mooreSteps]);
 
-        // Animation loop
         useEffect(() => {
           if (!isRunning) return;
 
