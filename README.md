@@ -23,6 +23,7 @@ Visit [https://konard.github.io/tsp](https://konard.github.io/tsp) to try the so
 Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering
 
 This algorithm works by:
+
 1. Computing the centroid (center of mass) of all points
 2. Calculating the polar angle of each point relative to the centroid
 3. Sorting points by their polar angle
@@ -35,6 +36,7 @@ The visualization shows a "sweep line" rotating around the centroid, visiting po
 Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering
 
 This algorithm uses a Moore curve (a variant of the Hilbert curve) to order points:
+
 1. Generate a Moore curve that fills the grid space
 2. Map each point to its nearest position on the curve
 3. Sort points by their position along the curve
@@ -45,6 +47,7 @@ The Moore curve is a space-filling curve that visits every cell in a grid exactl
 ### Optimization (2-opt)
 
 Both algorithms support an optional optimization phase using 2-opt improvements:
+
 - Iteratively reverses segments of the tour to reduce total distance
 - Continues until no more improvements can be found
 - Typically achieves 10-30% distance reduction
@@ -84,11 +87,11 @@ To modify the solver, simply edit `index.html`. The entire application is contai
 
 ## Algorithm Complexity
 
-| Algorithm | Time Complexity | Space Complexity |
-|-----------|----------------|------------------|
-| Sonar Visit | O(n log n) | O(n) |
-| Moore Curve | O(n log n) | O(n) |
-| 2-opt Optimization | O(n²) | O(n) |
+| Algorithm          | Time Complexity | Space Complexity |
+| ------------------ | --------------- | ---------------- |
+| Sonar Visit        | O(n log n)      | O(n)             |
+| Moore Curve        | O(n log n)      | O(n)             |
+| 2-opt Optimization | O(n²)           | O(n)             |
 
 Where n is the number of points.
 
