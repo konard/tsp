@@ -299,16 +299,28 @@
       const { useState, useEffect, useRef, useCallback } = React;
 
       // Utility functions
-      const generateRandomPoints = (gridSize, numPoints) => {
+
+      // Calculate the Moore grid size based on user-specified grid size
+      // Moore curve of order n fills a 2^(n+1) x 2^(n+1) grid
+      // We choose order such that mooreGridSize >= gridSize
+      const calculateMooreGridSize = (gridSize) => {
+        const order = Math.max(1, Math.min(4, Math.floor(Math.log2(gridSize))));
+        return Math.pow(2, order + 1);
+      };
+
+      const generateRandomPoints = (mooreGridSize, numPoints) => {
         const points = [];
         const usedPositions = new Set();
-        // Points are placed at grid intersections (0 to gridSize inclusive)
-        const maxPoints = Math.min(numPoints, (gridSize + 1) * (gridSize + 1));
+        // Points are placed at grid intersections (0 to mooreGridSize inclusive)
+        const maxPoints = Math.min(
+          numPoints,
+          (mooreGridSize + 1) * (mooreGridSize + 1)
+        );
 
         while (points.length < maxPoints) {
-          // Generate integer coordinates aligned to grid
-          const x = Math.floor(Math.random() * (gridSize + 1));
-          const y = Math.floor(Math.random() * (gridSize + 1));
+          // Generate integer coordinates aligned to Moore grid vertices
+          const x = Math.floor(Math.random() * (mooreGridSize + 1));
+          const y = Math.floor(Math.random() * (mooreGridSize + 1));
           const key = `${x},${y}`;
 
           if (!usedPositions.has(key)) {
@@ -565,33 +577,26 @@
         return normalizedPoints;
       };
 
-      const mooreAlgorithmSteps = (points, gridSize) => {
+      const mooreAlgorithmSteps = (points, mooreGridSize) => {
         if (points.length === 0) return [];
 
-        // Determine appropriate Moore curve order based on grid size
-        // We want the curve to have enough resolution to distinguish points
-        const order = Math.max(1, Math.min(4, Math.floor(Math.log2(gridSize))));
-        // Moore curve of order n fills a 2^(n+1) x 2^(n+1) grid
-        const mooreGridSize = Math.pow(2, order + 1);
+        // Determine appropriate Moore curve order based on Moore grid size
+        // mooreGridSize = 2^(order+1), so order = log2(mooreGridSize) - 1
+        const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
         const curveSequence = generateMooreCurve(order);
         // Generate curve points using the Moore grid size for perfect alignment
         const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
         const totalCurveLength = curvePoints.length;
 
-        // Scale factor to convert user gridSize coordinates to Moore grid coordinates
-        const scaleFactor = mooreGridSize / gridSize;
-
+        // Points are already on Moore grid coordinates, no scaling needed
         // Map each point to its position along the curve
-        // Scale points to Moore grid coordinates for distance calculation
         const pointsWithCurvePos = points.map((p, idx) => {
           let minDist = Infinity;
           let curvePos = 0;
 
-          // Scale the point to Moore grid coordinates
-          const scaledP = { x: p.x * scaleFactor, y: p.y * scaleFactor };
-
+          // Points are already in Moore grid coordinates
           for (let i = 0; i < curvePoints.length; i++) {
-            const d = distance(scaledP, curvePoints[i]);
+            const d = distance(p, curvePoints[i]);
             if (d < minDist) {
               minDist = d;
               curvePos = i;
@@ -696,7 +701,7 @@
         steps,
         currentStep,
         algorithm,
-        gridSize,
+        mooreGridSize,
         showOptimization,
       }) => {
         const containerRef = useRef(null);
@@ -727,27 +732,14 @@
             ? steps[currentStep]
             : null;
 
-        // For Moore algorithm, use the Moore curve's grid size for alignment
-        // This ensures the curve vertices land exactly on grid intersections
-        const displayGridSize =
-          algorithm === 'moore' && step?.mooreGridSize
-            ? step.mooreGridSize
-            : gridSize;
+        // Both algorithms use the same Moore grid size for perfect alignment
+        const displayGridSize = mooreGridSize;
 
         const scale = (size - 2 * padding) / displayGridSize;
 
         // Convert coordinates to SVG space
-        // For Moore algorithm, curve points are already in Moore grid coordinates
-        // For points (user coordinates), we need to scale them to Moore grid
-        const toSvgCoords = (p, isCurvePoint = false) => {
-          if (algorithm === 'moore' && step?.mooreGridSize && !isCurvePoint) {
-            // Scale user points to Moore grid coordinates
-            const scaleFactor = step.mooreGridSize / gridSize;
-            return {
-              x: padding + p.x * scaleFactor * scale,
-              y: padding + p.y * scaleFactor * scale,
-            };
-          }
+        // All points and curve vertices are in Moore grid coordinates
+        const toSvgCoords = (p) => {
           return {
             x: padding + p.x * scale,
             y: padding + p.y * scale,
@@ -791,8 +783,8 @@
         ) {
           const pathData = step.curvePoints
             .map((p, i) => {
-              // Curve points are already in Moore grid coordinates
-              const coords = toSvgCoords(p, true);
+              // Curve points are in Moore grid coordinates
+              const coords = toSvgCoords(p);
               return i === 0
                 ? `M ${coords.x} ${coords.y}`
                 : `L ${coords.x} ${coords.y}`;
@@ -923,6 +915,10 @@
         const [isRunning, setIsRunning] = useState(false);
         const [showOptimization, setShowOptimization] = useState(false);
 
+        // Calculate Moore grid size - this is the unified grid both algorithms use
+        // This ensures points land on grid vertices and both algorithms use identical grids
+        const mooreGridSize = calculateMooreGridSize(gridSize);
+
         // Sonar state
         const [sonarSteps, setSonarSteps] = useState([]);
         const [sonarOptSteps, setSonarOptSteps] = useState([]);
@@ -936,7 +932,8 @@
         const animationRef = useRef(null);
 
         const generatePoints = useCallback(() => {
-          const newPoints = generateRandomPoints(gridSize, numPoints);
+          // Generate points on the Moore grid - both algorithms use the same grid
+          const newPoints = generateRandomPoints(mooreGridSize, numPoints);
           setPoints(newPoints);
           setSonarSteps([]);
           setSonarOptSteps([]);
@@ -946,7 +943,7 @@
           setMooreCurrentStep(-1);
           setIsRunning(false);
           setShowOptimization(false);
-        }, [gridSize, numPoints]);
+        }, [mooreGridSize, numPoints]);
 
         useEffect(() => {
           generatePoints();
@@ -955,9 +952,9 @@
         const startSolution = useCallback(() => {
           if (points.length === 0) return;
 
-          // Generate steps for both algorithms
+          // Generate steps for both algorithms using the same Moore grid
           const newSonarSteps = sonarAlgorithmSteps(points);
-          const newMooreSteps = mooreAlgorithmSteps(points, gridSize);
+          const newMooreSteps = mooreAlgorithmSteps(points, mooreGridSize);
 
           setSonarSteps(newSonarSteps);
           setMooreSteps(newMooreSteps);
@@ -965,7 +962,7 @@
           setMooreCurrentStep(0);
           setShowOptimization(false);
           setIsRunning(true);
-        }, [points, gridSize]);
+        }, [points, mooreGridSize]);
 
         const stopAnimation = useCallback(() => {
           setIsRunning(false);
@@ -1095,7 +1092,7 @@
                 <input
                   type="number"
                   min="3"
-                  max={gridSize * gridSize}
+                  max={(mooreGridSize + 1) * (mooreGridSize + 1)}
                   value={numPoints}
                   onChange={(e) =>
                     setNumPoints(Math.max(3, parseInt(e.target.value) || 3))
@@ -1173,7 +1170,7 @@
                     steps={showOptimization ? sonarOptSteps : sonarSteps}
                     currentStep={sonarCurrentStep}
                     algorithm="sonar"
-                    gridSize={gridSize}
+                    mooreGridSize={mooreGridSize}
                     showOptimization={showOptimization}
                   />
                 </div>
@@ -1231,7 +1228,7 @@
                     steps={showOptimization ? mooreOptSteps : mooreSteps}
                     currentStep={mooreCurrentStep}
                     algorithm="moore"
-                    gridSize={gridSize}
+                    mooreGridSize={mooreGridSize}
                     showOptimization={showOptimization}
                   />
                 </div>
