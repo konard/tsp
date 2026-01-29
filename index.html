@@ -183,7 +183,8 @@
         overflow: hidden;
       }
 
-      canvas, svg {
+      canvas,
+      svg {
         border: 1px solid #dee2e6;
         border-radius: 4px;
         max-width: 100%;
@@ -420,8 +421,12 @@
       const hilbertD2xy = (n, d) => {
         // Convert Hilbert curve index d to (x, y) coordinates
         // n is the size of the grid (must be power of 2)
-        let x = 0, y = 0;
-        let rx, ry, s, t = d;
+        let x = 0,
+          y = 0;
+        let rx,
+          ry,
+          s,
+          t = d;
 
         for (s = 1; s < n; s *= 2) {
           rx = 1 & (t / 2);
@@ -461,7 +466,7 @@
           // Map to grid coordinates - center each cell, then scale
           points.push({
             x: (x + 0.5) * scale,
-            y: (y + 0.5) * scale
+            y: (y + 0.5) * scale,
           });
         }
 
@@ -523,10 +528,13 @@
         for (const char of sequence) {
           if (char === 'F') {
             // Move one step in current direction - edges align with grid
-            if (direction === 0) y -= stepSize;       // up
-            else if (direction === 1) x += stepSize;  // right
-            else if (direction === 2) y += stepSize;  // down
-            else if (direction === 3) x -= stepSize;  // left
+            if (direction === 0)
+              y -= stepSize; // up
+            else if (direction === 1)
+              x += stepSize; // right
+            else if (direction === 2)
+              y += stepSize; // down
+            else if (direction === 3) x -= stepSize; // left
 
             curvePoints.push({ x, y });
           } else if (char === '+') {
@@ -544,10 +552,7 @@
 
         // Determine appropriate Moore curve order based on grid size
         // We want the curve to have enough resolution to distinguish points
-        const order = Math.max(
-          1,
-          Math.min(4, Math.floor(Math.log2(gridSize)))
-        );
+        const order = Math.max(1, Math.min(4, Math.floor(Math.log2(gridSize))));
         const curveSequence = generateMooreCurve(order);
         const curvePoints = mooreCurveToPoints(curveSequence, gridSize);
         const totalCurveLength = curvePoints.length;
@@ -587,7 +592,10 @@
         for (let i = 0; i < pointsWithCurvePos.length; i++) {
           tour.push(pointsWithCurvePos[i].idx);
           // Calculate progress along the curve as a percentage
-          const curveProgress = ((pointsWithCurvePos[i].curvePos / (totalCurveLength - 1)) * 100).toFixed(1);
+          const curveProgress = (
+            (pointsWithCurvePos[i].curvePos / (totalCurveLength - 1)) *
+            100
+          ).toFixed(1);
 
           steps.push({
             type: 'visit',
@@ -725,11 +733,17 @@
 
         // Generate Moore curve path
         let mooreCurvePath = null;
-        if (algorithm === 'moore' && step?.curvePoints && step.curvePoints.length > 0) {
+        if (
+          algorithm === 'moore' &&
+          step?.curvePoints &&
+          step.curvePoints.length > 0
+        ) {
           const pathData = step.curvePoints
             .map((p, i) => {
               const coords = toSvgCoords(p);
-              return i === 0 ? `M ${coords.x} ${coords.y}` : `L ${coords.x} ${coords.y}`;
+              return i === 0
+                ? `M ${coords.x} ${coords.y}`
+                : `L ${coords.x} ${coords.y}`;
             })
             .join(' ');
           mooreCurvePath = (
@@ -793,7 +807,8 @@
         const pointCircles = points.map((point, idx) => {
           const p = toSvgCoords(point);
           const isInTour = step?.tour?.includes(idx);
-          const isLastAdded = step?.tour && step.tour[step.tour.length - 1] === idx;
+          const isLastAdded =
+            step?.tour && step.tour[step.tour.length - 1] === idx;
 
           let fill = '#6c757d';
           if (isLastAdded) {
@@ -814,12 +829,19 @@
         });
 
         return (
-          <div ref={containerRef} style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+          <div
+            ref={containerRef}
+            style={{ width: '100%', display: 'flex', justifyContent: 'center' }}
+          >
             <svg
               width={size}
               height={size}
               viewBox={`0 0 ${size} ${size}`}
-              style={{ border: '1px solid #dee2e6', borderRadius: '4px', background: '#ffffff' }}
+              style={{
+                border: '1px solid #dee2e6',
+                borderRadius: '4px',
+                background: '#ffffff',
+              }}
             >
               {/* Grid lines */}
               <g>{gridLines}</g>
@@ -1090,7 +1112,8 @@
                   </span>
                 </div>
                 <div className="algorithm-aliases">
-                  Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering
+                  Also known as: Radial Sweep, Angular Sort, Polar Angle Sort,
+                  Centroid-based Ordering
                 </div>
                 <div className="canvas-wrapper">
                   <TSPCanvas
@@ -1147,7 +1170,8 @@
                   </span>
                 </div>
                 <div className="algorithm-aliases">
-                  Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering
+                  Also known as: Space-Filling Curve, Hilbert Curve Variant,
+                  Fractal Ordering
                 </div>
                 <div className="canvas-wrapper">
                   <TSPCanvas
