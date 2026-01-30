@@ -41,6 +41,9 @@ export * as progressive from './progressive/index.js';
 // Atomic algorithms (all-at-once)
 export * as atomic from './atomic/index.js';
 
+// Verification algorithms (exact optimal solutions)
+export * as verification from './verification/index.js';
+
 // Export progressive functions at top level for convenience
 export {
   // Solutions
@@ -55,3 +58,11 @@ export {
   sonarOptimizationSteps,
   mooreOptimizationSteps,
 } from './progressive/index.js';
+
+// Export verification functions at top level for convenience
+export {
+  bruteForceOptimalTour,
+  bruteForceSteps,
+  calculateOptimalityRatio,
+  BRUTE_FORCE_MAX_POINTS,
+} from './verification/index.js';
