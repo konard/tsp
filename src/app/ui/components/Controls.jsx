@@ -2,19 +2,17 @@
  * Controls Component
  *
  * Control panel for TSP solver including:
- * - Grid size selector (valid Moore curve sizes)
+ * - Grid size input
  * - Points count input
  * - Animation speed slider
  * - Action buttons (New Points, Start, Stop, Optimize)
  */
 
-import { VALID_GRID_SIZES } from '../../../lib/index.js';
-
 /**
  * Controls - Control panel for TSP solver
  *
  * @param {Object} props
- * @param {number} props.gridSize - Current grid size (valid Moore curve size)
+ * @param {number} props.gridSize - Current grid size
  * @param {function} props.setGridSize - Grid size setter
  * @param {number} props.numPoints - Number of points
  * @param {function} props.setNumPoints - Points count setter
@@ -49,17 +47,18 @@ const Controls = ({
     <div className="controls">
       <div className="control-group">
         <label>Grid Size (N)</label>
-        <select
+        <input
+          type="number"
+          min="5"
+          max="50"
           value={gridSize}
-          onChange={(e) => setGridSize(parseInt(e.target.value))}
+          onChange={(e) =>
+            setGridSize(
+              Math.max(5, Math.min(50, parseInt(e.target.value) || 5))
+            )
+          }
           disabled={isRunning}
-        >
-          {VALID_GRID_SIZES.map((size) => (
-            <option key={size} value={size}>
-              {size}×{size}
-            </option>
-          ))}
-        </select>
+        />
       </div>
 
       <div className="control-group">

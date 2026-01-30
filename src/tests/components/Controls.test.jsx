@@ -12,7 +12,7 @@ import { render, fireEvent } from '@testing-library/react';
 import { Controls } from '../../app/ui/components/Controls.jsx';
 
 const createDefaultProps = (overrides = {}) => ({
-  gridSize: 16,
+  gridSize: 10,
   setGridSize: mock(() => {}),
   numPoints: 15,
   setNumPoints: mock(() => {}),
@@ -30,57 +30,67 @@ const createDefaultProps = (overrides = {}) => ({
 });
 
 describe('Controls', () => {
-  describe('Grid Size Selector', () => {
-    it('should render grid size dropdown with correct value', () => {
+  describe('Grid Size Input', () => {
+    it('should render grid size input with correct value', () => {
       const props = createDefaultProps();
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
-      expect(select.value).toBe('16');
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      const gridInput = inputs.find((input) => input.value === '10');
+      expect(gridInput).toBeDefined();
     });
 
-    it('should have valid Moore curve size options', () => {
+    it('should have correct min and max attributes', () => {
       const props = createDefaultProps();
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
-      const options = Array.from(select.options).map((o) => o.value);
-      expect(options).toEqual(['2', '4', '8', '16', '32', '64']);
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      const gridInput = inputs.find((input) => input.value === '10');
+      expect(gridInput.min).toBe('5');
+      expect(gridInput.max).toBe('50');
     });
 
     it('should be disabled when running', () => {
       const props = createDefaultProps({ isRunning: true });
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
-      expect(select.disabled).toBe(true);
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      inputs.forEach((input) => {
+        expect(input.disabled).toBe(true);
+      });
     });
 
     it('should be enabled when not running', () => {
       const props = createDefaultProps({ isRunning: false });
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
-      expect(select.disabled).toBe(false);
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      inputs.forEach((input) => {
+        expect(input.disabled).toBe(false);
+      });
     });
   });
 
   describe('Points Input', () => {
     it('should render points input with correct value', () => {
       const props = createDefaultProps();
-      const { getByRole } = render(<Controls {...props} />);
-      const pointsInput = getByRole('spinbutton');
-      expect(pointsInput.value).toBe('15');
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      const pointsInput = inputs.find((input) => input.value === '15');
+      expect(pointsInput).toBeDefined();
     });
 
     it('should have correct min attribute', () => {
       const props = createDefaultProps();
-      const { getByRole } = render(<Controls {...props} />);
-      const pointsInput = getByRole('spinbutton');
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      const pointsInput = inputs.find((input) => input.value === '15');
       expect(pointsInput.min).toBe('3');
     });
 
     it('should be disabled when running', () => {
       const props = createDefaultProps({ isRunning: true });
-      const { getByRole } = render(<Controls {...props} />);
-      const pointsInput = getByRole('spinbutton');
-      expect(pointsInput.disabled).toBe(true);
+      const { getAllByRole } = render(<Controls {...props} />);
+      const inputs = getAllByRole('spinbutton');
+      inputs.forEach((input) => {
+        expect(input.disabled).toBe(true);
+      });
     });
   });
 

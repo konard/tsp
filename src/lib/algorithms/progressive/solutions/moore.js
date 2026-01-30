@@ -129,8 +129,8 @@ export const mooreAlgorithmSteps = (points, mooreGridSize) => {
   }
 
   // Determine appropriate Moore curve order based on Moore grid size
-  // Moore curve of order n fills a 2^n × 2^n grid, so order = log2(mooreGridSize)
-  const order = Math.max(1, Math.round(Math.log2(mooreGridSize)));
+  // mooreGridSize = 2^(order+1), so order = log2(mooreGridSize) - 1
+  const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
   const curveSequence = generateMooreCurve(order);
   // Generate curve points using the Moore grid size for perfect alignment
   const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
@@ -206,8 +206,7 @@ export const mooreSolution = (points, mooreGridSize) => {
     return { tour: [], curvePoints: [] };
   }
 
-  // Moore curve of order n fills a 2^n × 2^n grid, so order = log2(mooreGridSize)
-  const order = Math.max(1, Math.round(Math.log2(mooreGridSize)));
+  const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
   const curveSequence = generateMooreCurve(order);
   const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
 
