@@ -4,6 +4,7 @@
  * Orchestrates the TSP solver application including:
  * - State management for points, algorithm steps, and animation
  * - Algorithm execution for both Sonar and Moore algorithms
+ * - Verification of optimal tour distance via brute-force
  * - UI layout with controls and side-by-side visualizations
  */
 
@@ -19,6 +20,10 @@ import {
   // Generic optimizations that can work with any tour
   zigzagOptSteps,
   twoOptSteps,
+  // Verification
+  bruteForceOptimalTour,
+  calculateOptimalityRatio,
+  BRUTE_FORCE_MAX_POINTS,
 } from '../../lib/index.js';
 
 // Import UI components
@@ -37,6 +42,7 @@ const App = () => {
   const [speed, setSpeed] = useState(500);
   const [isRunning, setIsRunning] = useState(false);
   const [showOptimization, setShowOptimization] = useState(false);
+  const [activeOptimization, setActiveOptimization] = useState(null);
 
   // Calculate Moore grid size - this is the unified grid both algorithms use
   // This ensures points land on grid vertices and both algorithms use identical grids
@@ -52,6 +58,9 @@ const App = () => {
   const [mooreOptSteps, setMooreOptSteps] = useState([]);
   const [mooreCurrentStep, setMooreCurrentStep] = useState(-1);
 
+  // Verification state
+  const [optimalResult, setOptimalResult] = useState(null);
+
   const animationRef = useRef(null);
 
   const generatePoints = useCallback(() => {
@@ -66,11 +75,23 @@ const App = () => {
     setMooreCurrentStep(-1);
     setIsRunning(false);
     setShowOptimization(false);
+    setActiveOptimization(null);
+    setOptimalResult(null);
   }, [mooreGridSize, numPoints]);
 
   useEffect(() => {
     generatePoints();
   }, []);
+
+  // Compute optimal tour when points change
+  useEffect(() => {
+    if (points.length >= 2 && points.length <= BRUTE_FORCE_MAX_POINTS) {
+      const result = bruteForceOptimalTour(points);
+      setOptimalResult(result);
+    } else {
+      setOptimalResult(null);
+    }
+  }, [points]);
 
   const startSolution = useCallback(() => {
     if (points.length === 0) return;
@@ -84,6 +105,7 @@ const App = () => {
     setSonarCurrentStep(0);
     setMooreCurrentStep(0);
     setShowOptimization(false);
+    setActiveOptimization(null);
     setIsRunning(true);
   }, [points, mooreGridSize]);
 
@@ -94,47 +116,73 @@ const App = () => {
     }
   }, []);
 
-  const startOptimization = useCallback(() => {
-    if (sonarSteps.length === 0 || mooreSteps.length === 0) return;
+  const startOptimization = useCallback(
+    (method) => {
+      if (sonarSteps.length === 0 || mooreSteps.length === 0) return;
 
-    const sonarTour = sonarSteps[sonarSteps.length - 1]?.tour || [];
-    const mooreTour = mooreSteps[mooreSteps.length - 1]?.tour || [];
+      const sonarTour = sonarSteps[sonarSteps.length - 1]?.tour || [];
+      const mooreTour = mooreSteps[mooreSteps.length - 1]?.tour || [];
 
-    // Use generic optimizations - zigzag for Sonar tour, 2-opt for Moore tour
-    let newSonarOptSteps = zigzagOptSteps(points, sonarTour);
-    let newMooreOptSteps = twoOptSteps(points, mooreTour);
+      const optFn = method === '2-opt' ? twoOptSteps : zigzagOptSteps;
+      let newSonarOptSteps = optFn(points, sonarTour);
+      let newMooreOptSteps = optFn(points, mooreTour);
 
-    // When optimization finds no improvements (tour is already optimal),
-    // create a single step preserving the existing tour so the visualization
-    // continues to display the path correctly (fixes issue #15)
-    if (newSonarOptSteps.length === 0) {
-      newSonarOptSteps = [
-        {
-          type: 'optimize',
-          tour: [...sonarTour],
-          improvement: 0,
-          description: 'Tour is already optimal — no improvements found',
-        },
-      ];
-    }
-    if (newMooreOptSteps.length === 0) {
-      newMooreOptSteps = [
-        {
-          type: 'optimize',
-          tour: [...mooreTour],
-          improvement: 0,
-          description: 'Tour is already optimal — no improvements found',
-        },
-      ];
-    }
+      const optimalDistance = optimalResult?.distance;
+      const methodLabel = method === '2-opt' ? '2-opt' : 'Zigzag';
 
-    setSonarOptSteps(newSonarOptSteps);
-    setMooreOptSteps(newMooreOptSteps);
-    setSonarCurrentStep(0);
-    setMooreCurrentStep(0);
-    setShowOptimization(true);
-    setIsRunning(true);
-  }, [points, sonarSteps, mooreSteps]);
+      // When optimization finds no improvements, create a step with
+      // comparison to the true optimal distance (if available)
+      if (newSonarOptSteps.length === 0) {
+        const sonarDist = calculateTotalDistance(sonarTour, points);
+        let description;
+        if (optimalDistance && Math.abs(sonarDist - optimalDistance) < 0.001) {
+          description = `${methodLabel}: Tour is already optimal (verified)`;
+        } else if (optimalDistance) {
+          const ratio = calculateOptimalityRatio(sonarDist, optimalDistance);
+          description = `${methodLabel}: No improvements found (${((ratio - 1) * 100).toFixed(1)}% above optimal)`;
+        } else {
+          description = `${methodLabel}: No improvements found`;
+        }
+        newSonarOptSteps = [
+          {
+            type: 'optimize',
+            tour: [...sonarTour],
+            improvement: 0,
+            description,
+          },
+        ];
+      }
+      if (newMooreOptSteps.length === 0) {
+        const mooreDist = calculateTotalDistance(mooreTour, points);
+        let description;
+        if (optimalDistance && Math.abs(mooreDist - optimalDistance) < 0.001) {
+          description = `${methodLabel}: Tour is already optimal (verified)`;
+        } else if (optimalDistance) {
+          const ratio = calculateOptimalityRatio(mooreDist, optimalDistance);
+          description = `${methodLabel}: No improvements found (${((ratio - 1) * 100).toFixed(1)}% above optimal)`;
+        } else {
+          description = `${methodLabel}: No improvements found`;
+        }
+        newMooreOptSteps = [
+          {
+            type: 'optimize',
+            tour: [...mooreTour],
+            improvement: 0,
+            description,
+          },
+        ];
+      }
+
+      setSonarOptSteps(newSonarOptSteps);
+      setMooreOptSteps(newMooreOptSteps);
+      setSonarCurrentStep(0);
+      setMooreCurrentStep(0);
+      setShowOptimization(true);
+      setActiveOptimization(method);
+      setIsRunning(true);
+    },
+    [points, sonarSteps, mooreSteps, optimalResult]
+  );
 
   // Animation loop
   useEffect(() => {
@@ -207,8 +255,16 @@ const App = () => {
     sonarSteps.length > 0 &&
     mooreSteps.length > 0 &&
     !isRunning &&
-    !showOptimization &&
     sonarCurrentStep === sonarSteps.length - 1;
+
+  const formatDistanceInfo = (dist) => {
+    if (!optimalResult || dist === 0) {
+      return `Distance: ${dist.toFixed(2)}`;
+    }
+    const ratio = calculateOptimalityRatio(dist, optimalResult.distance);
+    const pct = (ratio * 100).toFixed(1);
+    return `Distance: ${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
+  };
 
   return (
     <div className="app">
@@ -224,6 +280,7 @@ const App = () => {
         mooreGridSize={mooreGridSize}
         isRunning={isRunning}
         canOptimize={canOptimize}
+        activeOptimization={activeOptimization}
         onGeneratePoints={generatePoints}
         onStart={startSolution}
         onStop={stopAnimation}
@@ -235,7 +292,7 @@ const App = () => {
         <VisualizationPanel
           title="Sonar Visit Algorithm"
           aliases="Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering"
-          distance={calculateSonarDistance()}
+          distanceInfo={formatDistanceInfo(calculateSonarDistance())}
           visualization={
             <TSPVisualization
               points={points}
@@ -255,7 +312,7 @@ const App = () => {
         <VisualizationPanel
           title="Moore Curve Algorithm"
           aliases="Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering"
-          distance={calculateMooreDistance()}
+          distanceInfo={formatDistanceInfo(calculateMooreDistance())}
           visualization={
             <TSPVisualization
               points={points}

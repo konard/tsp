@@ -13,7 +13,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test Algorithm"
         aliases="Test aliases"
-        distance={123.456}
+        distanceInfo="Distance: 123.46"
         visualization={<div data-testid="viz">Visualization</div>}
         stepDescription="Test step"
         legend={<div data-testid="legend">Legend</div>}
@@ -27,7 +27,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test Algorithm"
         aliases="Alias A, Alias B"
-        distance={100}
+        distanceInfo="Distance: 100.00"
         visualization={<div>Viz</div>}
         stepDescription="Step"
         legend={<div>Legend</div>}
@@ -41,7 +41,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={123.456789}
+        distanceInfo="Distance: 123.46"
         visualization={<div>Viz</div>}
         stepDescription="Step"
         legend={<div>Legend</div>}
@@ -50,12 +50,28 @@ describe('VisualizationPanel', () => {
     expect(getByText('Distance: 123.46')).toBeDefined();
   });
 
+  it('should render distance with optimality info', () => {
+    const { getByText } = render(
+      <VisualizationPanel
+        title="Test"
+        aliases=""
+        distanceInfo="Distance: 15.00 (120.0% of optimal 12.50)"
+        visualization={<div>Viz</div>}
+        stepDescription="Step"
+        legend={<div>Legend</div>}
+      />
+    );
+    expect(
+      getByText('Distance: 15.00 (120.0% of optimal 12.50)')
+    ).toBeDefined();
+  });
+
   it('should render distance with zero', () => {
     const { getByText } = render(
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div>Viz</div>}
         stepDescription="Step"
         legend={<div>Legend</div>}
@@ -69,7 +85,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div data-testid="custom-viz">Custom Visualization</div>}
         stepDescription="Step"
         legend={<div>Legend</div>}
@@ -83,7 +99,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div>Viz</div>}
         stepDescription="Processing point 5 of 10"
         legend={<div>Legend</div>}
@@ -97,7 +113,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div>Viz</div>}
         stepDescription=""
         legend={<div>Legend</div>}
@@ -111,7 +127,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div>Viz</div>}
         stepDescription={null}
         legend={<div>Legend</div>}
@@ -125,7 +141,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div>Viz</div>}
         stepDescription={undefined}
         legend={<div>Legend</div>}
@@ -139,7 +155,7 @@ describe('VisualizationPanel', () => {
       <VisualizationPanel
         title="Test"
         aliases=""
-        distance={0}
+        distanceInfo="Distance: 0.00"
         visualization={<div>Viz</div>}
         stepDescription="Step"
         legend={<div data-testid="custom-legend">Custom Legend</div>}

@@ -179,25 +179,45 @@ describe('Controls', () => {
     });
   });
 
-  describe('Optimize Button', () => {
-    it('should render Optimize button when canOptimize is true', () => {
+  describe('Optimization Buttons', () => {
+    it('should render 2-opt and Zigzag buttons when canOptimize is true', () => {
       const props = createDefaultProps({ canOptimize: true });
       const { getByText } = render(<Controls {...props} />);
-      expect(getByText('Optimize')).toBeDefined();
+      expect(getByText('2-opt')).toBeDefined();
+      expect(getByText('Zigzag')).toBeDefined();
     });
 
-    it('should not render Optimize button when canOptimize is false', () => {
+    it('should not render optimization buttons when canOptimize is false', () => {
       const props = createDefaultProps({ canOptimize: false });
       const { queryByText } = render(<Controls {...props} />);
-      expect(queryByText('Optimize')).toBeNull();
+      expect(queryByText('2-opt')).toBeNull();
+      expect(queryByText('Zigzag')).toBeNull();
     });
 
-    it('should call onOptimize when clicked', () => {
+    it('should call onOptimize with "2-opt" when 2-opt clicked', () => {
       const onOptimize = mock(() => {});
       const props = createDefaultProps({ canOptimize: true, onOptimize });
       const { getByText } = render(<Controls {...props} />);
-      fireEvent.click(getByText('Optimize'));
-      expect(onOptimize).toHaveBeenCalled();
+      fireEvent.click(getByText('2-opt'));
+      expect(onOptimize).toHaveBeenCalledWith('2-opt');
+    });
+
+    it('should call onOptimize with "zigzag" when Zigzag clicked', () => {
+      const onOptimize = mock(() => {});
+      const props = createDefaultProps({ canOptimize: true, onOptimize });
+      const { getByText } = render(<Controls {...props} />);
+      fireEvent.click(getByText('Zigzag'));
+      expect(onOptimize).toHaveBeenCalledWith('zigzag');
+    });
+
+    it('should highlight active optimization button', () => {
+      const props = createDefaultProps({
+        canOptimize: true,
+        activeOptimization: '2-opt',
+      });
+      const { getByText } = render(<Controls {...props} />);
+      const twoOptBtn = getByText('2-opt');
+      expect(twoOptBtn.className).toContain('btn-active');
     });
   });
 });
