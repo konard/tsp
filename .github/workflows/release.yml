@@ -224,6 +224,7 @@ jobs:
   test:
     name: Test (Bun)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [detect-changes, changeset-check]
     if: always() && (github.event_name == 'push' || needs.changeset-check.result == 'success' || needs.changeset-check.result == 'skipped')
     steps:
@@ -265,6 +266,7 @@ jobs:
         run: bun test tests/lib tests/components
 
       - name: Run E2E tests
+        timeout-minutes: 10
         run: bun test tests/e2e
 
   # === DEPLOY TO GITHUB PAGES ===
