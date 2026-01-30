@@ -351,3 +351,52 @@ describe('TSP Solver E2E', () => {
     }, 30000);
   });
 });
+
+describe('Optimization with already-optimal tour (issue #15)', () => {
+  beforeEach(async () => {
+    if (page && !page.isClosed()) {
+      await page.goto(BASE_URL, { waitUntil: 'networkidle' });
+    }
+  }, 10000);
+
+  it('should preserve path and non-zero distance after optimizing a small point set', async () => {
+    await page.waitForSelector('.controls', { timeout: 20000 });
+
+    // Use 3 points to trigger the already-optimal scenario
+    const pointsInput = await page.$('input[type="number"]');
+    await pointsInput.fill('3');
+    await page.click('button:has-text("New Points")');
+    await page.waitForSelector('svg circle', { timeout: 20000 });
+
+    // Set fast animation speed
+    const slider = await page.$('input[type="range"]');
+    await slider.fill('50');
+
+    // Run algorithm, wait for Optimize button
+    await page.click('button:has-text("Start")');
+    await page.waitForSelector('button:has-text("Optimize")', {
+      timeout: 30000,
+    });
+
+    // Click Optimize and wait for completion
+    await page.click('button:has-text("Optimize")');
+    await new Promise((r) => setTimeout(r, 2000));
+
+    // Verify distances are NOT zero (this was the bug)
+    const distances = await page.$$eval('.visualization', (panels) =>
+      panels.map((p) => {
+        const el = p.querySelector('.visualization-stats');
+        return el ? el.textContent : '';
+      })
+    );
+    const hasNonZero = distances.some((d) => {
+      const num = parseFloat(d.replace(/[^0-9.]/g, ''));
+      return !isNaN(num) && num > 0;
+    });
+    expect(hasNonZero).toBe(true);
+
+    // Verify SVG still has path elements (path should not disappear)
+    const paths = await page.$$('svg path');
+    expect(paths.length).toBeGreaterThan(0);
+  }, 60000);
+});

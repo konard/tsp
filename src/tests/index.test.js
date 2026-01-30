@@ -567,6 +567,111 @@ describe('zigzagOpt (generic atomic zigzag)', () => {
 });
 
 // ============================================================
+// Already-Optimal Tour Tests (Issue #15)
+// ============================================================
+
+describe('optimization with already-optimal tours (issue #15)', () => {
+  // 3 points forming a triangle — already optimal, no improvements possible
+  const trianglePoints = [
+    { x: 0, y: 0 },
+    { x: 5, y: 0 },
+    { x: 2, y: 4 },
+  ];
+  const triangleTour = [0, 1, 2];
+
+  // 4 points forming a square in optimal order
+  const squarePoints = [
+    { x: 0, y: 0 },
+    { x: 10, y: 0 },
+    { x: 10, y: 10 },
+    { x: 0, y: 10 },
+  ];
+  const squareOptimalTour = [0, 1, 2, 3];
+
+  describe('twoOptSteps with already-optimal tours', () => {
+    it('should return empty array for 3-point triangle tour (< 4 points)', () => {
+      const steps = twoOptSteps(trianglePoints, triangleTour);
+      expect(steps).toEqual([]);
+    });
+
+    it('should return empty array for optimal square tour', () => {
+      const steps = twoOptSteps(squarePoints, squareOptimalTour);
+      expect(steps).toEqual([]);
+    });
+
+    it('should preserve tour distance when no improvement found', () => {
+      const originalDistance = calculateTotalDistance(
+        squareOptimalTour,
+        squarePoints
+      );
+      const result = twoOpt(squarePoints, squareOptimalTour);
+      const newDistance = calculateTotalDistance(result.tour, squarePoints);
+      expect(newDistance).toBe(originalDistance);
+      expect(result.improvement).toBe(0);
+    });
+  });
+
+  describe('zigzagOptSteps with already-optimal tours', () => {
+    it('should return empty array for 3-point triangle tour (< 4 points)', () => {
+      const steps = zigzagOptSteps(trianglePoints, triangleTour);
+      expect(steps).toEqual([]);
+    });
+
+    it('should return empty array for optimal square tour', () => {
+      const steps = zigzagOptSteps(squarePoints, squareOptimalTour);
+      expect(steps).toEqual([]);
+    });
+
+    it('should preserve tour distance when no improvement found', () => {
+      const originalDistance = calculateTotalDistance(
+        squareOptimalTour,
+        squarePoints
+      );
+      const result = zigzagOpt(squarePoints, squareOptimalTour);
+      const newDistance = calculateTotalDistance(result.tour, squarePoints);
+      expect(newDistance).toBe(originalDistance);
+      expect(result.improvement).toBe(0);
+    });
+  });
+
+  describe('full pipeline: solution then optimization on 3-point tour', () => {
+    const points = [
+      { x: 0, y: 0, id: 0 },
+      { x: 5, y: 0, id: 1 },
+      { x: 2, y: 4, id: 2 },
+    ];
+
+    it('should produce valid sonar solution then empty optimization', () => {
+      const steps = sonarAlgorithmSteps(points);
+      expect(steps.length).toBe(points.length);
+      const finalTour = steps[steps.length - 1].tour;
+      expect(finalTour.length).toBe(points.length);
+
+      const optSteps = zigzagOptSteps(points, finalTour);
+      expect(optSteps).toEqual([]);
+
+      // Distance should still be computable from the solution tour
+      const dist = calculateTotalDistance(finalTour, points);
+      expect(dist).toBeGreaterThan(0);
+    });
+
+    it('should produce valid moore solution then empty optimization', () => {
+      const steps = mooreAlgorithmSteps(points, 16);
+      expect(steps.length).toBeGreaterThan(0);
+      const finalTour = steps[steps.length - 1].tour;
+      expect(finalTour.length).toBe(points.length);
+
+      const optSteps = twoOptSteps(points, finalTour);
+      expect(optSteps).toEqual([]);
+
+      // Distance should still be computable from the solution tour
+      const dist = calculateTotalDistance(finalTour, points);
+      expect(dist).toBeGreaterThan(0);
+    });
+  });
+});
+
+// ============================================================
 // Moore Curve Point-by-Point Verification Tests
 // ============================================================
 
