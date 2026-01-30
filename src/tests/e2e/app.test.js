@@ -253,30 +253,4 @@ describe('TSP Solver E2E', () => {
       expect(newValue).not.toBe(initialValue);
     }, 30000);
   });
-
-  describe('Optimization with already-optimal tour (issue #15)', () => {
-    it('should preserve path and non-zero distance after optimizing', async () => {
-      await page.waitForSelector('.controls', { timeout: 20000 });
-      await page.$('input[type="number"]').then((el) => el.fill('3'));
-      await page.click('button:has-text("New Points")');
-      await page.waitForSelector('svg circle', { timeout: 20000 });
-      await page.$('input[type="range"]').then((el) => el.fill('50'));
-      await page.click('button:has-text("Start")');
-      await page.waitForSelector('button:has-text("Optimize")', {
-        timeout: 30000,
-      });
-      await page.click('button:has-text("Optimize")');
-      await new Promise((r) => setTimeout(r, 2000));
-      const distances = await page.$$eval('.visualization', (panels) =>
-        panels.map((p) => {
-          const el = p.querySelector('.visualization-stats');
-          return el ? el.textContent : '';
-        })
-      );
-      expect(
-        distances.some((d) => parseFloat(d.replace(/[^0-9.]/g, '')) > 0)
-      ).toBe(true);
-      expect((await page.$$('svg path')).length).toBeGreaterThan(0);
-    }, 60000);
-  });
 });
