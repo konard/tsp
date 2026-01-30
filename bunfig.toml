@@ -6,4 +6,4 @@ auto = "fallback"
 
 [test]
 # Preload test setup for DOM environment
-preload = ["./tests/setup.js"]
+preload = ["./src/tests/setup.js"]

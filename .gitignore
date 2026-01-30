@@ -80,7 +80,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+# dist - Keeping dist in the repository for local development (index.html needs it)
 
 # Gatsby files
 .cache/

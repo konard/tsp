@@ -8,7 +8,7 @@
 /* global performance */
 /* eslint-disable max-lines-per-function, require-await, max-statements, complexity */
 
-import { atomic, calculateTotalDistance } from '../lib/index.js';
+import { atomic, calculateTotalDistance } from '../src/lib/index.js';
 
 const { sonarSolution, mooreSolution, twoOpt, zigzagOpt } = atomic;
 

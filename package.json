@@ -1,26 +1,26 @@
 {
-  "name": "tsp-solver",
+  "name": "tsp-algorithms",
   "version": "0.5.0",
   "description": "TSP Solver - Efficient algorithms for the Traveling Salesman Problem with visualization",
   "type": "module",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "main": "src/lib/index.js",
+  "types": "src/lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.js"
+      "types": "./src/lib/index.d.ts",
+      "import": "./src/lib/index.js"
     },
     "./algorithms": {
-      "types": "./lib/algorithms/index.d.ts",
-      "import": "./lib/algorithms/index.js"
+      "types": "./src/lib/algorithms/index.d.ts",
+      "import": "./src/lib/algorithms/index.js"
     }
   },
   "scripts": {
     "dev": "bun run build && bun --hot serve",
     "build": "bun run build:app",
-    "build:app": "bun build app/main.jsx --outdir dist --minify --target browser",
+    "build:app": "bun build src/app/main.jsx --outdir dist --minify --target browser",
     "serve": "bun serve.js",
-    "test:e2e": "bun test tests/e2e/",
+    "test:e2e": "bun test src/tests/e2e/",
     "test": "bun test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
