@@ -101,8 +101,32 @@ const App = () => {
     const mooreTour = mooreSteps[mooreSteps.length - 1]?.tour || [];
 
     // Use generic optimizations - zigzag for Sonar tour, 2-opt for Moore tour
-    const newSonarOptSteps = zigzagOptSteps(points, sonarTour);
-    const newMooreOptSteps = twoOptSteps(points, mooreTour);
+    let newSonarOptSteps = zigzagOptSteps(points, sonarTour);
+    let newMooreOptSteps = twoOptSteps(points, mooreTour);
+
+    // When optimization finds no improvements (tour is already optimal),
+    // create a single step preserving the existing tour so the visualization
+    // continues to display the path correctly (fixes issue #15)
+    if (newSonarOptSteps.length === 0) {
+      newSonarOptSteps = [
+        {
+          type: 'optimize',
+          tour: [...sonarTour],
+          improvement: 0,
+          description: 'Tour is already optimal — no improvements found',
+        },
+      ];
+    }
+    if (newMooreOptSteps.length === 0) {
+      newMooreOptSteps = [
+        {
+          type: 'optimize',
+          tour: [...mooreTour],
+          improvement: 0,
+          description: 'Tour is already optimal — no improvements found',
+        },
+      ];
+    }
 
     setSonarOptSteps(newSonarOptSteps);
     setMooreOptSteps(newMooreOptSteps);
