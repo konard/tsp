@@ -9,6 +9,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'bun:test';
 import { launchBrowser, makeBrowserCommander } from 'browser-commander';
 import { spawn, spawnSync } from 'child_process';
+import { existsSync } from 'fs';
 
 const PORT = 3001;
 const BASE_URL = `http://localhost:${PORT}`;
@@ -36,9 +37,31 @@ async function waitForServer(url, maxAttempts = 30, delayMs = 200) {
 }
 
 /**
+ * Build the application if dist/main.js doesn't exist
+ */
+function buildAppIfNeeded() {
+  const distPath = 'dist/main.js';
+
+  if (!existsSync(distPath)) {
+    console.log('Building application...');
+    const result = spawnSync('bun', ['run', 'build'], {
+      stdio: 'inherit',
+      cwd: process.cwd(),
+    });
+    if (result.status !== 0) {
+      throw new Error('Build failed');
+    }
+    console.log('Build complete.');
+  }
+}
+
+/**
  * Start the dev server
  */
 async function startServer() {
+  // Ensure the app is built
+  buildAppIfNeeded();
+
   // Kill any existing process on the port first
   try {
     spawnSync('pkill', ['-f', `serve.js.*PORT=${PORT}`], { stdio: 'ignore' });
