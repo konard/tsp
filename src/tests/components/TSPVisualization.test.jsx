@@ -345,6 +345,86 @@ describe('TSPVisualization', () => {
     });
   });
 
+  describe('Already-optimal optimization (issue #15)', () => {
+    it('should render tour path for optimization step with no improvement', () => {
+      // This simulates the fix: when no optimization is found, a single step
+      // with the original tour is created so the path stays visible
+      const steps = [
+        {
+          type: 'optimize',
+          tour: [0, 1, 2, 3],
+          improvement: 0,
+          description: 'Tour is already optimal — no improvements found',
+        },
+      ];
+      const { container } = render(
+        <TSPVisualization
+          points={samplePoints}
+          steps={steps}
+          currentStep={0}
+          algorithm="sonar"
+          mooreGridSize={16}
+          showOptimization={true}
+        />
+      );
+      const paths = container.querySelectorAll('path');
+      const greenPaths = Array.from(paths).filter(
+        (p) => p.getAttribute('stroke') === '#198754'
+      );
+      expect(greenPaths.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('should render all point circles for optimization step with no improvement', () => {
+      const steps = [
+        {
+          type: 'optimize',
+          tour: [0, 1, 2, 3],
+          improvement: 0,
+          description: 'Tour is already optimal — no improvements found',
+        },
+      ];
+      const { container } = render(
+        <TSPVisualization
+          points={samplePoints}
+          steps={steps}
+          currentStep={0}
+          algorithm="moore"
+          mooreGridSize={16}
+          showOptimization={true}
+        />
+      );
+      const circles = container.querySelectorAll('circle');
+      expect(circles.length).toBeGreaterThanOrEqual(samplePoints.length);
+    });
+
+    it('should render closed tour path with Z command for full tour', () => {
+      const steps = [
+        {
+          type: 'optimize',
+          tour: [0, 1, 2, 3],
+          improvement: 0,
+          description: 'Tour is already optimal — no improvements found',
+        },
+      ];
+      const { container } = render(
+        <TSPVisualization
+          points={samplePoints}
+          steps={steps}
+          currentStep={0}
+          algorithm="sonar"
+          mooreGridSize={16}
+          showOptimization={true}
+        />
+      );
+      const paths = container.querySelectorAll('path');
+      const tourPath = Array.from(paths).find(
+        (p) => p.getAttribute('stroke') === '#198754'
+      );
+      expect(tourPath).toBeDefined();
+      expect(tourPath.getAttribute('d')).toContain('Z');
+    });
+  });
+
   describe('TSPCanvas Alias', () => {
     it('should be an alias for TSPVisualization', () => {
       expect(TSPCanvas).toBe(TSPVisualization);
