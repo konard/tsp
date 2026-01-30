@@ -11,7 +11,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 // Import algorithm functions from lib
 import {
-  VALID_GRID_SIZES,
+  calculateMooreGridSize,
   generateRandomPoints,
   calculateTotalDistance,
   sonarAlgorithmSteps,
@@ -31,16 +31,16 @@ import { VisualizationPanel } from './components/VisualizationPanel.jsx';
  * App - Main application component
  */
 const App = () => {
-  // Grid size is directly a valid Moore curve size (power of 2)
-  const [gridSize, setGridSize] = useState(16);
+  const [gridSize, setGridSize] = useState(10);
   const [numPoints, setNumPoints] = useState(15);
   const [points, setPoints] = useState([]);
   const [speed, setSpeed] = useState(500);
   const [isRunning, setIsRunning] = useState(false);
   const [showOptimization, setShowOptimization] = useState(false);
 
-  // Grid size is already a valid Moore curve size (selected from dropdown)
-  const mooreGridSize = gridSize;
+  // Calculate Moore grid size - this is the unified grid both algorithms use
+  // This ensures points land on grid vertices and both algorithms use identical grids
+  const mooreGridSize = calculateMooreGridSize(gridSize);
 
   // Sonar state
   const [sonarSteps, setSonarSteps] = useState([]);
