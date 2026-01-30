@@ -3,8 +3,8 @@
  *
  * Orchestrates the TSP solver application including:
  * - State management for points, algorithm steps, and animation
- * - Algorithm execution for both Sonar and Moore algorithms
- * - Verification of optimal tour distance via brute-force
+ * - Algorithm execution with user-selectable algorithms for side-by-side comparison
+ * - Verification of optimal tour distance via lower bound and brute-force
  * - UI layout with controls and side-by-side visualizations
  */
 
@@ -17,20 +17,63 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  bruteForceAlgorithmSteps,
+  bruteForceSolution,
+  calculateOptimalityRatio,
+  BRUTE_FORCE_MAX_POINTS,
   // Generic optimizations that can work with any tour
   zigzagOptSteps,
   twoOptSteps,
   // Verification
-  bruteForceOptimalTour,
-  calculateOptimalityRatio,
-  BRUTE_FORCE_MAX_POINTS,
+  verifyOptimality,
 } from '../../lib/index.js';
 
 // Import UI components
 import { TSPVisualization } from './components/TSPVisualization.jsx';
-import { Controls } from './components/Controls.jsx';
+import { Controls, ALGORITHM_OPTIONS } from './components/Controls.jsx';
 import { Legend } from './components/Legend.jsx';
 import { VisualizationPanel } from './components/VisualizationPanel.jsx';
+
+/**
+ * Algorithm metadata: display names and aliases
+ */
+const ALGORITHM_META = {
+  sonar: {
+    title: 'Sonar Visit Algorithm',
+    aliases:
+      'Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering',
+    vizType: 'sonar',
+  },
+  moore: {
+    title: 'Moore Curve Algorithm',
+    aliases:
+      'Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering',
+    vizType: 'moore',
+  },
+  'brute-force': {
+    title: 'Brute-Force Algorithm',
+    aliases:
+      'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
+    vizType: 'brute-force',
+  },
+};
+
+/**
+ * Run the specified algorithm on the given points.
+ * Returns steps array for progressive visualization.
+ */
+const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
+  switch (algorithmId) {
+    case 'sonar':
+      return sonarAlgorithmSteps(points);
+    case 'moore':
+      return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'brute-force':
+      return bruteForceAlgorithmSteps(points);
+    default:
+      return [];
+  }
+};
 
 /**
  * App - Main application component
@@ -44,49 +87,53 @@ const App = () => {
   const [showOptimization, setShowOptimization] = useState(false);
   const [activeOptimization, setActiveOptimization] = useState(null);
 
+  // Algorithm selection state
+  const [leftAlgorithm, setLeftAlgorithm] = useState('sonar');
+  const [rightAlgorithm, setRightAlgorithm] = useState('moore');
+
   // Calculate Moore grid size - this is the unified grid both algorithms use
-  // This ensures points land on grid vertices and both algorithms use identical grids
   const mooreGridSize = calculateMooreGridSize(gridSize);
 
-  // Sonar state
-  const [sonarSteps, setSonarSteps] = useState([]);
-  const [sonarOptSteps, setSonarOptSteps] = useState([]);
-  const [sonarCurrentStep, setSonarCurrentStep] = useState(-1);
+  // Left panel state
+  const [leftSteps, setLeftSteps] = useState([]);
+  const [leftOptSteps, setLeftOptSteps] = useState([]);
+  const [leftCurrentStep, setLeftCurrentStep] = useState(-1);
 
-  // Moore state
-  const [mooreSteps, setMooreSteps] = useState([]);
-  const [mooreOptSteps, setMooreOptSteps] = useState([]);
-  const [mooreCurrentStep, setMooreCurrentStep] = useState(-1);
+  // Right panel state
+  const [rightSteps, setRightSteps] = useState([]);
+  const [rightOptSteps, setRightOptSteps] = useState([]);
+  const [rightCurrentStep, setRightCurrentStep] = useState(-1);
 
   // Verification state
   const [optimalResult, setOptimalResult] = useState(null);
+  const [verificationResult, setVerificationResult] = useState(null);
 
   const animationRef = useRef(null);
 
   const generatePoints = useCallback(() => {
-    // Generate points on the Moore grid - both algorithms use the same grid
     const newPoints = generateRandomPoints(mooreGridSize, numPoints);
     setPoints(newPoints);
-    setSonarSteps([]);
-    setSonarOptSteps([]);
-    setSonarCurrentStep(-1);
-    setMooreSteps([]);
-    setMooreOptSteps([]);
-    setMooreCurrentStep(-1);
+    setLeftSteps([]);
+    setLeftOptSteps([]);
+    setLeftCurrentStep(-1);
+    setRightSteps([]);
+    setRightOptSteps([]);
+    setRightCurrentStep(-1);
     setIsRunning(false);
     setShowOptimization(false);
     setActiveOptimization(null);
     setOptimalResult(null);
+    setVerificationResult(null);
   }, [mooreGridSize, numPoints]);
 
   useEffect(() => {
     generatePoints();
   }, []);
 
-  // Compute optimal tour when points change
+  // Compute optimal tour when points change (brute-force for small sets)
   useEffect(() => {
     if (points.length >= 2 && points.length <= BRUTE_FORCE_MAX_POINTS) {
-      const result = bruteForceOptimalTour(points);
+      const result = bruteForceSolution(points);
       setOptimalResult(result);
     } else {
       setOptimalResult(null);
@@ -96,18 +143,25 @@ const App = () => {
   const startSolution = useCallback(() => {
     if (points.length === 0) return;
 
-    // Generate steps for both algorithms using the same Moore grid
-    const newSonarSteps = sonarAlgorithmSteps(points);
-    const newMooreSteps = mooreAlgorithmSteps(points, mooreGridSize);
+    const newLeftSteps = runAlgorithmSteps(
+      leftAlgorithm,
+      points,
+      mooreGridSize
+    );
+    const newRightSteps = runAlgorithmSteps(
+      rightAlgorithm,
+      points,
+      mooreGridSize
+    );
 
-    setSonarSteps(newSonarSteps);
-    setMooreSteps(newMooreSteps);
-    setSonarCurrentStep(0);
-    setMooreCurrentStep(0);
+    setLeftSteps(newLeftSteps);
+    setRightSteps(newRightSteps);
+    setLeftCurrentStep(0);
+    setRightCurrentStep(0);
     setShowOptimization(false);
     setActiveOptimization(null);
     setIsRunning(true);
-  }, [points, mooreGridSize]);
+  }, [points, mooreGridSize, leftAlgorithm, rightAlgorithm]);
 
   const stopAnimation = useCallback(() => {
     setIsRunning(false);
@@ -118,96 +172,107 @@ const App = () => {
 
   const startOptimization = useCallback(
     (method) => {
-      if (sonarSteps.length === 0 || mooreSteps.length === 0) return;
+      if (leftSteps.length === 0 || rightSteps.length === 0) return;
 
-      const sonarTour = sonarSteps[sonarSteps.length - 1]?.tour || [];
-      const mooreTour = mooreSteps[mooreSteps.length - 1]?.tour || [];
+      const leftTour = leftSteps[leftSteps.length - 1]?.tour || [];
+      const rightTour = rightSteps[rightSteps.length - 1]?.tour || [];
 
       const optFn = method === '2-opt' ? twoOptSteps : zigzagOptSteps;
-      let newSonarOptSteps = optFn(points, sonarTour);
-      let newMooreOptSteps = optFn(points, mooreTour);
+      let newLeftOptSteps = optFn(points, leftTour);
+      let newRightOptSteps = optFn(points, rightTour);
 
       const optimalDistance = optimalResult?.distance;
       const methodLabel = method === '2-opt' ? '2-opt' : 'Zigzag';
 
       // When optimization finds no improvements, create a step with
       // comparison to the true optimal distance (if available)
-      if (newSonarOptSteps.length === 0) {
-        const sonarDist = calculateTotalDistance(sonarTour, points);
+      if (newLeftOptSteps.length === 0) {
+        const leftDist = calculateTotalDistance(leftTour, points);
         let description;
-        if (optimalDistance && Math.abs(sonarDist - optimalDistance) < 0.001) {
+        if (optimalDistance && Math.abs(leftDist - optimalDistance) < 0.001) {
           description = `${methodLabel}: Tour is already optimal (verified)`;
         } else if (optimalDistance) {
-          const ratio = calculateOptimalityRatio(sonarDist, optimalDistance);
+          const ratio = calculateOptimalityRatio(leftDist, optimalDistance);
           description = `${methodLabel}: No improvements found (${((ratio - 1) * 100).toFixed(1)}% above optimal)`;
         } else {
-          description = `${methodLabel}: No improvements found`;
+          // Use lower-bound verification for larger instances
+          const verification = verifyOptimality(leftDist, points);
+          if (verification.isOptimal) {
+            description = `${methodLabel}: Tour is already optimal (verified by ${verification.method} bound)`;
+          } else {
+            description = `${methodLabel}: No improvements found (${verification.gapPercent.toFixed(1)}% above lower bound)`;
+          }
         }
-        newSonarOptSteps = [
+        newLeftOptSteps = [
           {
             type: 'optimize',
-            tour: [...sonarTour],
+            tour: [...leftTour],
             improvement: 0,
             description,
           },
         ];
       }
-      if (newMooreOptSteps.length === 0) {
-        const mooreDist = calculateTotalDistance(mooreTour, points);
+      if (newRightOptSteps.length === 0) {
+        const rightDist = calculateTotalDistance(rightTour, points);
         let description;
-        if (optimalDistance && Math.abs(mooreDist - optimalDistance) < 0.001) {
+        if (optimalDistance && Math.abs(rightDist - optimalDistance) < 0.001) {
           description = `${methodLabel}: Tour is already optimal (verified)`;
         } else if (optimalDistance) {
-          const ratio = calculateOptimalityRatio(mooreDist, optimalDistance);
+          const ratio = calculateOptimalityRatio(rightDist, optimalDistance);
           description = `${methodLabel}: No improvements found (${((ratio - 1) * 100).toFixed(1)}% above optimal)`;
         } else {
-          description = `${methodLabel}: No improvements found`;
+          const verification = verifyOptimality(rightDist, points);
+          if (verification.isOptimal) {
+            description = `${methodLabel}: Tour is already optimal (verified by ${verification.method} bound)`;
+          } else {
+            description = `${methodLabel}: No improvements found (${verification.gapPercent.toFixed(1)}% above lower bound)`;
+          }
         }
-        newMooreOptSteps = [
+        newRightOptSteps = [
           {
             type: 'optimize',
-            tour: [...mooreTour],
+            tour: [...rightTour],
             improvement: 0,
             description,
           },
         ];
       }
 
-      setSonarOptSteps(newSonarOptSteps);
-      setMooreOptSteps(newMooreOptSteps);
-      setSonarCurrentStep(0);
-      setMooreCurrentStep(0);
+      setLeftOptSteps(newLeftOptSteps);
+      setRightOptSteps(newRightOptSteps);
+      setLeftCurrentStep(0);
+      setRightCurrentStep(0);
       setShowOptimization(true);
       setActiveOptimization(method);
       setIsRunning(true);
     },
-    [points, sonarSteps, mooreSteps, optimalResult]
+    [points, leftSteps, rightSteps, optimalResult]
   );
 
   // Animation loop
   useEffect(() => {
     if (!isRunning) return;
 
-    const currentSonarSteps = showOptimization ? sonarOptSteps : sonarSteps;
-    const currentMooreSteps = showOptimization ? mooreOptSteps : mooreSteps;
+    const currentLeftSteps = showOptimization ? leftOptSteps : leftSteps;
+    const currentRightSteps = showOptimization ? rightOptSteps : rightSteps;
 
-    const sonarDone = sonarCurrentStep >= currentSonarSteps.length - 1;
-    const mooreDone = mooreCurrentStep >= currentMooreSteps.length - 1;
+    const leftDone = leftCurrentStep >= currentLeftSteps.length - 1;
+    const rightDone = rightCurrentStep >= currentRightSteps.length - 1;
 
-    if (sonarDone && mooreDone) {
+    if (leftDone && rightDone) {
       setIsRunning(false);
       return;
     }
 
     animationRef.current = setTimeout(() => {
-      if (!sonarDone) {
-        setSonarCurrentStep((prev) =>
-          Math.min(prev + 1, currentSonarSteps.length - 1)
+      if (!leftDone) {
+        setLeftCurrentStep((prev) =>
+          Math.min(prev + 1, currentLeftSteps.length - 1)
         );
       }
-      if (!mooreDone) {
-        setMooreCurrentStep((prev) =>
-          Math.min(prev + 1, currentMooreSteps.length - 1)
+      if (!rightDone) {
+        setRightCurrentStep((prev) =>
+          Math.min(prev + 1, currentRightSteps.length - 1)
         );
       }
     }, speed);
@@ -219,43 +284,43 @@ const App = () => {
     };
   }, [
     isRunning,
-    sonarCurrentStep,
-    mooreCurrentStep,
+    leftCurrentStep,
+    rightCurrentStep,
     speed,
     showOptimization,
-    sonarSteps,
-    mooreSteps,
-    sonarOptSteps,
-    mooreOptSteps,
+    leftSteps,
+    rightSteps,
+    leftOptSteps,
+    rightOptSteps,
   ]);
 
-  const getSonarStep = () => {
-    const steps = showOptimization ? sonarOptSteps : sonarSteps;
-    return steps[sonarCurrentStep];
+  const getLeftStep = () => {
+    const steps = showOptimization ? leftOptSteps : leftSteps;
+    return steps[leftCurrentStep];
   };
 
-  const getMooreStep = () => {
-    const steps = showOptimization ? mooreOptSteps : mooreSteps;
-    return steps[mooreCurrentStep];
+  const getRightStep = () => {
+    const steps = showOptimization ? rightOptSteps : rightSteps;
+    return steps[rightCurrentStep];
   };
 
-  const calculateSonarDistance = () => {
-    const step = getSonarStep();
+  const calculateLeftDistance = () => {
+    const step = getLeftStep();
     if (!step?.tour || step.tour.length < 2) return 0;
     return calculateTotalDistance(step.tour, points);
   };
 
-  const calculateMooreDistance = () => {
-    const step = getMooreStep();
+  const calculateRightDistance = () => {
+    const step = getRightStep();
     if (!step?.tour || step.tour.length < 2) return 0;
     return calculateTotalDistance(step.tour, points);
   };
 
   const canOptimize =
-    sonarSteps.length > 0 &&
-    mooreSteps.length > 0 &&
+    leftSteps.length > 0 &&
+    rightSteps.length > 0 &&
     !isRunning &&
-    sonarCurrentStep === sonarSteps.length - 1;
+    leftCurrentStep === leftSteps.length - 1;
 
   const formatDistanceInfo = (dist) => {
     if (!optimalResult || dist === 0) {
@@ -265,6 +330,9 @@ const App = () => {
     const pct = (ratio * 100).toFixed(1);
     return `Distance: ${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
   };
+
+  const leftMeta = ALGORITHM_META[leftAlgorithm];
+  const rightMeta = ALGORITHM_META[rightAlgorithm];
 
   return (
     <div className="app">
@@ -286,46 +354,56 @@ const App = () => {
         onStop={stopAnimation}
         onOptimize={startOptimization}
         pointsCount={points.length}
+        leftAlgorithm={leftAlgorithm}
+        setLeftAlgorithm={setLeftAlgorithm}
+        rightAlgorithm={rightAlgorithm}
+        setRightAlgorithm={setRightAlgorithm}
       />
 
       <div className="visualization-container">
         <VisualizationPanel
-          title="Sonar Visit Algorithm"
-          aliases="Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering"
-          distanceInfo={formatDistanceInfo(calculateSonarDistance())}
+          title={leftMeta.title}
+          aliases={leftMeta.aliases}
+          distanceInfo={formatDistanceInfo(calculateLeftDistance())}
           visualization={
             <TSPVisualization
               points={points}
-              steps={showOptimization ? sonarOptSteps : sonarSteps}
-              currentStep={sonarCurrentStep}
-              algorithm="sonar"
+              steps={showOptimization ? leftOptSteps : leftSteps}
+              currentStep={leftCurrentStep}
+              algorithm={leftMeta.vizType}
               mooreGridSize={mooreGridSize}
               showOptimization={showOptimization}
             />
           }
-          stepDescription={getSonarStep()?.description}
+          stepDescription={getLeftStep()?.description}
           legend={
-            <Legend algorithm="sonar" showOptimization={showOptimization} />
+            <Legend
+              algorithm={leftMeta.vizType}
+              showOptimization={showOptimization}
+            />
           }
         />
 
         <VisualizationPanel
-          title="Moore Curve Algorithm"
-          aliases="Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering"
-          distanceInfo={formatDistanceInfo(calculateMooreDistance())}
+          title={rightMeta.title}
+          aliases={rightMeta.aliases}
+          distanceInfo={formatDistanceInfo(calculateRightDistance())}
           visualization={
             <TSPVisualization
               points={points}
-              steps={showOptimization ? mooreOptSteps : mooreSteps}
-              currentStep={mooreCurrentStep}
-              algorithm="moore"
+              steps={showOptimization ? rightOptSteps : rightSteps}
+              currentStep={rightCurrentStep}
+              algorithm={rightMeta.vizType}
               mooreGridSize={mooreGridSize}
               showOptimization={showOptimization}
             />
           }
-          stepDescription={getMooreStep()?.description}
+          stepDescription={getRightStep()?.description}
           legend={
-            <Legend algorithm="moore" showOptimization={showOptimization} />
+            <Legend
+              algorithm={rightMeta.vizType}
+              showOptimization={showOptimization}
+            />
           }
         />
       </div>

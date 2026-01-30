@@ -36,11 +36,19 @@ import {
   mooreOptimization,
 } from '../lib/algorithms/progressive/optimization/two-opt.js';
 import {
-  bruteForceOptimalTour,
-  bruteForceSteps,
+  bruteForceAlgorithmSteps,
+  bruteForceSolution,
   calculateOptimalityRatio,
   BRUTE_FORCE_MAX_POINTS,
-} from '../lib/algorithms/verification/brute-force.js';
+} from '../lib/algorithms/progressive/solution/brute-force.js';
+import {
+  oneTreeLowerBound,
+  verifyOptimality,
+} from '../lib/algorithms/verification/lower-bound.js';
+
+// Backward-compatible aliases
+const bruteForceOptimalTour = bruteForceSolution;
+const bruteForceSteps = bruteForceAlgorithmSteps;
 
 // ============================================================
 // Utility Functions Tests
@@ -1147,17 +1155,16 @@ describe('bruteForceOptimalTour', () => {
   });
 });
 
-describe('bruteForceSteps', () => {
-  it('should return a single step for small point sets', () => {
+describe('bruteForceAlgorithmSteps', () => {
+  it('should return steps for small point sets', () => {
     const points = [
       { x: 0, y: 0 },
       { x: 3, y: 4 },
     ];
     const steps = bruteForceSteps(points);
-    expect(steps.length).toBe(1);
-    expect(steps[0].type).toBe('verification');
-    expect(steps[0].feasible).toBe(true);
-    expect(steps[0].tour.length).toBe(2);
+    expect(steps.length).toBeGreaterThanOrEqual(1);
+    expect(steps[0].type).toBe('solution');
+    expect(steps[steps.length - 1].tour.length).toBe(2);
   });
 
   it('should report infeasible for too many points', () => {
@@ -1174,14 +1181,117 @@ describe('bruteForceSteps', () => {
     expect(steps[0].description).toContain('Too many points');
   });
 
-  it('should include distance in step description', () => {
+  it('should include distance in last step description', () => {
     const points = [
       { x: 0, y: 0 },
       { x: 3, y: 4 },
     ];
     const steps = bruteForceSteps(points);
-    expect(steps[0].description).toContain('Optimal tour distance');
-    expect(steps[0].description).toContain('10.00');
+    const lastStep = steps[steps.length - 1];
+    expect(lastStep.description).toContain('10.00');
+  });
+
+  it('should show progressive improvements for larger sets', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 0 },
+      { x: 3, y: 4 },
+      { x: 0, y: 4 },
+      { x: 1, y: 2 },
+    ];
+    const steps = bruteForceSteps(points);
+    // Should have more than one step: initial + improvements + final
+    expect(steps.length).toBeGreaterThan(1);
+    // All steps should be type 'solution'
+    steps.forEach((step) => expect(step.type).toBe('solution'));
+  });
+
+  it('should return empty array for empty points', () => {
+    const steps = bruteForceSteps([]);
+    expect(steps).toEqual([]);
+  });
+});
+
+// ============================================================
+// Lower-Bound Verification Tests
+// ============================================================
+
+describe('oneTreeLowerBound', () => {
+  it('should return 0 for empty or single point', () => {
+    expect(oneTreeLowerBound([]).lowerBound).toBe(0);
+    expect(oneTreeLowerBound([{ x: 0, y: 0 }]).lowerBound).toBe(0);
+  });
+
+  it('should return exact distance for 2 points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    const result = oneTreeLowerBound(points);
+    expect(result.lowerBound).toBe(10); // 2 * 5
+    expect(result.method).toBe('1-tree');
+  });
+
+  it('should provide a valid lower bound for a square', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    const result = oneTreeLowerBound(points);
+    // The optimal tour for a square is 40
+    // The lower bound should be <= 40
+    expect(result.lowerBound).toBeLessThanOrEqual(40 + 0.001);
+    expect(result.lowerBound).toBeGreaterThan(0);
+  });
+
+  it('should be less than or equal to brute-force optimal for small instances', () => {
+    const points = [
+      { x: 0, y: 0, id: 0 },
+      { x: 5, y: 0, id: 1 },
+      { x: 5, y: 5, id: 2 },
+      { x: 0, y: 5, id: 3 },
+      { x: 2, y: 3, id: 4 },
+    ];
+    const lbResult = oneTreeLowerBound(points);
+    const bfResult = bruteForceSolution(points);
+    expect(lbResult.lowerBound).toBeLessThanOrEqual(bfResult.distance + 0.001);
+  });
+});
+
+describe('verifyOptimality', () => {
+  it('should verify optimal tour for simple cases', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    // Optimal distance is 10
+    const result = verifyOptimality(10, points);
+    expect(result.isOptimal).toBe(true);
+    expect(result.gap).toBeCloseTo(0);
+  });
+
+  it('should detect suboptimal tour', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    // Tour distance much larger than optimal
+    const result = verifyOptimality(100, points);
+    expect(result.isOptimal).toBe(false);
+    expect(result.gapPercent).toBeGreaterThan(0);
+  });
+
+  it('should report method as 1-tree', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+    ];
+    const result = verifyOptimality(2, points);
+    expect(result.method).toBe('1-tree');
   });
 });
 

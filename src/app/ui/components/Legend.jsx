@@ -51,18 +51,36 @@ const MooreLegend = ({ showOptimization }) => (
 );
 
 /**
+ * BruteForceLegend - Legend for Brute-Force algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ */
+const BruteForceLegend = ({ showOptimization }) => (
+  <div className="legend">
+    <LegendItem color="#6c757d" label="Unvisited" />
+    <LegendItem color="#0d6efd" label="In Tour" />
+    <LegendItem color="#dc3545" label="Current" />
+    {showOptimization && <LegendItem color="#198754" label="Optimized" />}
+  </div>
+);
+
+/**
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar' or 'moore')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  */
 const Legend = ({ algorithm, showOptimization }) => {
   if (algorithm === 'sonar') {
     return <SonarLegend showOptimization={showOptimization} />;
   }
+  if (algorithm === 'brute-force') {
+    return <BruteForceLegend showOptimization={showOptimization} />;
+  }
   return <MooreLegend showOptimization={showOptimization} />;
 };
 
-export { Legend, SonarLegend, MooreLegend, LegendItem };
+export { Legend, SonarLegend, MooreLegend, BruteForceLegend, LegendItem };
 export default Legend;

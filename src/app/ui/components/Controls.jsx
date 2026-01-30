@@ -2,6 +2,7 @@
  * Controls Component
  *
  * Control panel for TSP solver including:
+ * - Algorithm selection dropdowns (left and right panels)
  * - Grid size selector (valid Moore curve sizes)
  * - Points count input
  * - Animation speed slider
@@ -9,6 +10,16 @@
  */
 
 import { VALID_GRID_SIZES } from '../../../lib/algorithms/utils.js';
+
+/**
+ * Available algorithms for selection.
+ * Each entry maps an id to a display label.
+ */
+export const ALGORITHM_OPTIONS = [
+  { id: 'sonar', label: 'Sonar Visit' },
+  { id: 'moore', label: 'Moore Curve' },
+  { id: 'brute-force', label: 'Brute-Force' },
+];
 
 /**
  * Controls - Control panel for TSP solver
@@ -29,6 +40,10 @@ import { VALID_GRID_SIZES } from '../../../lib/algorithms/utils.js';
  * @param {function} props.onStop - Stop animation handler
  * @param {function} props.onOptimize - Start optimization handler (receives method name)
  * @param {number} props.pointsCount - Current points count (for Start button state)
+ * @param {string} props.leftAlgorithm - Selected algorithm for left panel
+ * @param {function} props.setLeftAlgorithm - Left algorithm setter
+ * @param {string} props.rightAlgorithm - Selected algorithm for right panel
+ * @param {function} props.setRightAlgorithm - Right algorithm setter
  */
 const Controls = ({
   gridSize,
@@ -46,9 +61,47 @@ const Controls = ({
   onStop,
   onOptimize,
   pointsCount,
+  leftAlgorithm,
+  setLeftAlgorithm,
+  rightAlgorithm,
+  setRightAlgorithm,
 }) => {
   return (
     <div className="controls">
+      <div className="control-group">
+        <label>Left Algorithm</label>
+        <select
+          value={leftAlgorithm}
+          onChange={(e) => setLeftAlgorithm(e.target.value)}
+          disabled={isRunning}
+        >
+          {ALGORITHM_OPTIONS.filter((opt) => opt.id !== rightAlgorithm).map(
+            (opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            )
+          )}
+        </select>
+      </div>
+
+      <div className="control-group">
+        <label>Right Algorithm</label>
+        <select
+          value={rightAlgorithm}
+          onChange={(e) => setRightAlgorithm(e.target.value)}
+          disabled={isRunning}
+        >
+          {ALGORITHM_OPTIONS.filter((opt) => opt.id !== leftAlgorithm).map(
+            (opt) => (
+              <option key={opt.id} value={opt.id}>
+                {opt.label}
+              </option>
+            )
+          )}
+        </select>
+      </div>
+
       <div className="control-group">
         <label>Grid Size (N×N)</label>
         <select
