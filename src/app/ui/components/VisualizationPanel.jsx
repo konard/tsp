@@ -15,7 +15,7 @@
  * @param {Object} props
  * @param {string} props.title - Algorithm title
  * @param {string} props.aliases - Alternative algorithm names
- * @param {number} props.distance - Current tour distance
+ * @param {string} props.distanceInfo - Formatted distance string with optional optimality info
  * @param {React.ReactNode} props.visualization - TSPVisualization component
  * @param {string} props.stepDescription - Current step description
  * @param {React.ReactNode} props.legend - Legend component
@@ -23,7 +23,7 @@
 const VisualizationPanel = ({
   title,
   aliases,
-  distance,
+  distanceInfo,
   visualization,
   stepDescription,
   legend,
@@ -32,9 +32,7 @@ const VisualizationPanel = ({
     <div className="visualization">
       <div className="visualization-header">
         <h2>{title}</h2>
-        <span className="visualization-stats">
-          Distance: {distance.toFixed(2)}
-        </span>
+        <span className="visualization-stats">{distanceInfo}</span>
       </div>
       <div className="algorithm-aliases">{aliases}</div>
       <div className="canvas-wrapper">{visualization}</div>

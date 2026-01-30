@@ -125,6 +125,10 @@ button:active {
   background: #5c636a;
 }
 
+.btn-secondary.btn-active {
+  background: #198754;
+}
+
 .btn-outline {
   background: white;
   color: #0d6efd;

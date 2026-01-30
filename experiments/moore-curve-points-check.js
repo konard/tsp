@@ -5,7 +5,7 @@
  * to compare against reference implementations.
  */
 
-import { generateMooreCurve, mooreCurveToPoints } from '../src/lib/algorithms/progressive/solutions/moore.js';
+import { generateMooreCurve, mooreCurveToPoints } from '../src/lib/algorithms/progressive/solution/moore.js';
 
 console.log('=== Moore Curve Point-by-Point Verification ===\n');
 

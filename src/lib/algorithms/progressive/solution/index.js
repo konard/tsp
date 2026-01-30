@@ -9,3 +9,9 @@ export {
   generateMooreCurve,
   mooreCurveToPoints,
 } from './moore.js';
+export {
+  bruteForceAlgorithmSteps,
+  bruteForceSolution,
+  calculateOptimalityRatio,
+  BRUTE_FORCE_MAX_POINTS,
+} from './brute-force.js';

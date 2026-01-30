@@ -26,23 +26,43 @@ const createDefaultProps = (overrides = {}) => ({
   onStop: mock(() => {}),
   onOptimize: mock(() => {}),
   pointsCount: 15,
+  leftAlgorithm: 'sonar',
+  setLeftAlgorithm: mock(() => {}),
+  rightAlgorithm: 'moore',
+  setRightAlgorithm: mock(() => {}),
   ...overrides,
 });
+
+/**
+ * Helper to find a select element by its associated label text.
+ * Searches for a label with the given text and returns the select
+ * element in the same .control-group container.
+ */
+const findSelectByLabel = (container, labelText) => {
+  const labels = container.querySelectorAll('label');
+  for (const label of labels) {
+    if (label.textContent.trim() === labelText) {
+      const controlGroup = label.closest('.control-group');
+      return controlGroup?.querySelector('select');
+    }
+  }
+  return null;
+};
 
 describe('Controls', () => {
   describe('Grid Size Selector', () => {
     it('should render grid size dropdown with correct value', () => {
       const props = createDefaultProps();
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
+      const { container } = render(<Controls {...props} />);
+      const select = findSelectByLabel(container, 'Grid Size (N×N)');
       expect(select).toBeDefined();
       expect(select.value).toBe('16');
     });
 
     it('should show valid Moore curve size options', () => {
       const props = createDefaultProps();
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
+      const { container } = render(<Controls {...props} />);
+      const select = findSelectByLabel(container, 'Grid Size (N×N)');
       const options = Array.from(select.querySelectorAll('option'));
       const values = options.map((o) => o.value);
       expect(values).toEqual(['2', '4', '8', '16', '32', '64']);
@@ -50,16 +70,51 @@ describe('Controls', () => {
 
     it('should be disabled when running', () => {
       const props = createDefaultProps({ isRunning: true });
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
+      const { container } = render(<Controls {...props} />);
+      const select = findSelectByLabel(container, 'Grid Size (N×N)');
       expect(select.disabled).toBe(true);
     });
 
     it('should be enabled when not running', () => {
       const props = createDefaultProps({ isRunning: false });
-      const { getByRole } = render(<Controls {...props} />);
-      const select = getByRole('combobox');
+      const { container } = render(<Controls {...props} />);
+      const select = findSelectByLabel(container, 'Grid Size (N×N)');
       expect(select.disabled).toBe(false);
+    });
+  });
+
+  describe('Algorithm Selection Dropdowns', () => {
+    it('should render left and right algorithm dropdowns', () => {
+      const props = createDefaultProps();
+      const { container } = render(<Controls {...props} />);
+      expect(findSelectByLabel(container, 'Left Algorithm')).toBeDefined();
+      expect(findSelectByLabel(container, 'Right Algorithm')).toBeDefined();
+    });
+
+    it('should filter out the other panel algorithm from options', () => {
+      const props = createDefaultProps({
+        leftAlgorithm: 'sonar',
+        rightAlgorithm: 'moore',
+      });
+      const { container } = render(<Controls {...props} />);
+      const rightSelect = findSelectByLabel(container, 'Right Algorithm');
+      const options = Array.from(rightSelect.querySelectorAll('option'));
+      const values = options.map((o) => o.value);
+      // 'sonar' should not be in the right dropdown since it's selected on left
+      expect(values).not.toContain('sonar');
+      expect(values).toContain('moore');
+      expect(values).toContain('brute-force');
+    });
+
+    it('should be disabled when running', () => {
+      const props = createDefaultProps({ isRunning: true });
+      const { container } = render(<Controls {...props} />);
+      expect(findSelectByLabel(container, 'Left Algorithm').disabled).toBe(
+        true
+      );
+      expect(findSelectByLabel(container, 'Right Algorithm').disabled).toBe(
+        true
+      );
     });
   });
 
@@ -179,25 +234,45 @@ describe('Controls', () => {
     });
   });
 
-  describe('Optimize Button', () => {
-    it('should render Optimize button when canOptimize is true', () => {
+  describe('Optimization Buttons', () => {
+    it('should render 2-opt and Zigzag buttons when canOptimize is true', () => {
       const props = createDefaultProps({ canOptimize: true });
       const { getByText } = render(<Controls {...props} />);
-      expect(getByText('Optimize')).toBeDefined();
+      expect(getByText('2-opt')).toBeDefined();
+      expect(getByText('Zigzag')).toBeDefined();
     });
 
-    it('should not render Optimize button when canOptimize is false', () => {
+    it('should not render optimization buttons when canOptimize is false', () => {
       const props = createDefaultProps({ canOptimize: false });
       const { queryByText } = render(<Controls {...props} />);
-      expect(queryByText('Optimize')).toBeNull();
+      expect(queryByText('2-opt')).toBeNull();
+      expect(queryByText('Zigzag')).toBeNull();
     });
 
-    it('should call onOptimize when clicked', () => {
+    it('should call onOptimize with "2-opt" when 2-opt clicked', () => {
       const onOptimize = mock(() => {});
       const props = createDefaultProps({ canOptimize: true, onOptimize });
       const { getByText } = render(<Controls {...props} />);
-      fireEvent.click(getByText('Optimize'));
-      expect(onOptimize).toHaveBeenCalled();
+      fireEvent.click(getByText('2-opt'));
+      expect(onOptimize).toHaveBeenCalledWith('2-opt');
+    });
+
+    it('should call onOptimize with "zigzag" when Zigzag clicked', () => {
+      const onOptimize = mock(() => {});
+      const props = createDefaultProps({ canOptimize: true, onOptimize });
+      const { getByText } = render(<Controls {...props} />);
+      fireEvent.click(getByText('Zigzag'));
+      expect(onOptimize).toHaveBeenCalledWith('zigzag');
+    });
+
+    it('should highlight active optimization button', () => {
+      const props = createDefaultProps({
+        canOptimize: true,
+        activeOptimization: '2-opt',
+      });
+      const { getByText } = render(<Controls {...props} />);
+      const twoOptBtn = getByText('2-opt');
+      expect(twoOptBtn.className).toContain('btn-active');
     });
   });
 });

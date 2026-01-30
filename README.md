@@ -22,25 +22,28 @@ Visit [https://konard.github.io/tsp](https://konard.github.io/tsp) to try the so
 ./src
   algorithms/
     progressive/               # Step-by-step algorithms (for visualization)
-      solutions/
+      solution/
         sonar.js              # Sonar (Radial Sweep) algorithm
         moore.js              # Moore Curve algorithm
-        index.js              # Solutions barrel export
-      optimizations/
-        sonar-opt.js          # Sonar zigzag optimization
-        moore-opt.js          # Moore 2-opt optimization
-        index.js              # Optimizations barrel export
+        index.js              # Solution barrel export
+      optimization/
+        two-opt.js            # Generic 2-opt segment reversal
+        zigzag-opt.js         # Generic zigzag adjacent swap
+        index.js              # Optimization barrel export
       index.js                # Progressive module export
     atomic/                   # All-at-once algorithms (direct computation)
-      solutions/
+      solution/
         sonar.js              # Atomic Sonar solution
         moore.js              # Atomic Moore solution
         index.js
-      optimizations/
-        sonar-opt.js          # Atomic Sonar optimization
-        moore-opt.js          # Atomic Moore optimization
+      optimization/
+        two-opt.js            # Atomic 2-opt optimization
+        zigzag-opt.js         # Atomic zigzag optimization
         index.js
       index.js                # Atomic module export
+    verification/             # Optimal tour verification
+      brute-force.js          # Brute-force exact solver
+      index.js                # Verification barrel export
     utils.js                  # Shared utility functions
     index.js                  # Main algorithms barrel export
   ui/

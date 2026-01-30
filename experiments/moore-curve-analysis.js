@@ -5,7 +5,7 @@
  * at different orders and grid sizes.
  */
 
-import { generateMooreCurve, mooreCurveToPoints } from '../src/lib/algorithms/progressive/solutions/moore.js';
+import { generateMooreCurve, mooreCurveToPoints } from '../src/lib/algorithms/progressive/solution/moore.js';
 import { calculateMooreGridSize } from '../src/lib/algorithms/utils.js';
 
 // Analyze the Moore curve at different orders

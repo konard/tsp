@@ -14,27 +14,41 @@ import {
 import {
   sonarAlgorithmSteps,
   sonarSolution,
-} from '../lib/algorithms/progressive/solutions/sonar.js';
+} from '../lib/algorithms/progressive/solution/sonar.js';
 import {
   mooreAlgorithmSteps,
   mooreSolution,
   generateMooreCurve,
   mooreCurveToPoints,
-} from '../lib/algorithms/progressive/solutions/moore.js';
+} from '../lib/algorithms/progressive/solution/moore.js';
 import {
   zigzagOptSteps,
   zigzagOpt,
   // Legacy aliases
   sonarOptimizationSteps,
   sonarOptimization,
-} from '../lib/algorithms/progressive/optimizations/zigzag-opt.js';
+} from '../lib/algorithms/progressive/optimization/zigzag-opt.js';
 import {
   twoOptSteps,
   twoOpt,
   // Legacy aliases
   mooreOptimizationSteps,
   mooreOptimization,
-} from '../lib/algorithms/progressive/optimizations/two-opt.js';
+} from '../lib/algorithms/progressive/optimization/two-opt.js';
+import {
+  bruteForceAlgorithmSteps,
+  bruteForceSolution,
+  calculateOptimalityRatio,
+  BRUTE_FORCE_MAX_POINTS,
+} from '../lib/algorithms/progressive/solution/brute-force.js';
+import {
+  oneTreeLowerBound,
+  verifyOptimality,
+} from '../lib/algorithms/verification/lower-bound.js';
+
+// Backward-compatible aliases
+const bruteForceOptimalTour = bruteForceSolution;
+const bruteForceSteps = bruteForceAlgorithmSteps;
 
 // ============================================================
 // Utility Functions Tests
@@ -1014,5 +1028,362 @@ describe('Moore curve properties for all valid grid sizes', () => {
         expect(d).toBe(1);
       });
     });
+  });
+});
+
+// ============================================================
+// Brute-Force Verification Tests
+// ============================================================
+
+describe('BRUTE_FORCE_MAX_POINTS', () => {
+  it('should be a reasonable positive integer', () => {
+    expect(BRUTE_FORCE_MAX_POINTS).toBeGreaterThanOrEqual(8);
+    expect(BRUTE_FORCE_MAX_POINTS).toBeLessThanOrEqual(20);
+  });
+});
+
+describe('bruteForceOptimalTour', () => {
+  it('should return empty tour for empty points', () => {
+    const result = bruteForceOptimalTour([]);
+    expect(result.tour).toEqual([]);
+    expect(result.distance).toBe(0);
+  });
+
+  it('should return single-point tour', () => {
+    const result = bruteForceOptimalTour([{ x: 5, y: 5 }]);
+    expect(result.tour).toEqual([0]);
+    expect(result.distance).toBe(0);
+  });
+
+  it('should return correct tour for 2 points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    const result = bruteForceOptimalTour(points);
+    expect(result.tour).toEqual([0, 1]);
+    expect(result.distance).toBe(10); // 2 * 5 = 10 (closed loop)
+  });
+
+  it('should return correct optimal tour for a square', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    const result = bruteForceOptimalTour(points);
+    // Optimal tour for a square has distance 40
+    expect(result.distance).toBe(40);
+    expect(result.tour.length).toBe(4);
+    expect(new Set(result.tour).size).toBe(4);
+  });
+
+  it('should return optimal tour for a triangle', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 0 },
+      { x: 0, y: 4 },
+    ];
+    const result = bruteForceOptimalTour(points);
+    // Triangle: 3 + 4 + 5 = 12
+    expect(result.distance).toBe(12);
+    expect(result.tour.length).toBe(3);
+  });
+
+  it('should return null for too many points', () => {
+    const points = Array.from(
+      { length: BRUTE_FORCE_MAX_POINTS + 1 },
+      (_, i) => ({
+        x: i,
+        y: 0,
+      })
+    );
+    const result = bruteForceOptimalTour(points);
+    expect(result).toBeNull();
+  });
+
+  it('should find optimal tour shorter than or equal to sonar for 5 points', () => {
+    const points = [
+      { x: 0, y: 0, id: 0 },
+      { x: 10, y: 0, id: 1 },
+      { x: 10, y: 10, id: 2 },
+      { x: 0, y: 10, id: 3 },
+      { x: 5, y: 5, id: 4 },
+    ];
+    const optResult = bruteForceOptimalTour(points);
+    const sonarResult = sonarSolution(points);
+    const sonarDist = calculateTotalDistance(sonarResult.tour, points);
+    expect(optResult.distance).toBeLessThanOrEqual(sonarDist + 0.001);
+  });
+
+  it('should find optimal tour shorter than or equal to moore for 5 points', () => {
+    const points = [
+      { x: 0, y: 0, id: 0 },
+      { x: 8, y: 0, id: 1 },
+      { x: 8, y: 8, id: 2 },
+      { x: 0, y: 8, id: 3 },
+      { x: 4, y: 4, id: 4 },
+    ];
+    const optResult = bruteForceOptimalTour(points);
+    const mooreResult = mooreSolution(points, 16);
+    const mooreDist = calculateTotalDistance(mooreResult.tour, points);
+    expect(optResult.distance).toBeLessThanOrEqual(mooreDist + 0.001);
+  });
+
+  it('should handle collinear points correctly', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+    ];
+    const result = bruteForceOptimalTour(points);
+    // Optimal for collinear: 0->1->2->3->0 = 1+1+1+3 = 6
+    expect(result.distance).toBe(6);
+  });
+
+  it('should always start tour from point 0', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 5, y: 0 },
+      { x: 5, y: 5 },
+      { x: 0, y: 5 },
+    ];
+    const result = bruteForceOptimalTour(points);
+    expect(result.tour[0]).toBe(0);
+  });
+});
+
+describe('bruteForceAlgorithmSteps', () => {
+  it('should return steps for small point sets', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    const steps = bruteForceSteps(points);
+    expect(steps.length).toBeGreaterThanOrEqual(1);
+    expect(steps[0].type).toBe('solution');
+    expect(steps[steps.length - 1].tour.length).toBe(2);
+  });
+
+  it('should report infeasible for too many points', () => {
+    const points = Array.from(
+      { length: BRUTE_FORCE_MAX_POINTS + 1 },
+      (_, i) => ({
+        x: i,
+        y: 0,
+      })
+    );
+    const steps = bruteForceSteps(points);
+    expect(steps.length).toBe(1);
+    expect(steps[0].feasible).toBe(false);
+    expect(steps[0].description).toContain('Too many points');
+  });
+
+  it('should include distance in last step description', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    const steps = bruteForceSteps(points);
+    const lastStep = steps[steps.length - 1];
+    expect(lastStep.description).toContain('10.00');
+  });
+
+  it('should show progressive improvements for larger sets', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 0 },
+      { x: 3, y: 4 },
+      { x: 0, y: 4 },
+      { x: 1, y: 2 },
+    ];
+    const steps = bruteForceSteps(points);
+    // Should have more than one step: initial + improvements + final
+    expect(steps.length).toBeGreaterThan(1);
+    // All steps should be type 'solution'
+    steps.forEach((step) => expect(step.type).toBe('solution'));
+  });
+
+  it('should return empty array for empty points', () => {
+    const steps = bruteForceSteps([]);
+    expect(steps).toEqual([]);
+  });
+});
+
+// ============================================================
+// Lower-Bound Verification Tests
+// ============================================================
+
+describe('oneTreeLowerBound', () => {
+  it('should return 0 for empty or single point', () => {
+    expect(oneTreeLowerBound([]).lowerBound).toBe(0);
+    expect(oneTreeLowerBound([{ x: 0, y: 0 }]).lowerBound).toBe(0);
+  });
+
+  it('should return exact distance for 2 points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    const result = oneTreeLowerBound(points);
+    expect(result.lowerBound).toBe(10); // 2 * 5
+    expect(result.method).toBe('1-tree');
+  });
+
+  it('should provide a valid lower bound for a square', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    const result = oneTreeLowerBound(points);
+    // The optimal tour for a square is 40
+    // The lower bound should be <= 40
+    expect(result.lowerBound).toBeLessThanOrEqual(40 + 0.001);
+    expect(result.lowerBound).toBeGreaterThan(0);
+  });
+
+  it('should be less than or equal to brute-force optimal for small instances', () => {
+    const points = [
+      { x: 0, y: 0, id: 0 },
+      { x: 5, y: 0, id: 1 },
+      { x: 5, y: 5, id: 2 },
+      { x: 0, y: 5, id: 3 },
+      { x: 2, y: 3, id: 4 },
+    ];
+    const lbResult = oneTreeLowerBound(points);
+    const bfResult = bruteForceSolution(points);
+    expect(lbResult.lowerBound).toBeLessThanOrEqual(bfResult.distance + 0.001);
+  });
+});
+
+describe('verifyOptimality', () => {
+  it('should verify optimal tour for simple cases', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 3, y: 4 },
+    ];
+    // Optimal distance is 10
+    const result = verifyOptimality(10, points);
+    expect(result.isOptimal).toBe(true);
+    expect(result.gap).toBeCloseTo(0);
+  });
+
+  it('should detect suboptimal tour', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    // Tour distance much larger than optimal
+    const result = verifyOptimality(100, points);
+    expect(result.isOptimal).toBe(false);
+    expect(result.gapPercent).toBeGreaterThan(0);
+  });
+
+  it('should report method as 1-tree', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+    ];
+    const result = verifyOptimality(2, points);
+    expect(result.method).toBe('1-tree');
+  });
+});
+
+describe('calculateOptimalityRatio', () => {
+  it('should return 1.0 for optimal tour', () => {
+    expect(calculateOptimalityRatio(10, 10)).toBe(1.0);
+  });
+
+  it('should return correct ratio for suboptimal tour', () => {
+    expect(calculateOptimalityRatio(15, 10)).toBe(1.5);
+  });
+
+  it('should return 1.0 when both distances are 0', () => {
+    expect(calculateOptimalityRatio(0, 0)).toBe(1.0);
+  });
+
+  it('should return Infinity when optimal is 0 but tour is not', () => {
+    expect(calculateOptimalityRatio(5, 0)).toBe(Infinity);
+  });
+});
+
+// ============================================================
+// Integration: Verification with Algorithm Pipelines (Issue #31)
+// ============================================================
+
+describe('verification integration with algorithm pipelines', () => {
+  const points = [
+    { x: 0, y: 0, id: 0 },
+    { x: 5, y: 0, id: 1 },
+    { x: 5, y: 5, id: 2 },
+    { x: 0, y: 5, id: 3 },
+  ];
+
+  it('should verify sonar tour is not falsely claimed optimal', () => {
+    const sonarResult = sonarSolution(points);
+    const sonarDist = calculateTotalDistance(sonarResult.tour, points);
+    const optimal = bruteForceOptimalTour(points);
+
+    // The sonar tour may or may not be optimal, but we can verify the claim
+    if (Math.abs(sonarDist - optimal.distance) < 0.001) {
+      expect(calculateOptimalityRatio(sonarDist, optimal.distance)).toBeCloseTo(
+        1.0
+      );
+    } else {
+      expect(sonarDist).toBeGreaterThan(optimal.distance);
+    }
+  });
+
+  it('should verify moore tour is not falsely claimed optimal', () => {
+    const mooreResult = mooreSolution(points, 16);
+    const mooreDist = calculateTotalDistance(mooreResult.tour, points);
+    const optimal = bruteForceOptimalTour(points);
+
+    if (Math.abs(mooreDist - optimal.distance) < 0.001) {
+      expect(calculateOptimalityRatio(mooreDist, optimal.distance)).toBeCloseTo(
+        1.0
+      );
+    } else {
+      expect(mooreDist).toBeGreaterThan(optimal.distance);
+    }
+  });
+
+  it('should verify optimized tour is at least as good as unoptimized', () => {
+    const sonarResult = sonarSolution(points);
+    const sonarDist = calculateTotalDistance(sonarResult.tour, points);
+    const optimized = twoOpt(points, sonarResult.tour);
+    const optDist = calculateTotalDistance(optimized.tour, points);
+    const optimal = bruteForceOptimalTour(points);
+
+    expect(optDist).toBeLessThanOrEqual(sonarDist + 0.001);
+    expect(optimal.distance).toBeLessThanOrEqual(optDist + 0.001);
+  });
+
+  it('should compute meaningful optimality ratio for heuristic results', () => {
+    const points8 = [
+      { x: 0, y: 0, id: 0 },
+      { x: 4, y: 0, id: 1 },
+      { x: 8, y: 0, id: 2 },
+      { x: 8, y: 4, id: 3 },
+      { x: 8, y: 8, id: 4 },
+      { x: 4, y: 8, id: 5 },
+      { x: 0, y: 8, id: 6 },
+      { x: 0, y: 4, id: 7 },
+    ];
+    const optimal = bruteForceOptimalTour(points8);
+    const sonarResult = sonarSolution(points8);
+    const sonarDist = calculateTotalDistance(sonarResult.tour, points8);
+    const ratio = calculateOptimalityRatio(sonarDist, optimal.distance);
+
+    // Ratio should be >= 1.0 (optimal or worse)
+    expect(ratio).toBeGreaterThanOrEqual(1.0);
+    // And for these simple cases, not too far from optimal
+    expect(ratio).toBeLessThanOrEqual(2.0);
   });
 });

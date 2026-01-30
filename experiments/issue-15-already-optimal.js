@@ -6,10 +6,10 @@
  * display 0 distances and lose the path visualization.
  */
 
-import { sonarAlgorithmSteps } from '../src/lib/algorithms/progressive/solutions/sonar.js';
-import { mooreAlgorithmSteps } from '../src/lib/algorithms/progressive/solutions/moore.js';
-import { zigzagOptSteps } from '../src/lib/algorithms/progressive/optimizations/zigzag-opt.js';
-import { twoOptSteps } from '../src/lib/algorithms/progressive/optimizations/two-opt.js';
+import { sonarAlgorithmSteps } from '../src/lib/algorithms/progressive/solution/sonar.js';
+import { mooreAlgorithmSteps } from '../src/lib/algorithms/progressive/solution/moore.js';
+import { zigzagOptSteps } from '../src/lib/algorithms/progressive/optimization/zigzag-opt.js';
+import { twoOptSteps } from '../src/lib/algorithms/progressive/optimization/two-opt.js';
 import { calculateTotalDistance } from '../src/lib/algorithms/utils.js';
 
 // Reproduce: 3 points (the scenario from the issue)
