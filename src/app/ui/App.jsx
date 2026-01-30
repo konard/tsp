@@ -8,7 +8,7 @@
  * - UI layout with controls and side-by-side visualizations
  */
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 
 // Import algorithm functions from lib
 import {
@@ -404,6 +404,17 @@ const App = () => {
     return `Distance: ${dist.toFixed(2)}`;
   };
 
+  // Dark/light theme state
+  const [theme, setTheme] = useState('light');
+  const toggleTheme = useCallback(() => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  }, []);
+
+  // Apply theme to document root for CSS custom properties
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
   const leftMeta = ALGORITHM_META[leftAlgorithm];
   const rightMeta = ALGORITHM_META[rightAlgorithm];
 
@@ -417,7 +428,17 @@ const App = () => {
 
   return (
     <div className="app">
-      <h1>TSP Visual Solver</h1>
+      <div className="app-header">
+        <h1>TSP Visual Solver</h1>
+        <button
+          className="theme-toggle"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+          title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+        >
+          {theme === 'light' ? '\u{263E}' : '\u{2600}'}
+        </button>
+      </div>
 
       <Controls
         gridSize={gridSize}

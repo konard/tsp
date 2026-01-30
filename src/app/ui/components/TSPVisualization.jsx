@@ -82,7 +82,7 @@ const TSPVisualization = ({
         y1={padding}
         x2={pos}
         y2={size - padding}
-        stroke="#e9ecef"
+        className="grid-line"
         strokeWidth="1"
       />
     );
@@ -93,7 +93,7 @@ const TSPVisualization = ({
         y1={pos}
         x2={size - padding}
         y2={pos}
-        stroke="#e9ecef"
+        className="grid-line"
         strokeWidth="1"
       />
     );
@@ -235,7 +235,7 @@ const TSPVisualization = ({
             y={p.y - 8}
             textAnchor="middle"
             fontSize="9"
-            fill="#495057"
+            className="point-label"
           >
             {idx} ({point.x}, {point.y})
           </text>
@@ -253,11 +253,7 @@ const TSPVisualization = ({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        style={{
-          border: '1px solid #dee2e6',
-          borderRadius: '4px',
-          background: '#ffffff',
-        }}
+        className="tsp-svg"
       >
         {/* Grid lines */}
         <g>{gridLines}</g>
