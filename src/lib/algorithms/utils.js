@@ -3,15 +3,27 @@
  */
 
 /**
+ * Valid grid sizes for Moore curve algorithm.
+ * A Moore curve of order n fills a 2^n x 2^n grid.
+ * These correspond to L-system iteration counts 0..5 (effective orders 1..6).
+ */
+export const VALID_GRID_SIZES = [2, 4, 8, 16, 32, 64];
+
+/**
  * Calculate the Moore grid size based on user-specified grid size
- * Moore curve of order n fills a 2^(n+1) x 2^(n+1) grid
- * We choose order such that mooreGridSize >= gridSize
+ * Moore curve fills a grid of size 2^n x 2^n.
+ * Returns the smallest valid Moore grid size >= gridSize.
  * @param {number} gridSize - User-specified grid size
  * @returns {number} Moore grid size (power of 2)
  */
 export const calculateMooreGridSize = (gridSize) => {
-  const order = Math.max(1, Math.min(4, Math.floor(Math.log2(gridSize))));
-  return Math.pow(2, order + 1);
+  // Find smallest valid grid size >= gridSize
+  for (const size of VALID_GRID_SIZES) {
+    if (size >= gridSize) {
+      return size;
+    }
+  }
+  return VALID_GRID_SIZES[VALID_GRID_SIZES.length - 1];
 };
 
 /**
@@ -23,16 +35,13 @@ export const calculateMooreGridSize = (gridSize) => {
 export const generateRandomPoints = (mooreGridSize, numPoints) => {
   const points = [];
   const usedPositions = new Set();
-  // Points are placed at grid intersections (0 to mooreGridSize inclusive)
-  const maxPoints = Math.min(
-    numPoints,
-    (mooreGridSize + 1) * (mooreGridSize + 1)
-  );
+  // Points are placed at grid intersections (0 to mooreGridSize-1 inclusive)
+  const maxPoints = Math.min(numPoints, mooreGridSize * mooreGridSize);
 
   while (points.length < maxPoints) {
-    // Generate integer coordinates aligned to Moore grid vertices
-    const x = Math.floor(Math.random() * (mooreGridSize + 1));
-    const y = Math.floor(Math.random() * (mooreGridSize + 1));
+    // Generate integer coordinates aligned to Moore grid vertices [0, mooreGridSize-1]
+    const x = Math.floor(Math.random() * mooreGridSize);
+    const y = Math.floor(Math.random() * mooreGridSize);
     const key = `${x},${y}`;
 
     if (!usedPositions.has(key)) {

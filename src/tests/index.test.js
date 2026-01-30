@@ -9,6 +9,7 @@ import {
   generateRandomPoints,
   distance,
   calculateTotalDistance,
+  VALID_GRID_SIZES,
 } from '../lib/algorithms/utils.js';
 import {
   sonarAlgorithmSteps,
@@ -39,22 +40,47 @@ import {
 // Utility Functions Tests
 // ============================================================
 
+describe('VALID_GRID_SIZES', () => {
+  it('should contain only powers of 2', () => {
+    VALID_GRID_SIZES.forEach((size) => {
+      expect(Math.log2(size) % 1).toBe(0);
+    });
+  });
+
+  it('should be sorted in ascending order', () => {
+    for (let i = 1; i < VALID_GRID_SIZES.length; i++) {
+      expect(VALID_GRID_SIZES[i]).toBeGreaterThan(VALID_GRID_SIZES[i - 1]);
+    }
+  });
+
+  it('should contain expected sizes', () => {
+    expect(VALID_GRID_SIZES).toEqual([2, 4, 8, 16, 32, 64]);
+  });
+});
+
 describe('calculateMooreGridSize', () => {
-  it('should return power of 2 for grid size 10', () => {
-    expect(calculateMooreGridSize(10)).toBe(16);
-  });
-
-  it('should return power of 2 for grid size 5', () => {
+  it('should return smallest valid size >= input', () => {
+    expect(calculateMooreGridSize(2)).toBe(2);
+    expect(calculateMooreGridSize(3)).toBe(4);
+    expect(calculateMooreGridSize(4)).toBe(4);
     expect(calculateMooreGridSize(5)).toBe(8);
-  });
-
-  it('should return power of 2 for grid size 20', () => {
+    expect(calculateMooreGridSize(10)).toBe(16);
+    expect(calculateMooreGridSize(16)).toBe(16);
     expect(calculateMooreGridSize(20)).toBe(32);
+    expect(calculateMooreGridSize(32)).toBe(32);
+    expect(calculateMooreGridSize(33)).toBe(64);
+    expect(calculateMooreGridSize(64)).toBe(64);
   });
 
-  it('should handle minimum grid size', () => {
-    const result = calculateMooreGridSize(2);
-    expect(result).toBeGreaterThanOrEqual(4);
+  it('should return largest valid size for very large input', () => {
+    expect(calculateMooreGridSize(100)).toBe(64);
+  });
+
+  it('should always return a valid Moore grid size', () => {
+    for (let gs = 1; gs <= 100; gs++) {
+      const result = calculateMooreGridSize(gs);
+      expect(VALID_GRID_SIZES).toContain(result);
+    }
   });
 });
 
@@ -66,14 +92,14 @@ describe('generateRandomPoints', () => {
     expect(points.length).toBe(numPoints);
   });
 
-  it('should generate points with valid coordinates', () => {
+  it('should generate points within [0, mooreGridSize-1] range', () => {
     const mooreGridSize = 16;
     const points = generateRandomPoints(mooreGridSize, 5);
     points.forEach((point) => {
       expect(point.x).toBeGreaterThanOrEqual(0);
-      expect(point.x).toBeLessThanOrEqual(mooreGridSize);
+      expect(point.x).toBeLessThanOrEqual(mooreGridSize - 1);
       expect(point.y).toBeGreaterThanOrEqual(0);
-      expect(point.y).toBeLessThanOrEqual(mooreGridSize);
+      expect(point.y).toBeLessThanOrEqual(mooreGridSize - 1);
     });
   });
 
@@ -230,19 +256,20 @@ describe('generateMooreCurve', () => {
 describe('mooreCurveToPoints', () => {
   it('should generate curve points', () => {
     const sequence = generateMooreCurve(1);
-    const points = mooreCurveToPoints(sequence, 16);
+    const points = mooreCurveToPoints(sequence, 4);
     expect(points.length).toBeGreaterThan(0);
   });
 
-  it('should generate points within grid bounds', () => {
+  it('should generate points within [0, gridSize-1] bounds', () => {
     const mooreGridSize = 16;
-    const sequence = generateMooreCurve(2);
+    // For mooreGridSize=16, iterations = log2(16) - 1 = 3
+    const sequence = generateMooreCurve(3);
     const points = mooreCurveToPoints(sequence, mooreGridSize);
     points.forEach((p) => {
       expect(p.x).toBeGreaterThanOrEqual(0);
-      expect(p.x).toBeLessThanOrEqual(mooreGridSize);
+      expect(p.x).toBeLessThanOrEqual(mooreGridSize - 1);
       expect(p.y).toBeGreaterThanOrEqual(0);
-      expect(p.y).toBeLessThanOrEqual(mooreGridSize);
+      expect(p.y).toBeLessThanOrEqual(mooreGridSize - 1);
     });
   });
 });
@@ -536,5 +563,351 @@ describe('zigzagOpt (generic atomic zigzag)', () => {
     const result = zigzagOpt(points, tour);
     const newDistance = calculateTotalDistance(result.tour, points);
     expect(newDistance).toBeLessThanOrEqual(originalDistance);
+  });
+});
+
+// ============================================================
+// Moore Curve Point-by-Point Verification Tests
+// ============================================================
+
+/**
+ * Helper: generate Moore curve points for a given grid size.
+ * Grid size must be a power of 2 (2, 4, 8, 16, 32, 64).
+ * Returns normalized points in [0, gridSize-1] range.
+ */
+function getMooreCurvePoints(gridSize) {
+  const iterations = Math.round(Math.log2(gridSize)) - 1;
+  const sequence = generateMooreCurve(iterations);
+  return mooreCurveToPoints(sequence, gridSize);
+}
+
+describe('Moore curve point-by-point verification (2x2)', () => {
+  const gridSize = 2;
+  const points = getMooreCurvePoints(gridSize);
+
+  it('should have exactly 4 vertices', () => {
+    expect(points.length).toBe(4);
+  });
+
+  it('should visit all 4 grid cells', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    expect(unique.size).toBe(4);
+    expect(unique.has('0,0')).toBe(true);
+    expect(unique.has('0,1')).toBe(true);
+    expect(unique.has('1,0')).toBe(true);
+    expect(unique.has('1,1')).toBe(true);
+  });
+
+  it('should follow the exact path: (0,1) -> (0,0) -> (1,0) -> (1,1)', () => {
+    expect(points[0]).toEqual({ x: 0, y: 1 });
+    expect(points[1]).toEqual({ x: 0, y: 0 });
+    expect(points[2]).toEqual({ x: 1, y: 0 });
+    expect(points[3]).toEqual({ x: 1, y: 1 });
+  });
+
+  it('should have all consecutive points adjacent (distance 1)', () => {
+    for (let i = 0; i < points.length - 1; i++) {
+      const d = distance(points[i], points[i + 1]);
+      expect(d).toBe(1);
+    }
+  });
+
+  it('should form a closed loop (first and last points are adjacent)', () => {
+    const d = distance(points[0], points[points.length - 1]);
+    expect(d).toBe(1);
+  });
+});
+
+describe('Moore curve point-by-point verification (4x4)', () => {
+  const gridSize = 4;
+  const points = getMooreCurvePoints(gridSize);
+
+  it('should have exactly 16 vertices', () => {
+    expect(points.length).toBe(16);
+  });
+
+  it('should visit all 16 grid cells', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    expect(unique.size).toBe(16);
+    for (let x = 0; x < 4; x++) {
+      for (let y = 0; y < 4; y++) {
+        expect(unique.has(`${x},${y}`)).toBe(true);
+      }
+    }
+  });
+
+  it('should follow the exact 4x4 Moore curve path', () => {
+    const expectedPath = [
+      { x: 1, y: 3 },
+      { x: 0, y: 3 },
+      { x: 0, y: 2 },
+      { x: 1, y: 2 },
+      { x: 1, y: 1 },
+      { x: 0, y: 1 },
+      { x: 0, y: 0 },
+      { x: 1, y: 0 },
+      { x: 2, y: 0 },
+      { x: 3, y: 0 },
+      { x: 3, y: 1 },
+      { x: 2, y: 1 },
+      { x: 2, y: 2 },
+      { x: 3, y: 2 },
+      { x: 3, y: 3 },
+      { x: 2, y: 3 },
+    ];
+    expect(points).toEqual(expectedPath);
+  });
+
+  it('should have all consecutive points adjacent (distance 1)', () => {
+    for (let i = 0; i < points.length - 1; i++) {
+      const d = distance(points[i], points[i + 1]);
+      expect(d).toBe(1);
+    }
+  });
+
+  it('should form a closed loop', () => {
+    const d = distance(points[0], points[points.length - 1]);
+    expect(d).toBe(1);
+  });
+});
+
+describe('Moore curve verification (8x8)', () => {
+  const gridSize = 8;
+  const points = getMooreCurvePoints(gridSize);
+
+  it('should have exactly 64 vertices', () => {
+    expect(points.length).toBe(64);
+  });
+
+  it('should visit all 64 grid cells', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    expect(unique.size).toBe(64);
+    for (let x = 0; x < 8; x++) {
+      for (let y = 0; y < 8; y++) {
+        expect(unique.has(`${x},${y}`)).toBe(true);
+      }
+    }
+  });
+
+  it('should have all consecutive points adjacent (distance 1)', () => {
+    for (let i = 0; i < points.length - 1; i++) {
+      const d = distance(points[i], points[i + 1]);
+      expect(d).toBe(1);
+    }
+  });
+
+  it('should form a closed loop', () => {
+    const d = distance(points[0], points[points.length - 1]);
+    expect(d).toBe(1);
+  });
+
+  it('should have no cross-shaped gap (center row and column covered)', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    // Center of 8x8 grid is at rows/columns 3 and 4
+    for (let i = 0; i < 8; i++) {
+      expect(unique.has(`${i},3`)).toBe(true);
+      expect(unique.has(`${i},4`)).toBe(true);
+      expect(unique.has(`3,${i}`)).toBe(true);
+      expect(unique.has(`4,${i}`)).toBe(true);
+    }
+  });
+
+  it('should have all points within [0, 7] range', () => {
+    points.forEach((p) => {
+      expect(p.x).toBeGreaterThanOrEqual(0);
+      expect(p.x).toBeLessThanOrEqual(7);
+      expect(p.y).toBeGreaterThanOrEqual(0);
+      expect(p.y).toBeLessThanOrEqual(7);
+    });
+  });
+});
+
+describe('Moore curve verification (16x16)', () => {
+  const gridSize = 16;
+  const points = getMooreCurvePoints(gridSize);
+
+  it('should have exactly 256 vertices', () => {
+    expect(points.length).toBe(256);
+  });
+
+  it('should visit all 256 grid cells', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    expect(unique.size).toBe(256);
+    for (let x = 0; x < 16; x++) {
+      for (let y = 0; y < 16; y++) {
+        expect(unique.has(`${x},${y}`)).toBe(true);
+      }
+    }
+  });
+
+  it('should have all consecutive points adjacent (distance 1)', () => {
+    for (let i = 0; i < points.length - 1; i++) {
+      const d = distance(points[i], points[i + 1]);
+      expect(d).toBe(1);
+    }
+  });
+
+  it('should form a closed loop', () => {
+    const d = distance(points[0], points[points.length - 1]);
+    expect(d).toBe(1);
+  });
+
+  it('should have no cross-shaped gap (center covered)', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    for (let i = 0; i < 16; i++) {
+      expect(unique.has(`${i},7`)).toBe(true);
+      expect(unique.has(`${i},8`)).toBe(true);
+      expect(unique.has(`7,${i}`)).toBe(true);
+      expect(unique.has(`8,${i}`)).toBe(true);
+    }
+  });
+});
+
+describe('Moore curve verification (32x32)', () => {
+  const gridSize = 32;
+  const points = getMooreCurvePoints(gridSize);
+
+  it('should have exactly 1024 vertices', () => {
+    expect(points.length).toBe(1024);
+  });
+
+  it('should visit all 1024 grid cells', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    expect(unique.size).toBe(1024);
+    for (let x = 0; x < 32; x++) {
+      for (let y = 0; y < 32; y++) {
+        expect(unique.has(`${x},${y}`)).toBe(true);
+      }
+    }
+  });
+
+  it('should have all consecutive points adjacent (distance 1)', () => {
+    for (let i = 0; i < points.length - 1; i++) {
+      const d = distance(points[i], points[i + 1]);
+      expect(d).toBe(1);
+    }
+  });
+
+  it('should form a closed loop', () => {
+    const d = distance(points[0], points[points.length - 1]);
+    expect(d).toBe(1);
+  });
+
+  it('should have no cross-shaped gap (center covered)', () => {
+    const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+    for (let i = 0; i < 32; i++) {
+      expect(unique.has(`${i},15`)).toBe(true);
+      expect(unique.has(`${i},16`)).toBe(true);
+      expect(unique.has(`15,${i}`)).toBe(true);
+      expect(unique.has(`16,${i}`)).toBe(true);
+    }
+  });
+});
+
+// ============================================================
+// Moore Curve Edge Verification Tests
+// ============================================================
+
+describe('Moore curve edge verification (2x2)', () => {
+  const points = getMooreCurvePoints(2);
+
+  it('should have correct edges', () => {
+    // Path: (0,1) -> (0,0) -> (1,0) -> (1,1)
+    const edges = [];
+    for (let i = 0; i < points.length - 1; i++) {
+      edges.push(
+        `(${points[i].x},${points[i].y})->(${points[i + 1].x},${points[i + 1].y})`
+      );
+    }
+    expect(edges).toEqual(['(0,1)->(0,0)', '(0,0)->(1,0)', '(1,0)->(1,1)']);
+  });
+
+  it('should have closing edge back to start', () => {
+    const last = points[points.length - 1];
+    const first = points[0];
+    const d = distance(last, first);
+    expect(d).toBe(1);
+    // (1,1) -> (0,1) closing edge
+    expect(last).toEqual({ x: 1, y: 1 });
+    expect(first).toEqual({ x: 0, y: 1 });
+  });
+});
+
+describe('Moore curve edge verification (4x4)', () => {
+  const points = getMooreCurvePoints(4);
+
+  it('should have exactly 15 edges (16 vertices - 1)', () => {
+    const edges = [];
+    for (let i = 0; i < points.length - 1; i++) {
+      edges.push({
+        from: points[i],
+        to: points[i + 1],
+      });
+    }
+    expect(edges.length).toBe(15);
+  });
+
+  it('should have all edges with length 1 (horizontal or vertical)', () => {
+    for (let i = 0; i < points.length - 1; i++) {
+      const dx = Math.abs(points[i + 1].x - points[i].x);
+      const dy = Math.abs(points[i + 1].y - points[i].y);
+      // Each edge must be exactly 1 unit horizontal or vertical
+      expect((dx === 1 && dy === 0) || (dx === 0 && dy === 1)).toBe(true);
+    }
+  });
+
+  it('should have no self-intersecting edges', () => {
+    // All edges connect distinct vertices, and all vertices are unique
+    const visited = new Set();
+    for (const p of points) {
+      const key = `${p.x},${p.y}`;
+      expect(visited.has(key)).toBe(false);
+      visited.add(key);
+    }
+  });
+});
+
+// ============================================================
+// Moore Curve Properties Tests (all valid sizes)
+// ============================================================
+
+describe('Moore curve properties for all valid grid sizes', () => {
+  // Test for 2, 4, 8, 16, 32 (skip 64 to keep test fast)
+  const testSizes = [2, 4, 8, 16, 32];
+
+  testSizes.forEach((gridSize) => {
+    describe(`grid size ${gridSize}x${gridSize}`, () => {
+      const points = getMooreCurvePoints(gridSize);
+
+      it(`should have exactly ${gridSize * gridSize} vertices`, () => {
+        expect(points.length).toBe(gridSize * gridSize);
+      });
+
+      it('should visit every grid cell exactly once', () => {
+        const unique = new Set(points.map((p) => `${p.x},${p.y}`));
+        expect(unique.size).toBe(gridSize * gridSize);
+      });
+
+      it('should have all points within [0, gridSize-1]', () => {
+        points.forEach((p) => {
+          expect(p.x).toBeGreaterThanOrEqual(0);
+          expect(p.x).toBeLessThanOrEqual(gridSize - 1);
+          expect(p.y).toBeGreaterThanOrEqual(0);
+          expect(p.y).toBeLessThanOrEqual(gridSize - 1);
+        });
+      });
+
+      it('should have all consecutive points adjacent (distance 1)', () => {
+        for (let i = 0; i < points.length - 1; i++) {
+          const d = distance(points[i], points[i + 1]);
+          expect(d).toBe(1);
+        }
+      });
+
+      it('should form a closed loop', () => {
+        const d = distance(points[0], points[points.length - 1]);
+        expect(d).toBe(1);
+      });
+    });
   });
 });

@@ -66,11 +66,12 @@ const TSPVisualization = ({
     currentStep >= 0 && currentStep < steps.length ? steps[currentStep] : null;
 
   // Both algorithms use the same Moore grid size for perfect alignment
-  const displayGridSize = mooreGridSize;
+  // Grid coordinates range from 0 to mooreGridSize-1
+  const displayGridSize = mooreGridSize - 1;
 
   const scale = (size - 2 * padding) / displayGridSize;
 
-  // Generate grid lines
+  // Generate grid lines at each integer coordinate [0, mooreGridSize-1]
   const gridLines = [];
   for (let i = 0; i <= displayGridSize; i++) {
     const pos = padding + i * scale;
