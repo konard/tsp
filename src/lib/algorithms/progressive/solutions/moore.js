@@ -106,11 +106,11 @@ export const mooreCurveToPoints = (sequence, mooreGridSize) => {
   const curveWidth = maxX - minX;
   const curveHeight = maxY - minY;
 
-  // Shift curve so it starts at (0,0), vertices stay on integer grid
-  // Then scale to fit the mooreGridSize (vertices land on grid lines)
+  // Shift curve so it starts at (0,0) and scale to fit [0, mooreGridSize-1]
+  // A Moore curve of order n fills a 2^n x 2^n grid with coordinates [0, 2^n - 1]
   const normalizedPoints = curvePoints.map((p) => ({
-    x: Math.round(((p.x - minX) / curveWidth) * mooreGridSize),
-    y: Math.round(((p.y - minY) / curveHeight) * mooreGridSize),
+    x: Math.round(((p.x - minX) / curveWidth) * (mooreGridSize - 1)),
+    y: Math.round(((p.y - minY) / curveHeight) * (mooreGridSize - 1)),
   }));
 
   return normalizedPoints;
@@ -128,9 +128,10 @@ export const mooreAlgorithmSteps = (points, mooreGridSize) => {
     return [];
   }
 
-  // Determine appropriate Moore curve order based on Moore grid size
-  // mooreGridSize = 2^(order+1), so order = log2(mooreGridSize) - 1
-  const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
+  // Determine L-system iterations based on Moore grid size
+  // generateMooreCurve(n) fills a 2^(n+1) x 2^(n+1) grid
+  // So for mooreGridSize = 2^k, iterations = k - 1
+  const order = Math.max(0, Math.round(Math.log2(mooreGridSize)) - 1);
   const curveSequence = generateMooreCurve(order);
   // Generate curve points using the Moore grid size for perfect alignment
   const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
@@ -206,7 +207,8 @@ export const mooreSolution = (points, mooreGridSize) => {
     return { tour: [], curvePoints: [] };
   }
 
-  const order = Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1);
+  // Determine L-system iterations: mooreGridSize = 2^(n+1), so n = log2(mooreGridSize) - 1
+  const order = Math.max(0, Math.round(Math.log2(mooreGridSize)) - 1);
   const curveSequence = generateMooreCurve(order);
   const curvePoints = mooreCurveToPoints(curveSequence, mooreGridSize);
 

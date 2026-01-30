@@ -2,17 +2,19 @@
  * Controls Component
  *
  * Control panel for TSP solver including:
- * - Grid size input
+ * - Grid size selector (valid Moore curve sizes)
  * - Points count input
  * - Animation speed slider
  * - Action buttons (New Points, Start, Stop, Optimize)
  */
 
+import { VALID_GRID_SIZES } from '../../../lib/algorithms/utils.js';
+
 /**
  * Controls - Control panel for TSP solver
  *
  * @param {Object} props
- * @param {number} props.gridSize - Current grid size
+ * @param {number} props.gridSize - Current grid size (must be a valid Moore curve size)
  * @param {function} props.setGridSize - Grid size setter
  * @param {number} props.numPoints - Number of points
  * @param {function} props.setNumPoints - Points count setter
@@ -46,19 +48,18 @@ const Controls = ({
   return (
     <div className="controls">
       <div className="control-group">
-        <label>Grid Size (N)</label>
-        <input
-          type="number"
-          min="5"
-          max="50"
+        <label>Grid Size (N×N)</label>
+        <select
           value={gridSize}
-          onChange={(e) =>
-            setGridSize(
-              Math.max(5, Math.min(50, parseInt(e.target.value) || 5))
-            )
-          }
+          onChange={(e) => setGridSize(parseInt(e.target.value))}
           disabled={isRunning}
-        />
+        >
+          {VALID_GRID_SIZES.map((size) => (
+            <option key={size} value={size}>
+              {size}×{size}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="control-group">
@@ -66,7 +67,7 @@ const Controls = ({
         <input
           type="number"
           min="3"
-          max={(mooreGridSize + 1) * (mooreGridSize + 1)}
+          max={mooreGridSize * mooreGridSize}
           value={numPoints}
           onChange={(e) =>
             setNumPoints(Math.max(3, parseInt(e.target.value) || 3))

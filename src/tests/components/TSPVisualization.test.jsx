@@ -127,7 +127,8 @@ describe('TSPVisualization', () => {
       );
       const lines = container.querySelectorAll('line');
       // Should have grid lines + sweep line
-      expect(lines.length).toBeGreaterThan(34);
+      // Grid: mooreGridSize lines per axis (0..mooreGridSize-1) = 16*2 = 32 grid lines + 1 sweep
+      expect(lines.length).toBeGreaterThan(32);
     });
 
     it('should render centroid circle for sonar algorithm', () => {

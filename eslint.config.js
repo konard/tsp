@@ -86,6 +86,8 @@ export default [
       'dist/**',
       '*.min.js',
       '.eslintcache',
+      // Experiment scripts (debug/analysis, not production code)
+      'experiments/**',
       // Case study raw data files (downloaded from external sources)
       'docs/case-studies/*/data/**',
     ],
