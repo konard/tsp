@@ -220,16 +220,12 @@ jobs:
           path: dist/
           retention-days: 1
 
-  # === TEST - Bun only ===
+  # === TEST - Bun only (Ubuntu only for faster iteration) ===
   test:
-    name: Test (Bun on ${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    name: Test (Bun)
+    runs-on: ubuntu-latest
     needs: [detect-changes, changeset-check]
     if: always() && (github.event_name == 'push' || needs.changeset-check.result == 'success' || needs.changeset-check.result == 'skipped')
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
         with:
