@@ -6,6 +6,7 @@
 import { describe, it, expect } from 'bun:test';
 import {
   calculateMooreGridSize,
+  VALID_GRID_SIZES,
   generateRandomPoints,
   distance,
   calculateTotalDistance,
@@ -39,22 +40,61 @@ import {
 // Utility Functions Tests
 // ============================================================
 
+describe('VALID_GRID_SIZES', () => {
+  it('should contain only powers of 2', () => {
+    VALID_GRID_SIZES.forEach((size) => {
+      expect(Math.log2(size) % 1).toBe(0);
+    });
+  });
+
+  it('should be sorted in ascending order', () => {
+    for (let i = 1; i < VALID_GRID_SIZES.length; i++) {
+      expect(VALID_GRID_SIZES[i]).toBeGreaterThan(VALID_GRID_SIZES[i - 1]);
+    }
+  });
+
+  it('should contain expected sizes', () => {
+    expect(VALID_GRID_SIZES).toEqual([2, 4, 8, 16, 32, 64]);
+  });
+});
+
 describe('calculateMooreGridSize', () => {
-  it('should return power of 2 for grid size 10', () => {
+  it('should return nearest power of 2 for grid size 10', () => {
     expect(calculateMooreGridSize(10)).toBe(16);
   });
 
-  it('should return power of 2 for grid size 5', () => {
+  it('should return nearest power of 2 for grid size 5', () => {
     expect(calculateMooreGridSize(5)).toBe(8);
   });
 
-  it('should return power of 2 for grid size 20', () => {
+  it('should return nearest power of 2 for grid size 20', () => {
     expect(calculateMooreGridSize(20)).toBe(32);
   });
 
+  it('should return exact size for powers of 2', () => {
+    expect(calculateMooreGridSize(2)).toBe(2);
+    expect(calculateMooreGridSize(4)).toBe(4);
+    expect(calculateMooreGridSize(8)).toBe(8);
+    expect(calculateMooreGridSize(16)).toBe(16);
+    expect(calculateMooreGridSize(32)).toBe(32);
+    expect(calculateMooreGridSize(64)).toBe(64);
+  });
+
   it('should handle minimum grid size', () => {
-    const result = calculateMooreGridSize(2);
-    expect(result).toBeGreaterThanOrEqual(4);
+    const result = calculateMooreGridSize(1);
+    expect(result).toBe(2);
+  });
+
+  it('should clamp to maximum valid size', () => {
+    const result = calculateMooreGridSize(100);
+    expect(result).toBe(64);
+  });
+
+  it('should always return a valid grid size', () => {
+    for (let i = 1; i <= 100; i++) {
+      const result = calculateMooreGridSize(i);
+      expect(VALID_GRID_SIZES).toContain(result);
+    }
   });
 });
 
@@ -298,6 +338,77 @@ describe('mooreSolution', () => {
     const result = mooreSolution(points, 16);
     expect(result.tour.length).toBe(points.length);
     expect(new Set(result.tour).size).toBe(points.length);
+  });
+});
+
+// ============================================================
+// Moore Curve Grid Coverage Tests
+// ============================================================
+
+describe('Moore curve grid coverage', () => {
+  it.each([2, 4, 8, 16])(
+    'should achieve 100%% grid vertex coverage for size %i',
+    (mooreGridSize) => {
+      const order = Math.round(Math.log2(mooreGridSize));
+      const sequence = generateMooreCurve(order);
+      const curvePoints = mooreCurveToPoints(sequence, mooreGridSize);
+
+      const uniquePoints = new Set(curvePoints.map((p) => `${p.x},${p.y}`));
+      const expectedVertices = (mooreGridSize + 1) * (mooreGridSize + 1);
+
+      expect(uniquePoints.size).toBe(expectedVertices);
+    }
+  );
+
+  it.each([2, 4, 8, 16])(
+    'should cover center point for size %i (no cross-shaped gap)',
+    (mooreGridSize) => {
+      const order = Math.round(Math.log2(mooreGridSize));
+      const sequence = generateMooreCurve(order);
+      const curvePoints = mooreCurveToPoints(sequence, mooreGridSize);
+
+      const midX = mooreGridSize / 2;
+      const midY = mooreGridSize / 2;
+
+      const hasCenterPoint = curvePoints.some(
+        (p) => p.x === midX && p.y === midY
+      );
+      expect(hasCenterPoint).toBe(true);
+    }
+  );
+
+  it.each([4, 8, 16])(
+    'should cover middle row and column for size %i (no cross-shaped gap)',
+    (mooreGridSize) => {
+      const order = Math.round(Math.log2(mooreGridSize));
+      const sequence = generateMooreCurve(order);
+      const curvePoints = mooreCurveToPoints(sequence, mooreGridSize);
+
+      const mid = mooreGridSize / 2;
+
+      // Check that there are points on the middle column (x = mid)
+      const pointsOnMidColumn = curvePoints.filter((p) => p.x === mid);
+      expect(pointsOnMidColumn.length).toBeGreaterThan(0);
+
+      // Check that there are points on the middle row (y = mid)
+      const pointsOnMidRow = curvePoints.filter((p) => p.y === mid);
+      expect(pointsOnMidRow.length).toBeGreaterThan(0);
+    }
+  );
+
+  it('should have all curve points within grid bounds', () => {
+    for (const mooreGridSize of [2, 4, 8, 16]) {
+      const order = Math.round(Math.log2(mooreGridSize));
+      const sequence = generateMooreCurve(order);
+      const curvePoints = mooreCurveToPoints(sequence, mooreGridSize);
+
+      curvePoints.forEach((p) => {
+        expect(p.x).toBeGreaterThanOrEqual(0);
+        expect(p.x).toBeLessThanOrEqual(mooreGridSize);
+        expect(p.y).toBeGreaterThanOrEqual(0);
+        expect(p.y).toBeLessThanOrEqual(mooreGridSize);
+      });
+    }
   });
 });
 

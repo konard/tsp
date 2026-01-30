@@ -1,6 +1,6 @@
 {
   "name": "tsp-algorithms",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "TSP Solver - Efficient algorithms for the Traveling Salesman Problem with visualization",
   "type": "module",
   "main": "src/lib/index.js",
