@@ -40,10 +40,8 @@ export const ALGORITHM_OPTIONS = [
  * @param {function} props.onStop - Stop animation handler
  * @param {function} props.onOptimize - Start optimization handler (receives method name)
  * @param {number} props.pointsCount - Current points count (for Start button state)
- * @param {string} props.leftAlgorithm - Selected algorithm for left panel
- * @param {function} props.setLeftAlgorithm - Left algorithm setter
- * @param {string} props.rightAlgorithm - Selected algorithm for right panel
- * @param {function} props.setRightAlgorithm - Right algorithm setter
+ * @param {boolean} props.startDisabled - Whether Start button should be disabled
+ * @param {string} props.startDisabledReason - Tooltip explaining why Start is disabled
  */
 const Controls = ({
   gridSize,
@@ -61,47 +59,12 @@ const Controls = ({
   onStop,
   onOptimize,
   pointsCount,
-  leftAlgorithm,
-  setLeftAlgorithm,
-  rightAlgorithm,
-  setRightAlgorithm,
+  startDisabled,
+  startDisabledReason,
 }) => {
+  const maxPoints = mooreGridSize * mooreGridSize;
   return (
     <div className="controls">
-      <div className="control-group">
-        <label>Left Algorithm</label>
-        <select
-          value={leftAlgorithm}
-          onChange={(e) => setLeftAlgorithm(e.target.value)}
-          disabled={isRunning}
-        >
-          {ALGORITHM_OPTIONS.filter((opt) => opt.id !== rightAlgorithm).map(
-            (opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.label}
-              </option>
-            )
-          )}
-        </select>
-      </div>
-
-      <div className="control-group">
-        <label>Right Algorithm</label>
-        <select
-          value={rightAlgorithm}
-          onChange={(e) => setRightAlgorithm(e.target.value)}
-          disabled={isRunning}
-        >
-          {ALGORITHM_OPTIONS.filter((opt) => opt.id !== leftAlgorithm).map(
-            (opt) => (
-              <option key={opt.id} value={opt.id}>
-                {opt.label}
-              </option>
-            )
-          )}
-        </select>
-      </div>
-
       <div className="control-group">
         <label>Grid Size (N×N)</label>
         <select
@@ -118,15 +81,16 @@ const Controls = ({
       </div>
 
       <div className="control-group">
-        <label>Points (M)</label>
+        <label>Points (max {maxPoints})</label>
         <input
           type="number"
           min="3"
-          max={mooreGridSize * mooreGridSize}
+          max={maxPoints}
           value={numPoints}
-          onChange={(e) =>
-            setNumPoints(Math.max(3, parseInt(e.target.value) || 3))
-          }
+          onChange={(e) => {
+            const val = parseInt(e.target.value) || 3;
+            setNumPoints(Math.max(3, Math.min(val, maxPoints)));
+          }}
           disabled={isRunning}
         />
       </div>
@@ -160,7 +124,8 @@ const Controls = ({
             <button
               className="btn-primary"
               onClick={onStart}
-              disabled={pointsCount === 0}
+              disabled={pointsCount === 0 || startDisabled}
+              title={startDisabledReason || ''}
             >
               Start
             </button>

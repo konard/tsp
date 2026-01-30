@@ -82,7 +82,7 @@ const TSPVisualization = ({
         y1={padding}
         x2={pos}
         y2={size - padding}
-        stroke="#e9ecef"
+        className="grid-line"
         strokeWidth="1"
       />
     );
@@ -93,7 +93,7 @@ const TSPVisualization = ({
         y1={pos}
         x2={size - padding}
         y2={pos}
-        stroke="#e9ecef"
+        className="grid-line"
         strokeWidth="1"
       />
     );
@@ -222,13 +222,25 @@ const TSPVisualization = ({
     }
 
     return (
-      <circle
-        key={`point-${idx}`}
-        cx={p.x}
-        cy={p.y}
-        r={isLastAdded ? 6 : 4}
-        fill={fill}
-      />
+      <g key={`point-${idx}`}>
+        <circle cx={p.x} cy={p.y} r={isLastAdded ? 6 : 4} fill={fill}>
+          <title>
+            Point {idx} ({point.x}, {point.y})
+          </title>
+        </circle>
+        {/* Show point number + coordinates for small point sets */}
+        {points.length <= 20 && (
+          <text
+            x={p.x}
+            y={p.y - 8}
+            textAnchor="middle"
+            fontSize="9"
+            className="point-label"
+          >
+            {idx} ({point.x}, {point.y})
+          </text>
+        )}
+      </g>
     );
   });
 
@@ -241,11 +253,7 @@ const TSPVisualization = ({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        style={{
-          border: '1px solid #dee2e6',
-          borderRadius: '4px',
-          background: '#ffffff',
-        }}
+        className="tsp-svg"
       >
         {/* Grid lines */}
         <g>{gridLines}</g>

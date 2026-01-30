@@ -2,7 +2,7 @@
  * VisualizationPanel Component
  *
  * A complete visualization panel including:
- * - Header with algorithm name and distance
+ * - Header with algorithm selector dropdown and distance
  * - Algorithm aliases/description
  * - TSP visualization canvas
  * - Step info display
@@ -13,7 +13,10 @@
  * VisualizationPanel - Complete visualization panel for a single algorithm
  *
  * @param {Object} props
- * @param {string} props.title - Algorithm title
+ * @param {string} props.selectedAlgorithm - Currently selected algorithm id
+ * @param {function} props.onAlgorithmChange - Algorithm change handler
+ * @param {Array} props.algorithmOptions - Available algorithm options (filtered)
+ * @param {boolean} props.isRunning - Whether animation is running
  * @param {string} props.aliases - Alternative algorithm names
  * @param {string} props.distanceInfo - Formatted distance string with optional optimality info
  * @param {React.ReactNode} props.visualization - TSPVisualization component
@@ -21,7 +24,10 @@
  * @param {React.ReactNode} props.legend - Legend component
  */
 const VisualizationPanel = ({
-  title,
+  selectedAlgorithm,
+  onAlgorithmChange,
+  algorithmOptions,
+  isRunning,
   aliases,
   distanceInfo,
   visualization,
@@ -31,7 +37,18 @@ const VisualizationPanel = ({
   return (
     <div className="visualization">
       <div className="visualization-header">
-        <h2>{title}</h2>
+        <select
+          className="algorithm-select"
+          value={selectedAlgorithm}
+          onChange={(e) => onAlgorithmChange(e.target.value)}
+          disabled={isRunning}
+        >
+          {algorithmOptions.map((opt) => (
+            <option key={opt.id} value={opt.id}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
         <span className="visualization-stats">{distanceInfo}</span>
       </div>
       <div className="algorithm-aliases">{aliases}</div>

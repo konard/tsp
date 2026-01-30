@@ -9,6 +9,7 @@ import {
   Legend,
   SonarLegend,
   MooreLegend,
+  BruteForceLegend,
   LegendItem,
 } from '../../app/ui/components/Legend.jsx';
 
@@ -73,6 +74,27 @@ describe('MooreLegend', () => {
   });
 });
 
+describe('BruteForceLegend', () => {
+  it('should render base legend items', () => {
+    const { getByText } = render(<BruteForceLegend showOptimization={false} />);
+    expect(getByText('Unvisited')).toBeDefined();
+    expect(getByText('In Tour')).toBeDefined();
+    expect(getByText('Current')).toBeDefined();
+  });
+
+  it('should render optimization item when showOptimization is true', () => {
+    const { getByText } = render(<BruteForceLegend showOptimization={true} />);
+    expect(getByText('Optimized')).toBeDefined();
+  });
+
+  it('should not render optimization item when showOptimization is false', () => {
+    const { queryByText } = render(
+      <BruteForceLegend showOptimization={false} />
+    );
+    expect(queryByText('Optimized')).toBeNull();
+  });
+});
+
 describe('Legend', () => {
   it('should render SonarLegend when algorithm is sonar', () => {
     const { getByText } = render(
@@ -88,6 +110,15 @@ describe('Legend', () => {
     );
     expect(getByText('Visited Curve')).toBeDefined();
     expect(getByText('Unvisited Curve')).toBeDefined();
+  });
+
+  it('should render BruteForceLegend when algorithm is brute-force', () => {
+    const { getByText } = render(
+      <Legend algorithm="brute-force" showOptimization={false} />
+    );
+    expect(getByText('Unvisited')).toBeDefined();
+    expect(getByText('In Tour')).toBeDefined();
+    expect(getByText('Current')).toBeDefined();
   });
 
   it('should default to MooreLegend for unknown algorithm', () => {

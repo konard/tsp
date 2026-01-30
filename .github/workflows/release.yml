@@ -314,6 +314,48 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
+  # Update README screenshot - runs on main after deploy
+  update-screenshot:
+    name: Update README Screenshot
+    needs: [deploy]
+    if: always() && github.ref == 'refs/heads/main' && github.event_name == 'push' && needs.deploy.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install Playwright browsers
+        run: bunx playwright install chromium --with-deps
+
+      - name: Build application
+        run: bun run build
+
+      - name: Generate screenshot
+        run: bun run scripts/generate-screenshot.mjs
+
+      - name: Commit screenshot if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add screenshot.png
+          if git diff --staged --quiet; then
+            echo "No screenshot changes to commit"
+          else
+            git commit -m "Update README screenshot [skip ci]"
+            git push
+          fi
+
   # Release - only runs on main after tests pass (for push events)
   release:
     name: Release

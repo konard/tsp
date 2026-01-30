@@ -86,11 +86,13 @@ export const bruteForceAlgorithmSteps = (points) => {
   let bestDistance = Infinity;
   let permutationsChecked = 0;
 
+  const totalPermutations = factorial(points.length - 1);
+
   // First step: show initial state
   steps.push({
     type: 'solution',
     tour: [],
-    description: `Starting brute-force search over ${factorial(points.length - 1)} permutations`,
+    description: `Progress: 0% | Starting brute-force search over ${totalPermutations} permutations`,
   });
 
   // Generate all permutations of remaining points
@@ -118,11 +120,15 @@ export const bruteForceAlgorithmSteps = (points) => {
           bestDistance = totalDist;
           bestTour = [0, ...arr];
 
+          const progress = (
+            (permutationsChecked / totalPermutations) *
+            100
+          ).toFixed(1);
           // Record this improvement as a step
           steps.push({
             type: 'solution',
             tour: [...bestTour],
-            description: `Improvement #${steps.length}: distance ${bestDistance.toFixed(2)} (checked ${permutationsChecked} permutations)`,
+            description: `Progress: ${progress}% | Improvement #${steps.length}: distance ${bestDistance.toFixed(2)} (checked ${permutationsChecked})`,
           });
         }
       }
@@ -142,7 +148,7 @@ export const bruteForceAlgorithmSteps = (points) => {
   steps.push({
     type: 'solution',
     tour: bestTour ? [...bestTour] : [],
-    description: `Optimal tour: distance ${bestDistance.toFixed(2)} (exhaustive search of ${permutationsChecked} permutations)`,
+    description: `Progress: 100% | Optimal tour: distance ${bestDistance.toFixed(2)} (${permutationsChecked} permutations)`,
   });
 
   return steps;

@@ -1210,6 +1210,15 @@ describe('bruteForceAlgorithmSteps', () => {
     const steps = bruteForceSteps([]);
     expect(steps).toEqual([]);
   });
+
+  it('should return trivial tour for single point', () => {
+    const points = [{ x: 5, y: 3 }];
+    const steps = bruteForceSteps(points);
+    expect(steps.length).toBe(1);
+    expect(steps[0].type).toBe('solution');
+    expect(steps[0].tour).toEqual([0]);
+    expect(steps[0].description).toContain('trivial');
+  });
 });
 
 // ============================================================

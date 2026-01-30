@@ -62,11 +62,15 @@ export const sonarAlgorithmSteps = (points) => {
     const currentAngle = pointsWithAngles[i].angle;
     tour.push(pointsWithAngles[i].idx);
 
+    const sweepDeg = ((currentAngle * 180) / Math.PI + 360) % 360;
+    // Issue #7: Progress % and angle for Sonar, 0%=bottom(start), 100%=full sweep
+    const progress = (((i + 1) / pointsWithAngles.length) * 100).toFixed(1);
+    const pt = pointsWithAngles[i];
     steps.push({
       type: 'sweep',
       angle: currentAngle,
       tour: [...tour],
-      description: `Sweep angle: ${(((currentAngle * 180) / Math.PI + 360) % 360).toFixed(1)}°, found point ${pointsWithAngles[i].idx}`,
+      description: `Progress: ${progress}% | Angle: ${sweepDeg.toFixed(1)}° | Point ${pt.idx} (${pt.x}, ${pt.y})`,
       centroid: { x: cx, y: cy },
     });
   }
