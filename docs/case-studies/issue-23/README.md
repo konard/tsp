@@ -1,218 +1,137 @@
-# Case Study: Issue #23 - Best CI/CD Practices from Hive Mind Repository
+# Case Study: Issue #23 - Moore Curve Algorithm Density and Grid Size Fix
 
 ## Summary
 
-This case study documents the incorporation of best CI/CD practices from the [hive-mind repository](https://github.com/link-assistant/hive-mind), specifically addressing the critical issue of **stale merge preview** in GitHub Actions. The key insight comes from [hive-mind issue #1141](https://github.com/link-assistant/hive-mind/issues/1141) and its fix in [PR #1142](https://github.com/link-assistant/hive-mind/pull/1142).
+This case study documents the investigation and fix of a bug in the Moore curve algorithm where the curve did not cover all grid vertices, leaving a cross-shaped gap through the center. Additionally, the grid size selector allowed arbitrary values (5-50) that didn't correspond to valid Moore curve sizes, causing a mismatch between the displayed grid size and the actual algorithm grid.
 
-## The Problem: GitHub's Stale Merge Preview Architecture
+## The Problem
 
-### How GitHub Actions Handles Pull Requests
+### 1. Moore Curve Not Covering All Grid Vertices
 
-When a PR triggers a GitHub Actions workflow (`on: pull_request`), GitHub performs these steps:
+The Moore curve algorithm had an incorrect order calculation that caused the curve to miss grid vertices in a cross-shaped pattern through the center of the grid.
 
-1. Creates a synthetic merge commit at `refs/pull/{number}/merge`
-2. This merge commit represents what the merge **would look like** at the moment of creation
-3. `actions/checkout@v4` checks out this merge preview by default
-4. **The merge preview does NOT automatically update** when the base branch changes
+**Root Cause**: The order was calculated as `order = log2(mooreGridSize) - 1`, but a Moore curve of order N fills a 2^N × 2^N grid. The correct formula is `order = log2(mooreGridSize)`.
 
-### The Critical Gap
+**Evidence from analysis:**
+
+For a grid size of 8 with the old (incorrect) order calculation (order=2):
 
 ```
-Day 1: PR opened/synced
-       -> GitHub creates merge preview (validates correctly)
-       -> CI runs on merge preview -> PASSES
-
-[Time passes - other PRs merge to main, changing the codebase]
-
-Day N: PR merged (without re-running CI)
-       -> Actual merge result differs from stale preview
-       -> Push CI runs on actual merge -> FAILS
+Grid coverage (X = covered, . = missed):
+  X X X X . X X X X
+  X X X X . X X X X
+  X X X X . X X X X
+  X X X X . X X X X
+  . . . . . . . . .
+  X X X X . X X X X
+  X X X X . X X X X
+  X X X X . X X X X
+  X X X X . X X X X
 ```
 
-This is exactly what happened in hive-mind issue #1141, where:
+Coverage: 64/81 vertices (79.0%) - a cross-shaped gap through the center.
 
-- Jan 11: PR #1105 CI passed (merge preview showed file at 1495 lines)
-- Jan 19: PR merged (actual result was 1506 lines due to intervening changes)
-- Push CI failed because the actual merge exceeded the 1500-line limit
+With the correct order (order=3):
 
-### Why This Matters
-
-The stale merge preview issue creates a **false sense of security**:
-
-- Developers see green CI checks on their PR
-- They merge confidently
-- Main branch CI fails after merge
-- The team scrambles to fix a broken main branch
-
-## Solutions Implemented
-
-### 1. Fresh Merge Simulation in CI Workflow
-
-Added to both `lint` and `test` jobs in `.github/workflows/release.yml`:
-
-```yaml
-- name: Simulate fresh merge with base branch (PR only)
-  if: github.event_name == 'pull_request'
-  env:
-    BASE_REF: ${{ github.base_ref }}
-  run: |
-    # Fetch the latest base branch
-    git fetch origin "$BASE_REF"
-
-    # Check if base branch has new commits
-    BEHIND_COUNT=$(git rev-list --count HEAD..origin/$BASE_REF)
-
-    if [ "$BEHIND_COUNT" -gt 0 ]; then
-      # Merge latest base branch to simulate actual merge result
-      git merge origin/$BASE_REF --no-edit || exit 1
-    fi
+```
+Coverage: 81/81 vertices (100.0%) - all vertices covered.
 ```
 
-This ensures PR CI validates the **actual** merge result, not a stale snapshot.
+### 2. Grid Size Selector Mismatch
 
-### 2. ESLint max-lines Rule
+The grid size selector allowed values from 5 to 50, but the Moore curve algorithm requires power-of-2 grid sizes. When a user selected grid size 5, the actual Moore grid size was computed as 8 (or previously 16), but the selector still showed "5". This was confusing and misleading.
 
-Already configured in `eslint.config.js`:
-
-```javascript
-'max-lines': ['error', 1500]
-```
-
-This provides:
-
-- Local development feedback via editor integration
-- CI enforcement via `npm run lint`
-- Early warning before files become unmaintainable
-
-### 3. Version Check CI Job
-
-Already configured in `.github/workflows/release.yml`:
-
-```yaml
-version-check:
-  name: Check for Manual Version Changes
-  runs-on: ubuntu-latest
-  if: github.event_name == 'pull_request'
-  steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Check for version changes in package.json
-      run: node scripts/check-version.mjs
-```
-
-This prevents manual version changes in PRs - versions should only be changed by the CI/CD pipeline using changesets.
+**Root Cause**: The `calculateMooreGridSize` function used `2^(floor(log2(gridSize)) + 1)`, which always doubled the nearest power of 2. This was an artifact of the wrong order formula - the code compensated for the off-by-one order by doubling the grid size.
 
 ## Root Cause Analysis
 
-### Primary Root Cause: GitHub's Merge Preview Design
+### The Mathematical Error
 
-The fundamental issue is architectural:
+A Moore curve is defined by its L-system rules:
 
-1. GitHub's `refs/pull/{number}/merge` is a **snapshot**, not a live reference
-2. It's created when the PR is opened or synchronized
-3. It does **not** update when the base branch receives new commits
-4. Long-lived PRs are particularly vulnerable
+- **Axiom**: `LFL+F+LFL`
+- **L → −RF+LFL+FR−**
+- **R → +LF−RFR−FL+**
 
-### Contributing Factors
+A Moore curve of order N produces 4^N unique points that tile a 2^N × 2^N grid completely. The relationship is:
 
-1. **No automatic re-validation**: GitHub doesn't automatically re-run CI when the base branch changes
-2. **Time gap vulnerability**: The longer a PR sits open, the more likely it is to have a stale merge preview
-3. **Silent desynchronization**: There's no warning that the merge preview is outdated
+| Order | Grid Size | Points |
+| ----- | --------- | ------ |
+| 1     | 2×2       | 4      |
+| 2     | 4×4       | 16     |
+| 3     | 8×8       | 64     |
+| 4     | 16×16     | 256    |
+| 5     | 32×32     | 1024   |
+| 6     | 64×64     | 4096   |
 
-## Evidence from CI Logs
+The code had `order = log2(mooreGridSize) - 1`, which meant:
 
-### From hive-mind Issue #1141
+- For mooreGridSize=4: order=1 (should be 2) → only 4 points on a 4×4 grid, missing 9 vertices
+- For mooreGridSize=8: order=2 (should be 3) → only 16 points on an 8×8 grid, missing 17 vertices
+- For mooreGridSize=16: order=3 (should be 4) → only 64 points on a 16×16 grid, missing 33 vertices
 
-**Passed CI Run #20889393003 (PR Branch - January 11):**
+The missed vertices always formed a cross through the center (the middle row and column), because the lower-order curve naturally produces four quadrant copies that don't connect through the center when stretched to a larger grid.
 
-```
-check-file-line-limits: [command]/usr/bin/git checkout --progress --force refs/remotes/pull/1105/merge
-check-file-line-limits: ./src/claude.lib.mjs: 1495 lines
-```
+### The Compensating Grid Size Error
 
-**Failed CI Run #21128634082 (Main Branch - January 19):**
+The `calculateMooreGridSize` function doubled the grid size (`2^(order+1)` instead of `2^order`), which partially masked the order calculation error. With gridSize=5, `calculateMooreGridSize` returned 8, and then the Moore algorithm used order=2 (instead of the correct order=3). The result was that order 2 Moore curve points were stretched across a size-8 grid, leaving the cross-shaped gap.
 
-```
-detect-changes: Comparing HEAD^ to HEAD
-check-file-line-limits: ./src/claude.lib.mjs: 1506 lines
-check-file-line-limits: ERROR: ./src/claude.lib.mjs has 1506 lines, which exceeds the 1500 line limit!
-```
+## Solution
 
-The 8-day gap between PR CI pass and merge allowed other changes to accumulate, causing the actual merge to exceed the limit.
+### Fix 1: Correct Order Calculation
 
-## Prevention Recommendations
+Changed the order formula from `Math.max(1, Math.round(Math.log2(mooreGridSize)) - 1)` to `Math.max(1, Math.round(Math.log2(mooreGridSize)))` in both `mooreAlgorithmSteps` and `mooreSolution`.
 
-### Implemented in This Template
+### Fix 2: Correct Grid Size Calculation
 
-1. **Fresh Merge Simulation**: CI simulates a fresh merge before running checks
-2. **ESLint max-lines Rule**: Enforces file size limits at lint time
-3. **Version Check**: Prevents manual version changes
+Changed `calculateMooreGridSize` from `2^(floor(log2(gridSize)) + 1)` to `2^(round(log2(gridSize)))`, so the function now returns the nearest power of 2 (identity for valid inputs).
 
-### Additional Protection Options
+### Fix 3: Grid Size Selector Uses Valid Sizes Only
 
-For teams wanting extra protection:
+Replaced the numeric input (range 5-50) with a dropdown selector showing only valid Moore curve sizes: 2, 4, 8, 16, 32, 64. This ensures the displayed grid size always matches the actual algorithm grid size, eliminating confusion.
 
-1. **Enable GitHub Merge Queue**: Tests PRs against the latest main before merge
-2. **Require Branches Up-to-Date**: Force PRs to be rebased before merging
-3. **Add Pre-commit Hooks**: Check constraints locally before pushing
-4. **Branch Protection Rules**: Require status checks to pass before merging
+Exported a `VALID_GRID_SIZES` constant from the algorithms library for use by the UI.
 
-## Research: Online Sources
+## Tests Added
 
-### GitHub's Merge Preview Behavior
+1. **Moore curve full coverage test**: Verifies that for grid sizes 2, 4, 8, and 16, the Moore curve covers 100% of grid vertices.
+2. **No cross-shaped gap test**: Explicitly checks that the center point and entire middle row/column are covered.
+3. **Grid size selector tests**: Verifies the dropdown contains exactly the valid Moore curve sizes [2, 4, 8, 16, 32, 64].
+4. **calculateMooreGridSize tests**: Updated to verify correct power-of-2 mapping.
 
-According to [GitHub Actions and Merge Conflicts analysis](https://medium.com/@FartsyRainbowOctopus/github-actions-and-merge-conflicts-a-comprehensive-analysis-and-definitive-guide-to-unlocking-54fa45a38886):
+## Research: Moore Curve Properties
 
-> For "on: pull_request" workflows to accurately validate code in its merged state, GitHub executes a crucial preliminary step: it attempts to create a temporary merge commit by merging the pull request's head branch into its base branch.
+According to [Wikipedia - Moore curve](https://en.wikipedia.org/wiki/Moore_curve):
 
-### GitHub Merge Queue Benefits
+> A Moore curve is a continuous fractal space-filling curve which is a variant of the Hilbert curve. It is the loop version of the Hilbert curve, and may be thought of as the union of four copies of the Hilbert curves combined in such a way to make the endpoints coincide.
 
-According to [GitHub Docs on Merge Queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue):
+Key properties:
 
-> The merge queue will ensure the pull request's changes pass all required status checks when applied to the latest version of the target branch and any pull requests already in the queue.
+- A Moore curve of order N visits all 4^N points of a 2^N × 2^N grid
+- It forms a closed loop (start and end points coincide)
+- It preserves locality (nearby points on the curve are spatially close)
+- The center of the grid is passed through twice during traversal
 
-### Best Practices for CI
+## Timeline
 
-According to [Graphite's best practices guide](https://graphite.com/guides/best-practices-managing-merge-queue):
+| Date       | Event                                                                        |
+| ---------- | ---------------------------------------------------------------------------- |
+| 2026-01-30 | Issue #23 created: Moore curve not densely packed, grid size selector broken |
+| 2026-01-30 | Root cause identified: off-by-one error in Moore curve order calculation     |
+| 2026-01-30 | Fix implemented: correct order formula + grid size selector with valid sizes |
 
-> How well your GitHub merge queue works really comes down to the status checks you mark as required. These are the automated tasks – think CI builds, tests, linters, or security scans – that absolutely must pass on those temporary merge branches before a PR gets merged.
+## Files Changed
 
-## Timeline of Events
+- `src/lib/algorithms/progressive/solutions/moore.js` - Fixed order calculation in `mooreAlgorithmSteps` and `mooreSolution`
+- `src/lib/algorithms/utils.js` - Fixed `calculateMooreGridSize`, added `VALID_GRID_SIZES` constant
+- `src/app/ui/components/Controls.jsx` - Changed grid size input to dropdown with valid sizes
+- `src/app/ui/App.jsx` - Updated default grid size from 10 to 8
+- `src/tests/index.test.js` - Updated and added tests for correct behavior
+- `src/tests/components/Controls.test.jsx` - Updated tests for new dropdown selector
 
-| Date       | Event                                                   | Result               |
-| ---------- | ------------------------------------------------------- | -------------------- |
-| 2026-01-11 | PR #1105 CI passes in hive-mind (merge preview at 1495) | Green checkmark      |
-| 2026-01-14 | Other PRs add lines to file                             | File grows           |
-| 2026-01-15 | More changes push file to 1512 lines                    | Still over limit     |
-| 2026-01-15 | Attempt to fix brings it to 1498 lines                  | Back under limit     |
-| 2026-01-19 | PR #1105 merged (actual merge at 1506 lines)            | Main branch CI fails |
-| 2026-01-19 | Issue #1141 created in hive-mind                        | Investigation begins |
-| 2026-01-19 | PR #1142 implements fresh merge simulation fix          | Solution implemented |
-| 2026-01-19 | Issue #23 created to port fixes to this template        | Current case study   |
+## References
 
-## Files in This Case Study
-
-- `README.md` - This documentation
-- `data/` - Downloaded logs and data from hive-mind repository
-  - `pr-1142-diff.txt` - Full diff of the fix PR
-  - `pr-1127-diff.txt` - Diff of version-check addition
-  - `issue-1141-details.txt` - Original issue description
-  - `hive-mind-release.yml` - Reference workflow file
-
-## Related Issues and PRs
-
-- [hive-mind Issue #1141](https://github.com/link-assistant/hive-mind/issues/1141): Make sure our lines count checks are synchronized in CI/CD
-- [hive-mind PR #1142](https://github.com/link-assistant/hive-mind/pull/1142): fix: synchronize line count checks in CI/CD
-- [hive-mind PR #1127](https://github.com/link-assistant/hive-mind/pull/1127): Add --prompt-subagents-via-agent-commander option (includes version-check CI job)
-
-## Conclusion
-
-The stale merge preview issue is a fundamental architectural limitation of GitHub's pull request CI system. By implementing fresh merge simulation in our CI workflows, we ensure that:
-
-1. PR CI validates the **actual** merge result, not a stale snapshot
-2. Developers get accurate feedback before merging
-3. Main branch CI failures due to stale previews are prevented
-4. Team productivity is maintained by avoiding post-merge firefighting
-
-This solution has been proven effective in the hive-mind repository and is now incorporated into this template for all projects to benefit from.
+- [Moore curve - Wikipedia](https://en.wikipedia.org/wiki/Moore_curve)
+- [Space-filling curve - Wikipedia](https://en.wikipedia.org/wiki/Space-filling_curve)
+- [Hilbert curve - Wikipedia](https://en.wikipedia.org/wiki/Hilbert_curve)
+- [L-system - Wikipedia](https://en.wikipedia.org/wiki/L-system)
