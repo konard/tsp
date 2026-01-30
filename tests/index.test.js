@@ -1,39 +1,39 @@
 /**
  * Test file for TSP algorithms
- * Works with Node.js, Bun, and Deno
+ * Works with Bun test runner
  */
 
-import { describe, it, expect } from 'test-anywhere';
+import { describe, it, expect } from 'bun:test';
 import {
   calculateMooreGridSize,
   generateRandomPoints,
   distance,
   calculateTotalDistance,
-} from '../src/algorithms/utils.js';
+} from '../lib/algorithms/utils.js';
 import {
   sonarAlgorithmSteps,
   sonarSolution,
-} from '../src/algorithms/progressive/solutions/sonar.js';
+} from '../lib/algorithms/progressive/solutions/sonar.js';
 import {
   mooreAlgorithmSteps,
   mooreSolution,
   generateMooreCurve,
   mooreCurveToPoints,
-} from '../src/algorithms/progressive/solutions/moore.js';
+} from '../lib/algorithms/progressive/solutions/moore.js';
 import {
   zigzagOptSteps,
   zigzagOpt,
   // Legacy aliases
   sonarOptimizationSteps,
   sonarOptimization,
-} from '../src/algorithms/progressive/optimizations/zigzag-opt.js';
+} from '../lib/algorithms/progressive/optimizations/zigzag-opt.js';
 import {
   twoOptSteps,
   twoOpt,
   // Legacy aliases
   mooreOptimizationSteps,
   mooreOptimization,
-} from '../src/algorithms/progressive/optimizations/two-opt.js';
+} from '../lib/algorithms/progressive/optimizations/two-opt.js';
 
 // ============================================================
 // Utility Functions Tests

@@ -1,44 +1,52 @@
 {
-  "name": "my-package",
+  "name": "tsp-visual-solver",
   "version": "0.5.0",
-  "description": "A JavaScript/TypeScript package template for AI-driven development",
+  "description": "TSP Visual Solver - Algorithms for Traveling Salesman Problem with visualization",
   "type": "module",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "exports": {
     ".": {
-      "types": "./src/index.d.ts",
-      "import": "./src/index.js"
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./algorithms": {
+      "types": "./lib/algorithms/index.d.ts",
+      "import": "./lib/algorithms/index.js"
     }
   },
   "scripts": {
-    "test": "node --test tests/",
+    "dev": "bun run build && bun --hot serve",
+    "build": "bun run build:app",
+    "build:app": "bun build app/main.jsx --outdir dist --minify --target browser",
+    "serve": "bun --bun serve",
+    "test": "bun test",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "check:duplication": "jscpd .",
-    "check": "npm run lint && npm run format:check && npm run check:duplication",
+    "check": "bun run lint && bun run format:check && bun run check:duplication",
     "prepare": "husky || true",
     "changeset": "changeset",
-    "changeset:version": "node scripts/changeset-version.mjs",
+    "changeset:version": "bun scripts/changeset-version.mjs",
     "changeset:publish": "changeset publish",
     "changeset:status": "changeset status --since=origin/main"
   },
   "keywords": [
-    "template",
-    "javascript",
-    "typescript",
-    "ai-driven"
+    "tsp",
+    "traveling-salesman",
+    "algorithms",
+    "visualization",
+    "moore-curve",
+    "sonar-algorithm",
+    "optimization"
   ],
   "author": "",
   "license": "Unlicense",
   "repository": {
     "type": "git",
-    "url": "https://github.com/link-foundation/js-ai-driven-development-pipeline-template"
-  },
-  "engines": {
-    "node": ">=20.0.0"
+    "url": "https://github.com/konard/tsp"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
@@ -48,11 +56,14 @@
     "husky": "^9.1.7",
     "jscpd": "^4.0.5",
     "lint-staged": "^16.2.6",
-    "prettier": "^3.6.2",
-    "test-anywhere": "^0.8.48"
+    "prettier": "^3.6.2"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "lint-staged": {
-    "*.{js,mjs,cjs}": [
+    "*.{js,mjs,cjs,jsx}": [
       "eslint --fix --max-warnings 0 --no-warn-ignored",
       "prettier --write",
       "prettier --check"

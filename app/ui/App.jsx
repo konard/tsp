@@ -7,12 +7,10 @@
  * - UI layout with controls and side-by-side visualizations
  */
 
-const { useState, useEffect, useRef, useCallback } = React;
+import { useState, useEffect, useRef, useCallback } from 'react';
 
-// Import algorithm functions
-// Note: When using as ES modules, import from the algorithms package
-// These are referenced via global scope when loaded via script tags
-const {
+// Import algorithm functions from lib
+import {
   calculateMooreGridSize,
   generateRandomPoints,
   calculateTotalDistance,
@@ -21,13 +19,13 @@ const {
   // Generic optimizations that can work with any tour
   zigzagOptSteps,
   twoOptSteps,
-} = window.TSPAlgorithms || {};
+} from '../../lib/index.js';
 
 // Import UI components
-// Note: When using as ES modules, import from the components package
-// These are referenced via global scope when loaded via script tags
-const { TSPVisualization, Controls, Legend, VisualizationPanel } =
-  window.TSPComponents || {};
+import { TSPVisualization } from './components/TSPVisualization.jsx';
+import { Controls } from './components/Controls.jsx';
+import { Legend } from './components/Legend.jsx';
+import { VisualizationPanel } from './components/VisualizationPanel.jsx';
 
 /**
  * App - Main application component

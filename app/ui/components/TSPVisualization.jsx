@@ -6,7 +6,7 @@
  * (sweep line for Sonar, curve for Moore).
  */
 
-const { useState, useEffect, useRef } = React;
+import { useState, useEffect, useRef } from 'react';
 
 /**
  * Convert point coordinates to SVG space
