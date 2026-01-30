@@ -1,9 +1,12 @@
 /**
- * Moore Optimization (2-opt)
+ * 2-opt Optimization
  *
- * This optimization improves the initial Moore curve tour using the standard
+ * This optimization improves any initial tour using the standard
  * 2-opt algorithm, which iteratively reverses segments of the tour to reduce
  * total distance.
+ *
+ * This is a generic optimization that works with any TSP tour regardless of
+ * how the initial solution was constructed.
  *
  * Time Complexity: O(n^2) worst case
  * Space Complexity: O(n)
@@ -16,9 +19,13 @@ import { distance } from '../../utils.js';
  *
  * @param {Array<{x: number, y: number}>} points - Array of points
  * @param {number[]} initialTour - Initial tour to optimize
+ * @param {Object} options - Optional configuration
+ * @param {number} options.maxIterations - Maximum optimization iterations (default: 50)
  * @returns {Array<Object>} Array of optimization steps
  */
-export const mooreOptimizationSteps = (points, initialTour) => {
+export const twoOptSteps = (points, initialTour, options = {}) => {
+  const { maxIterations = 50 } = options;
+
   if (initialTour.length < 4) {
     return [];
   }
@@ -27,7 +34,6 @@ export const mooreOptimizationSteps = (points, initialTour) => {
   const tour = [...initialTour];
   let improved = true;
   let iteration = 0;
-  const maxIterations = 50;
 
   while (improved && iteration < maxIterations) {
     improved = false;
@@ -79,9 +85,13 @@ export const mooreOptimizationSteps = (points, initialTour) => {
  *
  * @param {Array<{x: number, y: number}>} points - Array of points
  * @param {number[]} initialTour - Initial tour to optimize
+ * @param {Object} options - Optional configuration
+ * @param {number} options.maxIterations - Maximum optimization iterations (default: 50)
  * @returns {{tour: number[], improvement: number}} Optimized tour and total improvement
  */
-export const mooreOptimization = (points, initialTour) => {
+export const twoOpt = (points, initialTour, options = {}) => {
+  const { maxIterations = 50 } = options;
+
   if (initialTour.length < 4) {
     return { tour: [...initialTour], improvement: 0 };
   }
@@ -90,7 +100,6 @@ export const mooreOptimization = (points, initialTour) => {
   let totalImprovement = 0;
   let improved = true;
   let iteration = 0;
-  const maxIterations = 50;
 
   while (improved && iteration < maxIterations) {
     improved = false;
@@ -127,4 +136,8 @@ export const mooreOptimization = (points, initialTour) => {
   return { tour, improvement: totalImprovement };
 };
 
-export default mooreOptimizationSteps;
+// Legacy aliases for backward compatibility
+export const mooreOptimizationSteps = twoOptSteps;
+export const mooreOptimization = twoOpt;
+
+export default twoOptSteps;

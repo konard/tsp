@@ -21,13 +21,19 @@ import {
   mooreCurveToPoints,
 } from '../src/algorithms/progressive/solutions/moore.js';
 import {
+  zigzagOptSteps,
+  zigzagOpt,
+  // Legacy aliases
   sonarOptimizationSteps,
   sonarOptimization,
-} from '../src/algorithms/progressive/optimizations/sonar-opt.js';
+} from '../src/algorithms/progressive/optimizations/zigzag-opt.js';
 import {
+  twoOptSteps,
+  twoOpt,
+  // Legacy aliases
   mooreOptimizationSteps,
   mooreOptimization,
-} from '../src/algorithms/progressive/optimizations/moore-opt.js';
+} from '../src/algorithms/progressive/optimizations/two-opt.js';
 
 // ============================================================
 // Utility Functions Tests
@@ -403,6 +409,131 @@ describe('mooreOptimization', () => {
     const tour = [0, 2, 4, 1, 3];
     const originalDistance = calculateTotalDistance(tour, points);
     const result = mooreOptimization(points, tour);
+    const newDistance = calculateTotalDistance(result.tour, points);
+    expect(newDistance).toBeLessThanOrEqual(originalDistance);
+  });
+});
+
+// ============================================================
+// Generic Optimization Tests (new generic API)
+// ============================================================
+
+describe('twoOptSteps (generic 2-opt)', () => {
+  it('should return empty array for tour with less than 4 points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+    ];
+    const tour = [0, 1, 2];
+    expect(twoOptSteps(points, tour)).toEqual([]);
+  });
+
+  it('should work on any tour regardless of source algorithm', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 5, y: 5 },
+    ];
+    // This is not from any specific algorithm
+    const randomTour = [0, 2, 4, 1, 3];
+    const steps = twoOptSteps(points, randomTour);
+    expect(Array.isArray(steps)).toBe(true);
+  });
+
+  it('should respect maxIterations option', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    const tour = [0, 1, 2, 3];
+    const steps = twoOptSteps(points, tour, { maxIterations: 1 });
+    // Should still return valid array
+    expect(Array.isArray(steps)).toBe(true);
+  });
+});
+
+describe('twoOpt (generic atomic 2-opt)', () => {
+  it('should return original tour for small inputs', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+    ];
+    const tour = [0, 1];
+    const result = twoOpt(points, tour);
+    expect(result.tour).toEqual(tour);
+    expect(result.improvement).toBe(0);
+  });
+
+  it('should never increase tour distance', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 5, y: 5 },
+    ];
+    const tour = [0, 2, 4, 1, 3];
+    const originalDistance = calculateTotalDistance(tour, points);
+    const result = twoOpt(points, tour);
+    const newDistance = calculateTotalDistance(result.tour, points);
+    expect(newDistance).toBeLessThanOrEqual(originalDistance);
+  });
+});
+
+describe('zigzagOptSteps (generic zigzag)', () => {
+  it('should return empty array for tour with less than 4 points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+    ];
+    const tour = [0, 1, 2];
+    expect(zigzagOptSteps(points, tour)).toEqual([]);
+  });
+
+  it('should work on any tour regardless of source algorithm', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 5, y: 5 },
+    ];
+    // This is not from any specific algorithm
+    const randomTour = [0, 2, 4, 1, 3];
+    const steps = zigzagOptSteps(points, randomTour);
+    expect(Array.isArray(steps)).toBe(true);
+  });
+});
+
+describe('zigzagOpt (generic atomic zigzag)', () => {
+  it('should return original tour for small inputs', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+    ];
+    const tour = [0, 1];
+    const result = zigzagOpt(points, tour);
+    expect(result.tour).toEqual(tour);
+    expect(result.improvement).toBe(0);
+  });
+
+  it('should never increase tour distance', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+      { x: 5, y: 5 },
+    ];
+    const tour = [0, 2, 4, 1, 3];
+    const originalDistance = calculateTotalDistance(tour, points);
+    const result = zigzagOpt(points, tour);
     const newDistance = calculateTotalDistance(result.tour, points);
     expect(newDistance).toBeLessThanOrEqual(originalDistance);
   });

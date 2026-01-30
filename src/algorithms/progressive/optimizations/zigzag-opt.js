@@ -1,8 +1,11 @@
 /**
- * Sonar Optimization (Zigzag 2-opt style)
+ * Zigzag Optimization (Adjacent Pair Swap)
  *
- * This optimization improves the initial Sonar tour by swapping adjacent point pairs
+ * This optimization improves any initial tour by swapping adjacent point pairs
  * when doing so reduces the total tour distance.
+ *
+ * This is a generic optimization that works with any TSP tour regardless of
+ * how the initial solution was constructed.
  *
  * Time Complexity: O(n^2) worst case
  * Space Complexity: O(n)
@@ -15,9 +18,13 @@ import { distance } from '../../utils.js';
  *
  * @param {Array<{x: number, y: number}>} points - Array of points
  * @param {number[]} initialTour - Initial tour to optimize
+ * @param {Object} options - Optional configuration
+ * @param {number} options.maxIterations - Maximum optimization iterations (default: 100)
  * @returns {Array<Object>} Array of optimization steps
  */
-export const sonarOptimizationSteps = (points, initialTour) => {
+export const zigzagOptSteps = (points, initialTour, options = {}) => {
+  const { maxIterations = 100 } = options;
+
   if (initialTour.length < 4) {
     return [];
   }
@@ -26,7 +33,6 @@ export const sonarOptimizationSteps = (points, initialTour) => {
   const tour = [...initialTour];
   let improved = true;
   let iteration = 0;
-  const maxIterations = 100;
 
   while (improved && iteration < maxIterations) {
     improved = false;
@@ -69,9 +75,13 @@ export const sonarOptimizationSteps = (points, initialTour) => {
  *
  * @param {Array<{x: number, y: number}>} points - Array of points
  * @param {number[]} initialTour - Initial tour to optimize
+ * @param {Object} options - Optional configuration
+ * @param {number} options.maxIterations - Maximum optimization iterations (default: 100)
  * @returns {{tour: number[], improvement: number}} Optimized tour and total improvement
  */
-export const sonarOptimization = (points, initialTour) => {
+export const zigzagOpt = (points, initialTour, options = {}) => {
+  const { maxIterations = 100 } = options;
+
   if (initialTour.length < 4) {
     return { tour: [...initialTour], improvement: 0 };
   }
@@ -80,7 +90,6 @@ export const sonarOptimization = (points, initialTour) => {
   let totalImprovement = 0;
   let improved = true;
   let iteration = 0;
-  const maxIterations = 100;
 
   while (improved && iteration < maxIterations) {
     improved = false;
@@ -108,4 +117,8 @@ export const sonarOptimization = (points, initialTour) => {
   return { tour, improvement: totalImprovement };
 };
 
-export default sonarOptimizationSteps;
+// Legacy aliases for backward compatibility
+export const sonarOptimizationSteps = zigzagOptSteps;
+export const sonarOptimization = zigzagOpt;
+
+export default zigzagOptSteps;

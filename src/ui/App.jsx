@@ -18,8 +18,9 @@ const {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
-  sonarOptimizationSteps,
-  mooreOptimizationSteps,
+  // Generic optimizations that can work with any tour
+  zigzagOptSteps,
+  twoOptSteps,
 } = window.TSPAlgorithms || {};
 
 // Import UI components
@@ -101,8 +102,9 @@ const App = () => {
     const sonarTour = sonarSteps[sonarSteps.length - 1]?.tour || [];
     const mooreTour = mooreSteps[mooreSteps.length - 1]?.tour || [];
 
-    const newSonarOptSteps = sonarOptimizationSteps(points, sonarTour);
-    const newMooreOptSteps = mooreOptimizationSteps(points, mooreTour);
+    // Use generic optimizations - zigzag for Sonar tour, 2-opt for Moore tour
+    const newSonarOptSteps = zigzagOptSteps(points, sonarTour);
+    const newMooreOptSteps = twoOptSteps(points, mooreTour);
 
     setSonarOptSteps(newSonarOptSteps);
     setMooreOptSteps(newMooreOptSteps);
