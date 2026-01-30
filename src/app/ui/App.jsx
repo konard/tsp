@@ -392,16 +392,16 @@ const App = () => {
     }
     if (optimalResult) {
       const pct = ((dist / optimalResult.distance) * 100).toFixed(1);
-      return `${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
+      return `Distance: ${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
     }
     if (verificationResult) {
       const lb = verificationResult.lowerBound;
       if (lb > 0) {
         const pct = ((dist / lb) * 100).toFixed(1);
-        return `${dist.toFixed(2)} (${pct}% of lower bound ${lb.toFixed(2)})`;
+        return `Distance: ${dist.toFixed(2)} (${pct}% of lower bound ${lb.toFixed(2)})`;
       }
     }
-    return `${dist.toFixed(2)}`;
+    return `Distance: ${dist.toFixed(2)}`;
   };
 
   const leftMeta = ALGORITHM_META[leftAlgorithm];
