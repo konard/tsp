@@ -1,5 +1,5 @@
 ---
-'tsp-algorithms': minor
+'my-package': minor
 ---
 
 Add CI timeout configuration and improve E2E test resilience
