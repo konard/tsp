@@ -204,6 +204,37 @@ deno run your-script.ts
 
 Where n is the number of points.
 
+## Performance Benchmarks
+
+Performance tested with Bun runtime on a 16x16 Moore grid:
+
+### Execution Time
+
+| Points | Sonar | Moore | 2-opt (Sonar) | 2-opt (Moore) |
+| ------ | ----- | ----- | ------------- | ------------- |
+| 25     | 27μs  | 271μs | 500μs         | 149μs         |
+| 50     | 23μs  | 377μs | 2.17ms        | 956μs         |
+| 100    | 36μs  | 656μs | 1.74ms        | 1.80ms        |
+| 200    | 44μs  | 797μs | 3.55ms        | 10.8ms        |
+
+### Tour Quality (Lower = Better)
+
+| Points | Sonar  | Moore  | Sonar + 2-opt | Moore + 2-opt |
+| ------ | ------ | ------ | ------------- | ------------- |
+| 50     | 152.45 | 125.91 | 107.59        | 109.59        |
+| 100    | 306.81 | 170.54 | 242.45        | 164.66        |
+| 200    | 526.07 | 244.20 | 481.01        | 237.45        |
+
+**Key findings:**
+
+- **Sonar** is faster but produces longer tours
+- **Moore** produces significantly better tours, especially for larger problems
+- **2-opt** improves both algorithms, with larger gains on Sonar tours
+- For best quality: Use **Moore + 2-opt**
+- For fastest results: Use **Sonar** alone
+
+For detailed benchmark analysis, see [BENCHMARK.md](BENCHMARK.md).
+
 ## License
 
 [Unlicense](LICENSE) - Public Domain
