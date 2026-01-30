@@ -1,3 +1,9 @@
-# Bun configuration
-# Note: Bun doesn't support excluding test files directly in config
-# Use CLI flags or file naming patterns instead
+# Bun configuration for TSP Visual Solver
+
+[install]
+# Package installation settings
+auto = "fallback"
+
+[test]
+# Preload test setup for DOM environment
+preload = ["./tests/setup.js"]

@@ -1,0 +1,287 @@
+/**
+ * TSP Visual Solver Styles
+ *
+ * A clean, responsive design for the TSP solver application.
+ */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    sans-serif;
+  background: #f8f9fa;
+  min-height: 100vh;
+  color: #212529;
+}
+
+.app {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  padding: clamp(12px, 3vw, 24px);
+}
+
+h1 {
+  font-size: clamp(1.25rem, 4vw, 1.5rem);
+  font-weight: 600;
+  margin-bottom: clamp(16px, 3vw, 24px);
+  color: #212529;
+  text-align: center;
+}
+
+/* Controls Panel */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 2vw, 16px);
+  margin-bottom: clamp(16px, 3vw, 24px);
+  padding: clamp(12px, 2vw, 16px);
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.control-group label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.control-group input,
+.control-group select {
+  padding: 8px 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  min-width: 80px;
+  max-width: 120px;
+}
+
+.control-group input:focus,
+.control-group select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+}
+
+/* Buttons */
+.buttons {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.2s,
+    transform 0.1s;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+.btn-primary {
+  background: #0d6efd;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #0b5ed7;
+}
+
+.btn-primary:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #5c636a;
+}
+
+.btn-outline {
+  background: white;
+  color: #0d6efd;
+  border: 1px solid #0d6efd;
+}
+
+.btn-outline:hover {
+  background: #0d6efd;
+  color: white;
+}
+
+/* Speed Control */
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.speed-control input[type='range'] {
+  width: 100px;
+}
+
+/* Visualization Container */
+.visualization-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr));
+  gap: clamp(16px, 3vw, 24px);
+}
+
+.visualization {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.visualization-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #dee2e6;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.visualization-header h2 {
+  font-size: clamp(0.875rem, 2.5vw, 1rem);
+  font-weight: 600;
+}
+
+.visualization-stats {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+.algorithm-aliases {
+  padding: 6px 16px;
+  font-size: clamp(0.6rem, 1.5vw, 0.7rem);
+  color: #868e96;
+  background: #f1f3f5;
+  font-style: italic;
+  text-align: center;
+}
+
+.canvas-wrapper {
+  padding: clamp(8px, 2vw, 16px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+canvas,
+svg {
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  max-width: 100%;
+  height: auto;
+}
+
+.step-info {
+  padding: 12px 16px;
+  border-top: 1px solid #dee2e6;
+  font-size: 0.875rem;
+  color: #495057;
+  background: #f8f9fa;
+}
+
+/* Legend */
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 2vw, 16px);
+  padding: clamp(8px, 2vw, 12px) clamp(12px, 2vw, 16px);
+  border-top: 1px solid #dee2e6;
+  font-size: clamp(0.65rem, 1.5vw, 0.75rem);
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+}
+
+/* Mobile-first responsive adjustments */
+@media (max-width: 480px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .control-group {
+    width: 100%;
+  }
+
+  .control-group input,
+  .control-group select {
+    width: 100%;
+    max-width: none;
+  }
+
+  .buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .speed-control {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .speed-control input[type='range'] {
+    flex: 1;
+    width: auto;
+  }
+
+  .visualization-header {
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .controls {
+    justify-content: space-around;
+  }
+}
+
+@media (max-width: 768px) {
+  .visualization-container {
+    grid-template-columns: 1fr;
+  }
+}
