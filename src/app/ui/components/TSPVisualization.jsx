@@ -237,7 +237,7 @@ const TSPVisualization = ({
             fontSize="9"
             fill="#495057"
           >
-            {idx}({point.x},{point.y})
+            {idx} ({point.x}, {point.y})
           </text>
         )}
       </g>
