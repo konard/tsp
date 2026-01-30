@@ -31,7 +31,7 @@ import { VisualizationPanel } from './components/VisualizationPanel.jsx';
  * App - Main application component
  */
 const App = () => {
-  const [gridSize, setGridSize] = useState(8);
+  const [gridSize, setGridSize] = useState(10);
   const [numPoints, setNumPoints] = useState(15);
   const [points, setPoints] = useState([]);
   const [speed, setSpeed] = useState(500);
