@@ -3,3 +3,7 @@
 [install]
 # Package installation settings
 auto = "fallback"
+
+[test]
+# Preload test setup for DOM environment
+preload = ["./tests/setup.js"]
