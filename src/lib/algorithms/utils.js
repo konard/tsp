@@ -3,15 +3,27 @@
  */
 
 /**
+ * Valid Moore curve grid sizes (powers of 2)
+ * Moore curve of order n fills a 2^n × 2^n grid
+ * @type {number[]}
+ */
+export const VALID_GRID_SIZES = [2, 4, 8, 16, 32, 64];
+
+/**
  * Calculate the Moore grid size based on user-specified grid size
- * Moore curve of order n fills a 2^(n+1) x 2^(n+1) grid
- * We choose order such that mooreGridSize >= gridSize
+ * Moore curve of order n fills a 2^n × 2^n grid
+ * Returns the nearest valid power-of-2 grid size
  * @param {number} gridSize - User-specified grid size
  * @returns {number} Moore grid size (power of 2)
  */
 export const calculateMooreGridSize = (gridSize) => {
-  const order = Math.max(1, Math.min(4, Math.floor(Math.log2(gridSize))));
-  return Math.pow(2, order + 1);
+  const order = Math.max(1, Math.ceil(Math.log2(gridSize)));
+  const result = Math.pow(2, order);
+  // Clamp to valid range
+  return Math.max(
+    VALID_GRID_SIZES[0],
+    Math.min(VALID_GRID_SIZES[VALID_GRID_SIZES.length - 1], result)
+  );
 };
 
 /**
