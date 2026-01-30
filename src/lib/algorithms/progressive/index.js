@@ -4,5 +4,5 @@
  * These algorithms return arrays of steps for animation/visualization.
  */
 
-export * from './solutions/index.js';
-export * from './optimizations/index.js';
+export * from './solution/index.js';
+export * from './optimization/index.js';

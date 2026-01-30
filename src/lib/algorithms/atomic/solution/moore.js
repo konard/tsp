@@ -8,4 +8,4 @@
 export {
   mooreSolution,
   mooreSolution as default,
-} from '../../progressive/solutions/moore.js';
+} from '../../progressive/solution/moore.js';

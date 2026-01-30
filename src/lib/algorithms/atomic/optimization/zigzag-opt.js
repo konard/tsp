@@ -8,4 +8,4 @@
 export {
   zigzagOpt,
   zigzagOpt as default,
-} from '../../progressive/optimizations/zigzag-opt.js';
+} from '../../progressive/optimization/zigzag-opt.js';

@@ -24,7 +24,7 @@ Screenshots of the fixed application:
 
 ### The Normalization Bug
 
-The root cause was in the `mooreCurveToPoints()` function in `src/lib/algorithms/progressive/solutions/moore.js`.
+The root cause was in the `mooreCurveToPoints()` function in `src/lib/algorithms/progressive/solution/moore.js`.
 
 The function generates raw curve points using an L-system (turtle graphics), then normalizes them to fit the target grid. The normalization formula was:
 
@@ -103,7 +103,7 @@ For `generateMooreCurve(n)`: iterations = n, grid size = 2^(n+1), vertices = 4^(
 
 ### Algorithm Fixes
 
-1. **`mooreCurveToPoints()`** (`src/lib/algorithms/progressive/solutions/moore.js`): Fixed normalization from `* mooreGridSize` to `* (mooreGridSize - 1)`
+1. **`mooreCurveToPoints()`** (`src/lib/algorithms/progressive/solution/moore.js`): Fixed normalization from `* mooreGridSize` to `* (mooreGridSize - 1)`
 2. **Order calculation**: Changed `Math.max(1, ...)` to `Math.max(0, ...)` to support 2×2 grids
 3. **`calculateMooreGridSize()`** (`src/lib/algorithms/utils.js`): Replaced complex formula with simple lookup returning smallest valid size ≥ input
 4. **`VALID_GRID_SIZES`**: New constant `[2, 4, 8, 16, 32, 64]`

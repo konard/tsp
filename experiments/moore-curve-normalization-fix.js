@@ -2,7 +2,7 @@
  * Verify the normalization fix for mooreCurveToPoints
  */
 
-import { generateMooreCurve } from '../src/lib/algorithms/progressive/solutions/moore.js';
+import { generateMooreCurve } from '../src/lib/algorithms/progressive/solution/moore.js';
 
 // The raw curve before normalization
 function rawCurvePoints(sequence) {

@@ -14,27 +14,27 @@ import {
 import {
   sonarAlgorithmSteps,
   sonarSolution,
-} from '../lib/algorithms/progressive/solutions/sonar.js';
+} from '../lib/algorithms/progressive/solution/sonar.js';
 import {
   mooreAlgorithmSteps,
   mooreSolution,
   generateMooreCurve,
   mooreCurveToPoints,
-} from '../lib/algorithms/progressive/solutions/moore.js';
+} from '../lib/algorithms/progressive/solution/moore.js';
 import {
   zigzagOptSteps,
   zigzagOpt,
   // Legacy aliases
   sonarOptimizationSteps,
   sonarOptimization,
-} from '../lib/algorithms/progressive/optimizations/zigzag-opt.js';
+} from '../lib/algorithms/progressive/optimization/zigzag-opt.js';
 import {
   twoOptSteps,
   twoOpt,
   // Legacy aliases
   mooreOptimizationSteps,
   mooreOptimization,
-} from '../lib/algorithms/progressive/optimizations/two-opt.js';
+} from '../lib/algorithms/progressive/optimization/two-opt.js';
 
 // ============================================================
 // Utility Functions Tests

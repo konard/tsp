@@ -8,4 +8,4 @@
 export {
   sonarSolution,
   sonarSolution as default,
-} from '../../progressive/solutions/sonar.js';
+} from '../../progressive/solution/sonar.js';

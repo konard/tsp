@@ -8,4 +8,4 @@
 export {
   twoOpt,
   twoOpt as default,
-} from '../../progressive/optimizations/two-opt.js';
+} from '../../progressive/optimization/two-opt.js';
