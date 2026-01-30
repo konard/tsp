@@ -258,8 +258,14 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run tests
-        run: bun test
+      - name: Install Playwright browsers
+        run: bunx playwright install --with-deps chromium
+
+      - name: Run unit tests
+        run: bun test tests/lib tests/components
+
+      - name: Run E2E tests
+        run: bun test tests/e2e
 
   # === DEPLOY TO GITHUB PAGES ===
   deploy:
