@@ -1,5 +1,5 @@
 ---
-'tsp-solver': patch
+'my-package': patch
 ---
 
 Add CI timeout configuration and improve E2E test resilience
