@@ -5,10 +5,10 @@
  * regardless of how the initial solution was constructed.
  */
 
-// Generic optimization algorithms
-export { twoOptSteps, twoOpt } from './two-opt.js';
-export { zigzagOptSteps, zigzagOpt } from './zigzag-opt.js';
+// Generic optimization algorithms (step-by-step + atomic re-exports)
+export { twoOptSteps, twoOpt, mooreOptimization } from './two-opt.js';
+export { zigzagOptSteps, zigzagOpt, sonarOptimization } from './zigzag-opt.js';
 
-// Legacy aliases for backward compatibility
-export { mooreOptimizationSteps, mooreOptimization } from './two-opt.js';
-export { sonarOptimizationSteps, sonarOptimization } from './zigzag-opt.js';
+// Legacy step aliases for backward compatibility
+export { mooreOptimizationSteps } from './two-opt.js';
+export { sonarOptimizationSteps } from './zigzag-opt.js';

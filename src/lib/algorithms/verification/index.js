@@ -17,7 +17,7 @@ export { oneTreeLowerBound, verifyOptimality } from './lower-bound.js';
 // Re-export brute-force functions for backward compatibility
 export {
   bruteForceSolution as bruteForceOptimalTour,
-  bruteForceAlgorithmSteps as bruteForceSteps,
   calculateOptimalityRatio,
   BRUTE_FORCE_MAX_POINTS,
-} from '../progressive/solution/brute-force.js';
+} from '../atomic/solution/brute-force.js';
+export { bruteForceAlgorithmSteps as bruteForceSteps } from '../progressive/solution/brute-force.js';
