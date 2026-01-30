@@ -98,7 +98,7 @@ export const mooreAlgorithmSteps = (points, mooreGridSize) => {
       curvePosition: pointsWithCurvePos[i].curvePos,
       curveProgress: parseFloat(curveProgress),
       tour: [...tour],
-      description: `Curve progress: ${curveProgress}%, visiting point ${pointsWithCurvePos[i].idx}`,
+      description: `Progress: ${curveProgress}% | Point ${pointsWithCurvePos[i].idx} (${pointsWithCurvePos[i].x}, ${pointsWithCurvePos[i].y})`,
     });
   }
 

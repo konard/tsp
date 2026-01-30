@@ -222,13 +222,25 @@ const TSPVisualization = ({
     }
 
     return (
-      <circle
-        key={`point-${idx}`}
-        cx={p.x}
-        cy={p.y}
-        r={isLastAdded ? 6 : 4}
-        fill={fill}
-      />
+      <g key={`point-${idx}`}>
+        <circle cx={p.x} cy={p.y} r={isLastAdded ? 6 : 4} fill={fill}>
+          <title>
+            Point {idx} ({point.x}, {point.y})
+          </title>
+        </circle>
+        {/* Show point number + coordinates for small point sets */}
+        {points.length <= 20 && (
+          <text
+            x={p.x}
+            y={p.y - 8}
+            textAnchor="middle"
+            fontSize="9"
+            fill="#495057"
+          >
+            {idx}({point.x},{point.y})
+          </text>
+        )}
+      </g>
     );
   });
 

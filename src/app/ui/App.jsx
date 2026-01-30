@@ -76,6 +76,12 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
 };
 
 /**
+ * Check if an algorithm is execution-limited for the given number of points.
+ */
+const isAlgorithmLimited = (algorithmId, numPoints) =>
+  algorithmId === 'brute-force' && numPoints > BRUTE_FORCE_MAX_POINTS;
+
+/**
  * App - Main application component
  */
 const App = () => {
@@ -93,6 +99,7 @@ const App = () => {
 
   // Calculate Moore grid size - this is the unified grid both algorithms use
   const mooreGridSize = calculateMooreGridSize(gridSize);
+  const maxPoints = mooreGridSize * mooreGridSize;
 
   // Left panel state
   const [leftSteps, setLeftSteps] = useState([]);
@@ -110,8 +117,16 @@ const App = () => {
 
   const animationRef = useRef(null);
 
+  // Enforce points limit when grid size changes (Issue #5)
+  useEffect(() => {
+    if (numPoints > maxPoints) {
+      setNumPoints(Math.max(3, maxPoints));
+    }
+  }, [maxPoints, numPoints]);
+
   const generatePoints = useCallback(() => {
-    const newPoints = generateRandomPoints(mooreGridSize, numPoints);
+    const actualNumPoints = Math.min(numPoints, maxPoints);
+    const newPoints = generateRandomPoints(mooreGridSize, actualNumPoints);
     setPoints(newPoints);
     setLeftSteps([]);
     setLeftOptSteps([]);
@@ -124,7 +139,7 @@ const App = () => {
     setActiveOptimization(null);
     setOptimalResult(null);
     setVerificationResult(null);
-  }, [mooreGridSize, numPoints]);
+  }, [mooreGridSize, numPoints, maxPoints]);
 
   useEffect(() => {
     generatePoints();
@@ -140,8 +155,28 @@ const App = () => {
     }
   }, [points]);
 
+  // Compute lower-bound verification when points change
+  useEffect(() => {
+    if (points.length >= 2) {
+      // We use a dummy distance of 0 — we just need the lower bound value
+      const result = verifyOptimality(0, points);
+      setVerificationResult(result);
+    } else {
+      setVerificationResult(null);
+    }
+  }, [points]);
+
+  // Issue #8: Check if either algorithm is limited
+  const startDisabled =
+    isAlgorithmLimited(leftAlgorithm, points.length) ||
+    isAlgorithmLimited(rightAlgorithm, points.length);
+
+  const startDisabledReason = startDisabled
+    ? `Brute-Force limited to ${BRUTE_FORCE_MAX_POINTS} points (current: ${points.length})`
+    : '';
+
   const startSolution = useCallback(() => {
-    if (points.length === 0) return;
+    if (points.length === 0 || startDisabled) return;
 
     const newLeftSteps = runAlgorithmSteps(
       leftAlgorithm,
@@ -160,8 +195,10 @@ const App = () => {
     setRightCurrentStep(0);
     setShowOptimization(false);
     setActiveOptimization(null);
+    setLeftOptSteps([]);
+    setRightOptSteps([]);
     setIsRunning(true);
-  }, [points, mooreGridSize, leftAlgorithm, rightAlgorithm]);
+  }, [points, mooreGridSize, leftAlgorithm, rightAlgorithm, startDisabled]);
 
   const stopAnimation = useCallback(() => {
     setIsRunning(false);
@@ -170,12 +207,33 @@ const App = () => {
     }
   }, []);
 
+  // Issue #6: Get the current tour for a side (considering optimization)
+  const getCurrentTour = useCallback(
+    (side) => {
+      if (side === 'left') {
+        if (showOptimization && leftOptSteps.length > 0) {
+          return leftOptSteps[leftOptSteps.length - 1]?.tour || [];
+        }
+        return leftSteps.length > 0
+          ? leftSteps[leftSteps.length - 1]?.tour || []
+          : [];
+      }
+      if (showOptimization && rightOptSteps.length > 0) {
+        return rightOptSteps[rightOptSteps.length - 1]?.tour || [];
+      }
+      return rightSteps.length > 0
+        ? rightSteps[rightSteps.length - 1]?.tour || []
+        : [];
+    },
+    [showOptimization, leftOptSteps, rightOptSteps, leftSteps, rightSteps]
+  );
+
   const startOptimization = useCallback(
     (method) => {
-      if (leftSteps.length === 0 || rightSteps.length === 0) return;
-
-      const leftTour = leftSteps[leftSteps.length - 1]?.tour || [];
-      const rightTour = rightSteps[rightSteps.length - 1]?.tour || [];
+      // Issue #6: Use current tour (possibly already optimized)
+      const leftTour = getCurrentTour('left');
+      const rightTour = getCurrentTour('right');
+      if (leftTour.length === 0 || rightTour.length === 0) return;
 
       const optFn = method === '2-opt' ? twoOptSteps : zigzagOptSteps;
       let newLeftOptSteps = optFn(points, leftTour);
@@ -246,7 +304,7 @@ const App = () => {
       setActiveOptimization(method);
       setIsRunning(true);
     },
-    [points, leftSteps, rightSteps, optimalResult]
+    [points, getCurrentTour, optimalResult]
   );
 
   // Animation loop
@@ -316,23 +374,46 @@ const App = () => {
     return calculateTotalDistance(step.tour, points);
   };
 
-  const canOptimize =
+  // Issue #6: canOptimize when solution is done (not running) and we have steps
+  const solutionComplete =
     leftSteps.length > 0 &&
     rightSteps.length > 0 &&
     !isRunning &&
-    leftCurrentStep === leftSteps.length - 1;
+    (showOptimization
+      ? leftCurrentStep >= leftOptSteps.length - 1
+      : leftCurrentStep >= leftSteps.length - 1);
 
+  const canOptimize = solutionComplete;
+
+  // Issue #1: Format distance info with % of optimal and exact length
   const formatDistanceInfo = (dist) => {
-    if (!optimalResult || dist === 0) {
-      return `Distance: ${dist.toFixed(2)}`;
+    if (dist === 0) {
+      return 'Distance: —';
     }
-    const ratio = calculateOptimalityRatio(dist, optimalResult.distance);
-    const pct = (ratio * 100).toFixed(1);
-    return `Distance: ${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
+    if (optimalResult) {
+      const pct = ((dist / optimalResult.distance) * 100).toFixed(1);
+      return `${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
+    }
+    if (verificationResult) {
+      const lb = verificationResult.lowerBound;
+      if (lb > 0) {
+        const pct = ((dist / lb) * 100).toFixed(1);
+        return `${dist.toFixed(2)} (${pct}% of lower bound ${lb.toFixed(2)})`;
+      }
+    }
+    return `${dist.toFixed(2)}`;
   };
 
   const leftMeta = ALGORITHM_META[leftAlgorithm];
   const rightMeta = ALGORITHM_META[rightAlgorithm];
+
+  // Filtered options for algorithm selects (exclude the other side's selection)
+  const leftAlgorithmOptions = ALGORITHM_OPTIONS.filter(
+    (opt) => opt.id !== rightAlgorithm
+  );
+  const rightAlgorithmOptions = ALGORITHM_OPTIONS.filter(
+    (opt) => opt.id !== leftAlgorithm
+  );
 
   return (
     <div className="app">
@@ -354,15 +435,16 @@ const App = () => {
         onStop={stopAnimation}
         onOptimize={startOptimization}
         pointsCount={points.length}
-        leftAlgorithm={leftAlgorithm}
-        setLeftAlgorithm={setLeftAlgorithm}
-        rightAlgorithm={rightAlgorithm}
-        setRightAlgorithm={setRightAlgorithm}
+        startDisabled={startDisabled}
+        startDisabledReason={startDisabledReason}
       />
 
       <div className="visualization-container">
         <VisualizationPanel
-          title={leftMeta.title}
+          selectedAlgorithm={leftAlgorithm}
+          onAlgorithmChange={setLeftAlgorithm}
+          algorithmOptions={leftAlgorithmOptions}
+          isRunning={isRunning}
           aliases={leftMeta.aliases}
           distanceInfo={formatDistanceInfo(calculateLeftDistance())}
           visualization={
@@ -385,7 +467,10 @@ const App = () => {
         />
 
         <VisualizationPanel
-          title={rightMeta.title}
+          selectedAlgorithm={rightAlgorithm}
+          onAlgorithmChange={setRightAlgorithm}
+          algorithmOptions={rightAlgorithmOptions}
+          isRunning={isRunning}
           aliases={rightMeta.aliases}
           distanceInfo={formatDistanceInfo(calculateRightDistance())}
           visualization={
