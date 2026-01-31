@@ -2,7 +2,7 @@
 
 An interactive visualization tool for the Traveling Salesman Problem (TSP) that demonstrates and compares two space-filling curve-based heuristic algorithms.
 
-![TSP Visual Solver](screenshot.png)
+![TSP Visual Solver](https://raw.githubusercontent.com/konard/tsp/main/screenshot.png)
 
 ## Live Demo
 
