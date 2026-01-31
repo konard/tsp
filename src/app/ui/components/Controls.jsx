@@ -10,6 +10,7 @@
  */
 
 import { VALID_GRID_SIZES } from '../../../lib/algorithms/utils.js';
+import { t } from '../i18n.js';
 
 /**
  * Available algorithms for selection.
@@ -42,6 +43,7 @@ export const ALGORITHM_OPTIONS = [
  * @param {number} props.pointsCount - Current points count (for Start button state)
  * @param {boolean} props.startDisabled - Whether Start button should be disabled
  * @param {string} props.startDisabledReason - Tooltip explaining why Start is disabled
+ * @param {string} props.lang - Current language code
  */
 const Controls = ({
   gridSize,
@@ -61,12 +63,13 @@ const Controls = ({
   pointsCount,
   startDisabled,
   startDisabledReason,
+  lang = 'en',
 }) => {
   const maxPoints = mooreGridSize * mooreGridSize;
   return (
     <div className="controls">
       <div className="control-group">
-        <label>Grid Size (N×N)</label>
+        <label>{t(lang, 'gridSize')}</label>
         <select
           value={gridSize}
           onChange={(e) => setGridSize(parseInt(e.target.value))}
@@ -81,24 +84,39 @@ const Controls = ({
       </div>
 
       <div className="control-group">
-        <label>Points (max {maxPoints})</label>
+        <label>
+          {t(lang, 'points')} ({t(lang, 'max')} {maxPoints})
+        </label>
         <input
           type="number"
-          min="3"
+          min="1"
           max={maxPoints}
           value={numPoints}
           onChange={(e) => {
-            const val = parseInt(e.target.value) || 3;
-            setNumPoints(Math.max(3, Math.min(val, maxPoints)));
+            const val = parseInt(e.target.value);
+            if (isNaN(val) || val < 1) {
+              setNumPoints(e.target.value === '' ? '' : 1);
+              return;
+            }
+            setNumPoints(Math.min(val, maxPoints));
+          }}
+          onBlur={() => {
+            const val =
+              typeof numPoints === 'number' ? numPoints : parseInt(numPoints);
+            if (isNaN(val) || val < 3) {
+              setNumPoints(3);
+            } else if (val > maxPoints) {
+              setNumPoints(maxPoints);
+            }
           }}
           disabled={isRunning}
         />
       </div>
 
       <div className="control-group">
-        <label>Animation Speed</label>
+        <label>{t(lang, 'animationSpeed')}</label>
         <div className="speed-control">
-          <span>Fast</span>
+          <span>{t(lang, 'fast')}</span>
           <input
             type="range"
             min="50"
@@ -106,7 +124,7 @@ const Controls = ({
             value={speed}
             onChange={(e) => setSpeed(parseInt(e.target.value))}
           />
-          <span>Slow</span>
+          <span>{t(lang, 'slow')}</span>
         </div>
       </div>
 
@@ -116,19 +134,24 @@ const Controls = ({
           onClick={onGeneratePoints}
           disabled={isRunning}
         >
-          New Points
+          {t(lang, 'newPoints')}
         </button>
 
         {!isRunning ? (
           <>
-            <button
-              className="btn-primary"
-              onClick={onStart}
-              disabled={pointsCount === 0 || startDisabled}
-              title={startDisabledReason || ''}
+            <span
+              className={startDisabled ? 'tooltip-wrapper' : ''}
+              data-tooltip={startDisabledReason || undefined}
             >
-              Start
-            </button>
+              <button
+                className="btn-primary"
+                onClick={onStart}
+                disabled={pointsCount === 0 || startDisabled}
+                title={startDisabledReason || ''}
+              >
+                {t(lang, 'start')}
+              </button>
+            </span>
 
             {canOptimize && (
               <>
@@ -149,7 +172,7 @@ const Controls = ({
           </>
         ) : (
           <button className="btn-secondary" onClick={onStop}>
-            Stop
+            {t(lang, 'stop')}
           </button>
         )}
       </div>

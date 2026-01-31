@@ -178,7 +178,15 @@ const TSPVisualization = ({
       />
     );
     centroidCircle = (
-      <circle cx={center.x} cy={center.y} r="4" fill="#0d6efd" />
+      <circle
+        cx={center.x}
+        cy={center.y}
+        r="5"
+        fill="rgba(128, 0, 128, 0.3)"
+        stroke="purple"
+        strokeWidth="1.5"
+        strokeDasharray="3 2"
+      />
     );
   }
 
@@ -189,23 +197,74 @@ const TSPVisualization = ({
     const tourPoints = step.tour.map((idx) =>
       toSvgCoords(points[idx], padding, scale)
     );
-    let pathData = tourPoints
-      .map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`))
-      .join(' ');
-    // Close the loop if tour is complete
-    if (step.tour.length === points.length) {
-      pathData += ' Z';
+
+    // Determine which edges are modified (for optimization highlighting)
+    let modifiedEdges = null;
+    if (isOptimization && step.reversed) {
+      // 2-opt: edges around the reversed segment are modified
+      const [rStart, rEnd] = step.reversed;
+      modifiedEdges = new Set();
+      modifiedEdges.add(rStart - 1 >= 0 ? rStart - 1 : step.tour.length - 1);
+      modifiedEdges.add(rEnd);
+      for (let e = rStart; e < rEnd; e++) {
+        modifiedEdges.add(e);
+      }
+    } else if (isOptimization && step.swapped) {
+      // Zigzag: highlight edges around swapped points
+      modifiedEdges = new Set();
+      for (let e = 0; e < step.tour.length; e++) {
+        const nextE = (e + 1) % step.tour.length;
+        if (
+          step.swapped.includes(step.tour[e]) ||
+          step.swapped.includes(step.tour[nextE])
+        ) {
+          modifiedEdges.add(e);
+        }
+      }
     }
-    tourPath = (
-      <path
-        d={pathData}
-        fill="none"
-        stroke={isOptimization ? '#198754' : '#0d6efd'}
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    );
+
+    if (isOptimization && modifiedEdges && modifiedEdges.size > 0) {
+      // Draw unmodified edges in blue, modified edges in green
+      const edgeElements = [];
+      const isClosed = step.tour.length === points.length;
+      const edgeCount = isClosed ? tourPoints.length : tourPoints.length - 1;
+      for (let i = 0; i < edgeCount; i++) {
+        const from = tourPoints[i];
+        const to = tourPoints[(i + 1) % tourPoints.length];
+        const isModified = modifiedEdges.has(i);
+        edgeElements.push(
+          <line
+            key={`edge-${i}`}
+            x1={from.x}
+            y1={from.y}
+            x2={to.x}
+            y2={to.y}
+            stroke={isModified ? '#198754' : '#0d6efd'}
+            strokeWidth={isModified ? 3 : 2}
+            strokeLinecap="round"
+          />
+        );
+      }
+      tourPath = <g>{edgeElements}</g>;
+    } else {
+      let pathData = tourPoints
+        .map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`))
+        .join(' ');
+      // Close the loop if tour is complete
+      if (step.tour.length === points.length) {
+        pathData += ' Z';
+      }
+      tourPath = (
+        <path
+          d={pathData}
+          fill="none"
+          stroke={isOptimization ? '#198754' : '#0d6efd'}
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      );
+    }
   }
 
   // Generate point circles
@@ -228,18 +287,6 @@ const TSPVisualization = ({
             Point {idx} ({point.x}, {point.y})
           </title>
         </circle>
-        {/* Show point number + coordinates for small point sets */}
-        {points.length <= 20 && (
-          <text
-            x={p.x}
-            y={p.y - 8}
-            textAnchor="middle"
-            fontSize="9"
-            className="point-label"
-          >
-            {idx} ({point.x}, {point.y})
-          </text>
-        )}
       </g>
     );
   });

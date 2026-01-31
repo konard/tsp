@@ -63,7 +63,7 @@ describe('Controls', () => {
       const select = findSelectByLabel(container, 'Grid Size (N×N)');
       const options = Array.from(select.querySelectorAll('option'));
       const values = options.map((o) => o.value);
-      expect(values).toEqual(['2', '4', '8', '16', '32', '64']);
+      expect(values).toEqual(['2', '4', '8', '16', '32']);
     });
 
     it('should be disabled when running', () => {
@@ -94,7 +94,7 @@ describe('Controls', () => {
       const props = createDefaultProps();
       const { getByRole } = render(<Controls {...props} />);
       const pointsInput = getByRole('spinbutton');
-      expect(pointsInput.min).toBe('3');
+      expect(pointsInput.min).toBe('1');
     });
 
     it('should have correct max attribute based on grid size', () => {

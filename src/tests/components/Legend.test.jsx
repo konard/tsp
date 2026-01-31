@@ -41,16 +41,17 @@ describe('SonarLegend', () => {
     expect(getByText('Unvisited')).toBeDefined();
     expect(getByText('In Tour')).toBeDefined();
     expect(getByText('Current')).toBeDefined();
+    expect(getByText('Centroid')).toBeDefined();
   });
 
   it('should render optimization item when showOptimization is true', () => {
     const { getByText } = render(<SonarLegend showOptimization={true} />);
-    expect(getByText('Optimized')).toBeDefined();
+    expect(getByText('Modified Edge')).toBeDefined();
   });
 
   it('should not render optimization item when showOptimization is false', () => {
     const { queryByText } = render(<SonarLegend showOptimization={false} />);
-    expect(queryByText('Optimized')).toBeNull();
+    expect(queryByText('Modified Edge')).toBeNull();
   });
 });
 
@@ -65,12 +66,12 @@ describe('MooreLegend', () => {
 
   it('should render optimization item when showOptimization is true', () => {
     const { getByText } = render(<MooreLegend showOptimization={true} />);
-    expect(getByText('Optimized')).toBeDefined();
+    expect(getByText('Modified Edge')).toBeDefined();
   });
 
   it('should not render optimization item when showOptimization is false', () => {
     const { queryByText } = render(<MooreLegend showOptimization={false} />);
-    expect(queryByText('Optimized')).toBeNull();
+    expect(queryByText('Modified Edge')).toBeNull();
   });
 });
 
@@ -84,14 +85,14 @@ describe('BruteForceLegend', () => {
 
   it('should render optimization item when showOptimization is true', () => {
     const { getByText } = render(<BruteForceLegend showOptimization={true} />);
-    expect(getByText('Optimized')).toBeDefined();
+    expect(getByText('Modified Edge')).toBeDefined();
   });
 
   it('should not render optimization item when showOptimization is false', () => {
     const { queryByText } = render(
       <BruteForceLegend showOptimization={false} />
     );
-    expect(queryByText('Optimized')).toBeNull();
+    expect(queryByText('Modified Edge')).toBeNull();
   });
 });
 
@@ -126,5 +127,13 @@ describe('Legend', () => {
       <Legend algorithm="unknown" showOptimization={false} />
     );
     expect(getByText('Visited Curve')).toBeDefined();
+  });
+
+  it('should render translated labels when lang is provided', () => {
+    const { getByText } = render(
+      <Legend algorithm="sonar" showOptimization={false} lang="es" />
+    );
+    expect(getByText('No visitado')).toBeDefined();
+    expect(getByText('En recorrido')).toBeDefined();
   });
 });

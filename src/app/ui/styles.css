@@ -100,7 +100,11 @@ body {
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  padding: 6px 10px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
   font-size: 1.1rem;
   line-height: 1;
@@ -154,6 +158,7 @@ body {
   font-size: 0.875rem;
   min-width: 80px;
   max-width: 120px;
+  height: 36px;
   background: var(--bg-input);
   color: var(--text-primary);
   transition:
@@ -188,6 +193,7 @@ button {
   border-radius: 6px;
   font-size: 0.875rem;
   font-weight: 500;
+  height: 36px;
   cursor: pointer;
   transition:
     background-color 0.2s,
@@ -256,15 +262,21 @@ button:active:not(:disabled) {
   display: flex;
   align-items: center;
   gap: 8px;
+  height: 36px;
 }
 
 .speed-control span {
   color: var(--text-secondary);
   font-size: 0.8rem;
+  flex-shrink: 0;
 }
 
 .speed-control input[type='range'] {
   width: 100px;
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  padding: 0;
 }
 
 /* Visualization Container */
@@ -401,6 +413,54 @@ svg {
   height: 12px;
   border-radius: 3px;
   flex-shrink: 0;
+}
+
+/* Tooltip for disabled buttons */
+.tooltip-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-wrapper[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text-primary);
+  color: var(--bg-card);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Language Selector */
+.language-selector {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.language-selector select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 6px 8px;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  box-shadow: var(--shadow-card);
+  height: 36px;
+}
+
+.language-selector select:focus {
+  outline: none;
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 2px var(--focus-ring);
 }
 
 /* Mobile-first responsive adjustments */

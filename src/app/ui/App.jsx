@@ -8,7 +8,9 @@
  * - UI layout with controls and side-by-side visualizations
  */
 
-import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
+
+import { LANGUAGES, detectLanguage, t } from './i18n.js';
 
 // Import algorithm functions from lib
 import {
@@ -35,28 +37,25 @@ import { Legend } from './components/Legend.jsx';
 import { VisualizationPanel } from './components/VisualizationPanel.jsx';
 
 /**
- * Algorithm metadata: display names and aliases
+ * Get algorithm metadata using i18n translations
  */
-const ALGORITHM_META = {
+const getAlgorithmMeta = (lang) => ({
   sonar: {
-    title: 'Sonar Visit Algorithm',
-    aliases:
-      'Also known as: Radial Sweep, Angular Sort, Polar Angle Sort, Centroid-based Ordering',
+    title: t(lang, 'sonarTitle'),
+    aliases: t(lang, 'sonarAliases'),
     vizType: 'sonar',
   },
   moore: {
-    title: 'Moore Curve Algorithm',
-    aliases:
-      'Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering',
+    title: t(lang, 'mooreTitle'),
+    aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
   'brute-force': {
-    title: 'Brute-Force Algorithm',
-    aliases:
-      'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
+    title: t(lang, 'bruteForceTitle'),
+    aliases: t(lang, 'bruteForceAliases'),
     vizType: 'brute-force',
   },
-};
+});
 
 /**
  * Run the specified algorithm on the given points.
@@ -387,49 +386,88 @@ const App = () => {
 
   // Issue #1: Format distance info with % of optimal and exact length
   const formatDistanceInfo = (dist) => {
+    const distLabel = t(lang, 'distance');
     if (dist === 0) {
-      return 'Distance: —';
+      return `${distLabel}: \u2014`;
     }
     if (optimalResult) {
       const pct = ((dist / optimalResult.distance) * 100).toFixed(1);
-      return `Distance: ${dist.toFixed(2)} (${pct}% of optimal ${optimalResult.distance.toFixed(2)})`;
+      return `${distLabel}: ${dist.toFixed(2)} (${pct}% ${t(lang, 'ofOptimal')} ${optimalResult.distance.toFixed(2)})`;
     }
     if (verificationResult) {
       const lb = verificationResult.lowerBound;
       if (lb > 0) {
         const pct = ((dist / lb) * 100).toFixed(1);
-        return `Distance: ${dist.toFixed(2)} (${pct}% of lower bound ${lb.toFixed(2)})`;
+        return `${distLabel}: ${dist.toFixed(2)} (${pct}% ${t(lang, 'ofLowerBound')} ${lb.toFixed(2)})`;
       }
     }
-    return `Distance: ${dist.toFixed(2)}`;
+    return `${distLabel}: ${dist.toFixed(2)}`;
   };
 
-  // Dark/light theme state
-  const [theme, setTheme] = useState('light');
+  // Dark/light theme state - default to system preference
+  const [theme, setTheme] = useState(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.matchMedia?.('(prefers-color-scheme: dark)').matches
+    ) {
+      return 'dark';
+    }
+    return 'light';
+  });
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   }, []);
+
+  // Language state - default to browser preference
+  const [lang, setLang] = useState(detectLanguage);
 
   // Apply theme to document root for CSS custom properties
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
   }, [theme]);
 
-  const leftMeta = ALGORITHM_META[leftAlgorithm];
-  const rightMeta = ALGORITHM_META[rightAlgorithm];
+  const algorithmMeta = getAlgorithmMeta(lang);
+  const leftMeta = algorithmMeta[leftAlgorithm];
+  const rightMeta = algorithmMeta[rightAlgorithm];
+
+  // Map algorithm ids to i18n keys
+  const algorithmLabelKeys = {
+    sonar: 'sonarVisit',
+    moore: 'mooreCurve',
+    'brute-force': 'bruteForce',
+  };
+
+  // Translated algorithm options
+  const translatedAlgorithmOptions = ALGORITHM_OPTIONS.map((opt) => ({
+    ...opt,
+    label: t(lang, algorithmLabelKeys[opt.id]),
+  }));
 
   // Filtered options for algorithm selects (exclude the other side's selection)
-  const leftAlgorithmOptions = ALGORITHM_OPTIONS.filter(
+  const leftAlgorithmOptions = translatedAlgorithmOptions.filter(
     (opt) => opt.id !== rightAlgorithm
   );
-  const rightAlgorithmOptions = ALGORITHM_OPTIONS.filter(
+  const rightAlgorithmOptions = translatedAlgorithmOptions.filter(
     (opt) => opt.id !== leftAlgorithm
   );
 
   return (
     <div className="app">
       <div className="app-header">
-        <h1>TSP Visual Solver</h1>
+        <div className="language-selector">
+          <select
+            value={lang}
+            onChange={(e) => setLang(e.target.value)}
+            aria-label="Language"
+          >
+            {LANGUAGES.map((l) => (
+              <option key={l.code} value={l.code}>
+                {l.flag} {l.name}
+              </option>
+            ))}
+          </select>
+        </div>
+        <h1>{t(lang, 'title')}</h1>
         <button
           className="theme-toggle"
           onClick={toggleTheme}
@@ -458,6 +496,7 @@ const App = () => {
         pointsCount={points.length}
         startDisabled={startDisabled}
         startDisabledReason={startDisabledReason}
+        lang={lang}
       />
 
       <div className="visualization-container">
@@ -479,10 +518,12 @@ const App = () => {
             />
           }
           stepDescription={getLeftStep()?.description}
+          defaultStepText={t(lang, 'clickStart')}
           legend={
             <Legend
               algorithm={leftMeta.vizType}
               showOptimization={showOptimization}
+              lang={lang}
             />
           }
         />
@@ -505,10 +546,12 @@ const App = () => {
             />
           }
           stepDescription={getRightStep()?.description}
+          defaultStepText={t(lang, 'clickStart')}
           legend={
             <Legend
               algorithm={rightMeta.vizType}
               showOptimization={showOptimization}
+              lang={lang}
             />
           }
         />
