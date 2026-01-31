@@ -63,7 +63,7 @@ describe('Controls', () => {
       const select = findSelectByLabel(container, 'Grid Size (N×N)');
       const options = Array.from(select.querySelectorAll('option'));
       const values = options.map((o) => o.value);
-      expect(values).toEqual(['2', '4', '8', '16', '32']);
+      expect(values).toEqual(['2', '4', '8', '16', '32', '64', '128']);
     });
 
     it('should be disabled when running', () => {
