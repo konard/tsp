@@ -211,32 +211,33 @@ Where n is the number of points.
 
 ## Performance Benchmarks
 
-Performance tested with Bun runtime on a 16x16 Moore grid:
+Performance tested with Bun runtime on a 32x32 Moore grid (60s time budget, 10 random samples averaged):
 
-### Execution Time
+### Max Points in 60 Seconds
 
-| Points | Sonar | Moore | 2-opt (Sonar) | 2-opt (Moore) |
-| ------ | ----- | ----- | ------------- | ------------- |
-| 25     | 27μs  | 271μs | 500μs         | 149μs         |
-| 50     | 23μs  | 377μs | 2.17ms        | 956μs         |
-| 100    | 36μs  | 656μs | 1.74ms        | 1.80ms        |
-| 200    | 44μs  | 797μs | 3.55ms        | 10.8ms        |
+| Configuration      | Max Points | Avg Time | Avg Tour Distance |
+| ------------------ | ---------: | -------: | ----------------: |
+| **Sonar**          |       1020 |    311μs |           4659.45 |
+| **Moore**          |       1020 |  17.08ms |           1022.36 |
+| **Sonar + 2-opt**  |       1020 |  14.73ms |           4567.77 |
+| **Moore + 2-opt**  |       1020 |  50.00ms |           1022.13 |
+| **Sonar + Zigzag** |       1020 |    907μs |           3524.59 |
+| **Moore + Zigzag** |       1020 |  14.77ms |           1022.01 |
 
-### Tour Quality (Lower = Better)
+### Execution Time Growth
 
-| Points | Sonar  | Moore  | Sonar + 2-opt | Moore + 2-opt |
-| ------ | ------ | ------ | ------------- | ------------- |
-| 50     | 152.45 | 125.91 | 107.59        | 109.59        |
-| 100    | 306.81 | 170.54 | 242.45        | 164.66        |
-| 200    | 526.07 | 244.20 | 481.01        | 237.45        |
+![Execution Time Growth](benchmarks/execution-time.svg)
+
+### Tour Quality
+
+![Tour Distance](benchmarks/tour-distance.svg)
 
 **Key findings:**
 
+- **Sonar** solves the most points (1020) within 60 seconds
 - **Sonar** is faster but produces longer tours
 - **Moore** produces significantly better tours, especially for larger problems
 - **2-opt** improves both algorithms, with larger gains on Sonar tours
-- For best quality: Use **Moore + 2-opt**
-- For fastest results: Use **Sonar** alone
 
 For detailed benchmark analysis, see [BENCHMARK.md](BENCHMARK.md).
 
