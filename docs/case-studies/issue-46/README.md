@@ -283,4 +283,4 @@ This ensures consistent publish settings regardless of the CI environment.
 - [setup-npm-trusted-publish tool](https://github.com/azu/setup-npm-trusted-publish)
 - [From Deprecated npm Classic Tokens to OIDC Trusted Publishing](https://dev.to/zhangjintao/from-deprecated-npm-classic-tokens-to-oidc-trusted-publishing-a-cicd-troubleshooting-journey-4h8b)
 - CI run referenced in issue: https://github.com/konard/tsp/actions/runs/21551846736/job/62101821095
-- All failed CI run logs: [ci-logs/](./ci-logs/)
+- Failed CI run logs can be downloaded with `gh run view <run-id> --repo konard/tsp --log` for run IDs: 21551846736, 21550340423, 21549792782, 21549710862, 21535682377
