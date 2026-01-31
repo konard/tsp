@@ -217,12 +217,12 @@ Performance tested with Bun runtime on a 32x32 Moore grid (60s time budget, 10 r
 
 | Configuration      | Max Points | Avg Time | Avg Tour Distance |
 | ------------------ | ---------: | -------: | ----------------: |
-| **Sonar**          |       1020 |    311μs |           4659.45 |
-| **Moore**          |       1020 |  17.08ms |           1022.36 |
-| **Sonar + 2-opt**  |       1020 |  14.73ms |           4567.77 |
-| **Moore + 2-opt**  |       1020 |  50.00ms |           1022.13 |
-| **Sonar + Zigzag** |       1020 |    907μs |           3524.59 |
-| **Moore + Zigzag** |       1020 |  14.77ms |           1022.01 |
+| **Sonar**          |       1020 |    446μs |           4688.16 |
+| **Moore**          |       1020 |  21.93ms |           1021.89 |
+| **Sonar + 2-opt**  |       1020 |  21.87ms |           4572.88 |
+| **Moore + 2-opt**  |       1020 |  58.01ms |           1022.18 |
+| **Sonar + Zigzag** |       1020 |   1.62ms |           3537.70 |
+| **Moore + Zigzag** |       1020 |  21.92ms |           1022.13 |
 
 ### Execution Time Growth
 
