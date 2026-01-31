@@ -5,6 +5,8 @@
  * Different legends for Sonar and Moore algorithms.
  */
 
+import { t } from '../i18n.js';
+
 /**
  * LegendItem - Single legend entry
  *
@@ -24,13 +26,17 @@ const LegendItem = ({ color, label }) => (
  *
  * @param {Object} props
  * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
  */
-const SonarLegend = ({ showOptimization }) => (
+const SonarLegend = ({ showOptimization, lang = 'en' }) => (
   <div className="legend">
-    <LegendItem color="#6c757d" label="Unvisited" />
-    <LegendItem color="#0d6efd" label="In Tour" />
-    <LegendItem color="#dc3545" label="Current" />
-    {showOptimization && <LegendItem color="#198754" label="Optimized" />}
+    <LegendItem color="#6c757d" label={t(lang, 'unvisited')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'inTour')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    <LegendItem color="rgba(128, 0, 128, 0.3)" label={t(lang, 'centroid')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
   </div>
 );
 
@@ -39,14 +45,23 @@ const SonarLegend = ({ showOptimization }) => (
  *
  * @param {Object} props
  * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
  */
-const MooreLegend = ({ showOptimization }) => (
+const MooreLegend = ({ showOptimization, lang = 'en' }) => (
   <div className="legend">
-    <LegendItem color="rgba(34, 197, 94, 0.6)" label="Visited Curve" />
-    <LegendItem color="rgba(156, 163, 175, 0.5)" label="Unvisited Curve" />
-    <LegendItem color="#0d6efd" label="Tour Path" />
-    <LegendItem color="#dc3545" label="Current" />
-    {showOptimization && <LegendItem color="#198754" label="Optimized" />}
+    <LegendItem
+      color="rgba(34, 197, 94, 0.6)"
+      label={t(lang, 'visitedCurve')}
+    />
+    <LegendItem
+      color="rgba(156, 163, 175, 0.5)"
+      label={t(lang, 'unvisitedCurve')}
+    />
+    <LegendItem color="#0d6efd" label={t(lang, 'tourPath')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
   </div>
 );
 
@@ -55,13 +70,16 @@ const MooreLegend = ({ showOptimization }) => (
  *
  * @param {Object} props
  * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
  */
-const BruteForceLegend = ({ showOptimization }) => (
+const BruteForceLegend = ({ showOptimization, lang = 'en' }) => (
   <div className="legend">
-    <LegendItem color="#6c757d" label="Unvisited" />
-    <LegendItem color="#0d6efd" label="In Tour" />
-    <LegendItem color="#dc3545" label="Current" />
-    {showOptimization && <LegendItem color="#198754" label="Optimized" />}
+    <LegendItem color="#6c757d" label={t(lang, 'unvisited')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'inTour')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
   </div>
 );
 
@@ -71,15 +89,16 @@ const BruteForceLegend = ({ showOptimization }) => (
  * @param {Object} props
  * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
  */
-const Legend = ({ algorithm, showOptimization }) => {
+const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
   if (algorithm === 'sonar') {
-    return <SonarLegend showOptimization={showOptimization} />;
+    return <SonarLegend showOptimization={showOptimization} lang={lang} />;
   }
   if (algorithm === 'brute-force') {
-    return <BruteForceLegend showOptimization={showOptimization} />;
+    return <BruteForceLegend showOptimization={showOptimization} lang={lang} />;
   }
-  return <MooreLegend showOptimization={showOptimization} />;
+  return <MooreLegend showOptimization={showOptimization} lang={lang} />;
 };
 
 export { Legend, SonarLegend, MooreLegend, BruteForceLegend, LegendItem };

@@ -7,7 +7,7 @@
  * A Moore curve of order n fills a 2^n x 2^n grid.
  * These correspond to L-system iteration counts 0..5 (effective orders 1..6).
  */
-export const VALID_GRID_SIZES = [2, 4, 8, 16, 32, 64];
+export const VALID_GRID_SIZES = [2, 4, 8, 16, 32];
 
 /**
  * Calculate the Moore grid size based on user-specified grid size

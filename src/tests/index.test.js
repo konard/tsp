@@ -68,7 +68,7 @@ describe('VALID_GRID_SIZES', () => {
   });
 
   it('should contain expected sizes', () => {
-    expect(VALID_GRID_SIZES).toEqual([2, 4, 8, 16, 32, 64]);
+    expect(VALID_GRID_SIZES).toEqual([2, 4, 8, 16, 32]);
   });
 });
 
@@ -82,12 +82,11 @@ describe('calculateMooreGridSize', () => {
     expect(calculateMooreGridSize(16)).toBe(16);
     expect(calculateMooreGridSize(20)).toBe(32);
     expect(calculateMooreGridSize(32)).toBe(32);
-    expect(calculateMooreGridSize(33)).toBe(64);
-    expect(calculateMooreGridSize(64)).toBe(64);
+    expect(calculateMooreGridSize(33)).toBe(32);
   });
 
   it('should return largest valid size for very large input', () => {
-    expect(calculateMooreGridSize(100)).toBe(64);
+    expect(calculateMooreGridSize(100)).toBe(32);
   });
 
   it('should always return a valid Moore grid size', () => {
