@@ -36,6 +36,10 @@ import {
   mooreOptimization,
 } from '../lib/algorithms/progressive/optimization/two-opt.js';
 import {
+  combinedOptSteps,
+  combinedOpt,
+} from '../lib/algorithms/progressive/optimization/combined-opt.js';
+import {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -68,7 +72,7 @@ describe('VALID_GRID_SIZES', () => {
   });
 
   it('should contain expected sizes', () => {
-    expect(VALID_GRID_SIZES).toEqual([2, 4, 8, 16, 32]);
+    expect(VALID_GRID_SIZES).toEqual([2, 4, 8, 16, 32, 64, 128]);
   });
 });
 
@@ -82,11 +86,15 @@ describe('calculateMooreGridSize', () => {
     expect(calculateMooreGridSize(16)).toBe(16);
     expect(calculateMooreGridSize(20)).toBe(32);
     expect(calculateMooreGridSize(32)).toBe(32);
-    expect(calculateMooreGridSize(33)).toBe(32);
+    expect(calculateMooreGridSize(33)).toBe(64);
+    expect(calculateMooreGridSize(64)).toBe(64);
+    expect(calculateMooreGridSize(65)).toBe(128);
+    expect(calculateMooreGridSize(128)).toBe(128);
+    expect(calculateMooreGridSize(129)).toBe(128);
   });
 
   it('should return largest valid size for very large input', () => {
-    expect(calculateMooreGridSize(100)).toBe(32);
+    expect(calculateMooreGridSize(200)).toBe(128);
   });
 
   it('should always return a valid Moore grid size', () => {
@@ -576,6 +584,62 @@ describe('zigzagOpt (generic atomic zigzag)', () => {
     const result = zigzagOpt(points, tour);
     const newDistance = calculateTotalDistance(result.tour, points);
     expect(newDistance).toBeLessThanOrEqual(originalDistance);
+  });
+});
+
+describe('combined optimization (zigzag + 2-opt)', () => {
+  const fivePoints = [
+    { x: 0, y: 0 },
+    { x: 10, y: 0 },
+    { x: 10, y: 10 },
+    { x: 0, y: 10 },
+    { x: 5, y: 5 },
+  ];
+
+  it('steps: should return empty array for tour with less than 4 points', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+    ];
+    expect(combinedOptSteps(points, [0, 1, 2])).toEqual([]);
+  });
+
+  it('steps: should work on any tour and have optimize type', () => {
+    const steps = combinedOptSteps(fivePoints, [0, 2, 4, 1, 3]);
+    expect(Array.isArray(steps)).toBe(true);
+    steps.forEach((step) => expect(step.type).toBe('optimize'));
+  });
+
+  it('atomic: should return original tour for small inputs', () => {
+    const result = combinedOpt(
+      [
+        { x: 0, y: 0 },
+        { x: 1, y: 1 },
+      ],
+      [0, 1]
+    );
+    expect(result.tour).toEqual([0, 1]);
+    expect(result.improvement).toBe(0);
+  });
+
+  it('atomic: should never increase tour distance', () => {
+    const tour = [0, 2, 4, 1, 3];
+    const originalDistance = calculateTotalDistance(tour, fivePoints);
+    const result = combinedOpt(fivePoints, tour);
+    expect(calculateTotalDistance(result.tour, fivePoints)).toBeLessThanOrEqual(
+      originalDistance
+    );
+  });
+
+  it('atomic: should return zero improvement for optimal square tour', () => {
+    const square = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 10, y: 10 },
+      { x: 0, y: 10 },
+    ];
+    expect(combinedOpt(square, [0, 1, 2, 3]).improvement).toBe(0);
   });
 });
 

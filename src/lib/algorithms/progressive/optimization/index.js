@@ -8,6 +8,7 @@
 // Generic optimization algorithms (step-by-step + atomic re-exports)
 export { twoOptSteps, twoOpt, mooreOptimization } from './two-opt.js';
 export { zigzagOptSteps, zigzagOpt, sonarOptimization } from './zigzag-opt.js';
+export { combinedOptSteps, combinedOpt } from './combined-opt.js';
 
 // Legacy step aliases for backward compatibility
 export { mooreOptimizationSteps } from './two-opt.js';

@@ -21,6 +21,7 @@
  * Available optimizations (generic, work with any tour):
  * - 2-opt: Standard segment reversal optimization
  * - Zigzag: Adjacent pair swapping optimization
+ * - Combined: Alternates zigzag and 2-opt until no improvement
  *
  * @example
  * // Progressive (for visualization)
@@ -69,6 +70,7 @@ export {
   // Generic optimizations
   twoOptSteps,
   zigzagOptSteps,
+  combinedOptSteps,
   // Legacy aliases for backward compatibility
   sonarOptimizationSteps,
   mooreOptimizationSteps,

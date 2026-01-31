@@ -23,13 +23,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = join(__dirname, '..');
 
-const { sonarSolution, mooreSolution, twoOpt, zigzagOpt } = atomic;
+const {
+  sonarSolution,
+  mooreSolution,
+  bruteForceSolution,
+  twoOpt,
+  zigzagOpt,
+  combinedOpt,
+} = atomic;
 
 // Configuration
 const TIME_BUDGET_SECONDS = 60;
 const SAMPLES_PER_TEST = 10;
 const CALIBRATION_POINTS = 10;
-const MOORE_GRID_SIZE = 32;
+const MOORE_GRID_SIZE = 128;
 const FIXED_STEP = 50;
 
 /**
@@ -117,6 +124,25 @@ function formatTime(ms) {
 function getAlgorithmConfigs() {
   return [
     {
+      name: 'Brute Force',
+      complexity: 'O(n!)',
+      complexityFn: (n) => {
+        // Factorial for scaling estimation
+        let result = 1;
+        for (let i = 2; i <= n; i++) {
+          result *= i;
+        }
+        return result;
+      },
+      run: (points) => {
+        const result = bruteForceSolution(points);
+        if (result === null) {
+          return { tour: [], distance: Infinity };
+        }
+        return { tour: result.tour, distance: result.distance };
+      },
+    },
+    {
       name: 'Sonar',
       complexity: 'O(n log n)',
       complexityFn: (n) => n * Math.log2(n),
@@ -174,6 +200,26 @@ function getAlgorithmConfigs() {
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
     },
+    {
+      name: 'Sonar + Combined',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = sonarSolution(points);
+        const { tour } = combinedOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Moore + Combined',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = combinedOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
   ];
 }
 
@@ -191,7 +237,7 @@ function estimateMaxPoints(calibrationTimeMs, complexityFn, budgetMs) {
   // Binary search for largest n
   const timePerUnit =
     calibrationTimeMs / complexityFn(Math.max(CALIBRATION_POINTS, 2));
-  const maxGridPoints = MOORE_GRID_SIZE * MOORE_GRID_SIZE; // 1024 max on 32x32 grid
+  const maxGridPoints = MOORE_GRID_SIZE * MOORE_GRID_SIZE;
 
   let lo = CALIBRATION_POINTS;
   let hi = maxGridPoints;
@@ -235,7 +281,8 @@ function benchmarkAtPointCount(config, numPoints) {
     const points = generateRandomPoints(numPoints);
     const { timeMs, distance } = runSingle(config, points);
     times.push(timeMs);
-    distances.push(distance);
+    // Filter out Infinity distances (e.g. brute force exceeding point limit)
+    distances.push(Number.isFinite(distance) ? distance : 0);
   }
 
   const timeStats = calculateStats(times);
@@ -306,11 +353,22 @@ function measureGrowthCurve(config, maxPoints) {
   const maxGridPoints = MOORE_GRID_SIZE * MOORE_GRID_SIZE;
   const budgetMs = TIME_BUDGET_SECONDS * 1000;
 
-  for (
-    let n = FIXED_STEP;
-    n <= Math.min(maxPoints, maxGridPoints);
-    n += FIXED_STEP
-  ) {
+  // Adapt step size: small for brute force, larger for high-capacity algorithms
+  // Target ~20-30 data points for readability
+  let step;
+  let startN;
+  if (maxPoints <= FIXED_STEP) {
+    step = 2;
+    startN = 4;
+  } else {
+    step = Math.max(
+      FIXED_STEP,
+      Math.floor(maxPoints / 20 / FIXED_STEP) * FIXED_STEP
+    );
+    startN = step;
+  }
+
+  for (let n = startN; n <= Math.min(maxPoints, maxGridPoints); n += step) {
     const result = benchmarkAtPointCount(config, n);
 
     dataPoints.push({
@@ -336,7 +394,7 @@ function measureGrowthCurve(config, maxPoints) {
 function generateTimeSvg(allGrowthData) {
   const width = 800;
   const height = 500;
-  const margin = { top: 40, right: 180, bottom: 60, left: 80 };
+  const margin = { top: 40, right: 200, bottom: 60, left: 80 };
   const plotW = width - margin.left - margin.right;
   const plotH = height - margin.top - margin.bottom;
 
@@ -347,6 +405,10 @@ function generateTimeSvg(allGrowthData) {
     '#9333ea',
     '#ea580c',
     '#0891b2',
+    '#d97706',
+    '#be185d',
+    '#059669',
+    '#7c3aed',
   ];
 
   // Find global max x and y across all series
@@ -391,7 +453,7 @@ function generateTimeSvg(allGrowthData) {
 
   // Grid lines and tick marks for X axis
   const xTicks = [];
-  const xStep = maxX <= 200 ? 50 : maxX <= 500 ? 100 : 200;
+  const xStep = maxX <= 200 ? 50 : maxX <= 500 ? 100 : maxX <= 2000 ? 200 : 500;
   for (let v = xStep; v <= maxX; v += xStep) {
     xTicks.push(v);
   }
@@ -450,7 +512,7 @@ function generateTimeSvg(allGrowthData) {
 function generateDistanceSvg(allGrowthData) {
   const width = 800;
   const height = 500;
-  const margin = { top: 40, right: 180, bottom: 60, left: 80 };
+  const margin = { top: 40, right: 200, bottom: 60, left: 80 };
   const plotW = width - margin.left - margin.right;
   const plotH = height - margin.top - margin.bottom;
 
@@ -461,6 +523,10 @@ function generateDistanceSvg(allGrowthData) {
     '#9333ea',
     '#ea580c',
     '#0891b2',
+    '#d97706',
+    '#be185d',
+    '#059669',
+    '#7c3aed',
   ];
 
   let maxX = 0;
@@ -496,7 +562,7 @@ function generateDistanceSvg(allGrowthData) {
   svg += `  <text x="${margin.left + plotW / 2}" y="${height - 10}" text-anchor="middle" font-size="13">Number of Points</text>\n`;
   svg += `  <text x="15" y="${margin.top + plotH / 2}" text-anchor="middle" font-size="13" transform="rotate(-90,15,${margin.top + plotH / 2})">Tour Distance</text>\n`;
 
-  const xStep = maxX <= 200 ? 50 : maxX <= 500 ? 100 : 200;
+  const xStep = maxX <= 200 ? 50 : maxX <= 500 ? 100 : maxX <= 2000 ? 200 : 500;
   for (let v = xStep; v <= maxX; v += xStep) {
     const x = scaleX(v);
     svg += `  <line x1="${x}" y1="${margin.top}" x2="${x}" y2="${margin.top + plotH}" stroke="#e5e7eb" stroke-width="1"/>\n`;
@@ -560,6 +626,7 @@ function generateBenchmarkMd(results) {
   md += '## Algorithm Overview\n\n';
   md += '| Configuration | Complexity | Description |\n';
   md += '| --- | --- | --- |\n';
+  md += '| **Brute Force** | O(n!) | Exhaustive search for optimal tour |\n';
   md += '| **Sonar** | O(n log n) | Radial sweep from centroid |\n';
   md += '| **Moore** | O(n log n) | Space-filling curve ordering |\n';
   md +=
@@ -569,7 +636,11 @@ function generateBenchmarkMd(results) {
   md +=
     '| **Sonar + Zigzag** | O(n²) | Sonar initial tour + zigzag pair swap |\n';
   md +=
-    '| **Moore + Zigzag** | O(n²) | Moore initial tour + zigzag pair swap |\n\n';
+    '| **Moore + Zigzag** | O(n²) | Moore initial tour + zigzag pair swap |\n';
+  md +=
+    '| **Sonar + Combined** | O(n³) | Sonar initial tour + alternating zigzag/2-opt |\n';
+  md +=
+    '| **Moore + Combined** | O(n³) | Moore initial tour + alternating zigzag/2-opt |\n\n';
 
   md += `## Max Points in ${TIME_BUDGET_SECONDS} Seconds\n\n`;
   md +=
@@ -814,16 +885,16 @@ async function runBenchmarks() {
   console.log('\n\nSUMMARY');
   console.log('=======\n');
   console.log(
-    `${'Configuration'.padEnd(20)} ${'Max Points'.padStart(12)} ${'Avg Time'.padStart(12)} ${'Avg Distance'.padStart(14)}`
+    `${'Configuration'.padEnd(25)} ${'Max Points'.padStart(12)} ${'Avg Time'.padStart(12)} ${'Avg Distance'.padStart(14)}`
   );
-  console.log('-'.repeat(60));
+  console.log('-'.repeat(65));
 
   const sortedResults = [...maxPointsResults].sort(
     (a, b) => b.maxPoints - a.maxPoints
   );
   for (const r of sortedResults) {
     console.log(
-      `${r.name.padEnd(20)} ${String(r.maxPoints).padStart(12)} ${formatTime(r.avgTimeMs).padStart(12)} ${r.avgDistance.toFixed(2).padStart(14)}`
+      `${r.name.padEnd(25)} ${String(r.maxPoints).padStart(12)} ${formatTime(r.avgTimeMs).padStart(12)} ${r.avgDistance.toFixed(2).padStart(14)}`
     );
   }
 

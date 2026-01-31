@@ -8,6 +8,7 @@
 // Generic optimization algorithms
 export { twoOpt } from './two-opt.js';
 export { zigzagOpt } from './zigzag-opt.js';
+export { combinedOpt } from './combined-opt.js';
 
 // Legacy aliases for backward compatibility
 export { twoOpt as mooreOptimization } from './two-opt.js';
