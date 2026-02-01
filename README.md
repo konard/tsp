@@ -217,15 +217,15 @@ Performance tested with Bun runtime on a 128x128 Moore grid (60s time budget, 10
 
 | Configuration        | Max Points | Avg Time | Avg Tour Distance |
 | -------------------- | ---------: | -------: | ----------------: |
-| **Sonar**            |      16380 |   8.29ms |         297147.87 |
-| **Moore**            |      16270 |    5.15s |          16331.30 |
-| **Sonar + Zigzag**   |      10140 |  31.23ms |         136924.04 |
-| **Sonar + 2-opt**    |       7800 |  70.04ms |         149053.50 |
-| **Moore + 2-opt**    |       1050 | 561.21ms |           4018.30 |
-| **Moore + Zigzag**   |       1030 | 330.18ms |           3827.84 |
-| **Sonar + Combined** |        900 |   37.21s |           3049.07 |
-| **Moore + Combined** |        220 | 136.48ms |           1575.28 |
-| **Brute Force**      |         10 |  69.90ms |            370.51 |
+| **Sonar**            |      16380 |   7.25ms |         296599.20 |
+| **Moore**            |      15650 |    5.01s |          16034.14 |
+| **Sonar + Zigzag**   |      10030 |  27.93ms |         135348.73 |
+| **Sonar + 2-opt**    |       8060 |  79.96ms |         153571.61 |
+| **Moore + Zigzag**   |       1040 | 331.61ms |           3862.26 |
+| **Moore + 2-opt**    |       1020 | 575.33ms |           3939.16 |
+| **Sonar + Combined** |        810 |   28.08s |           2920.41 |
+| **Moore + Combined** |        220 | 133.63ms |           1612.12 |
+| **Brute Force**      |         10 |  70.15ms |            359.93 |
 
 ### Execution Time Growth
 
