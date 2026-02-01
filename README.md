@@ -211,18 +211,21 @@ Where n is the number of points.
 
 ## Performance Benchmarks
 
-Performance tested with Bun runtime on a 32x32 Moore grid (60s time budget, 10 random samples averaged):
+Performance tested with Bun runtime on a 128x128 Moore grid (60s time budget, 10 random samples averaged):
 
 ### Max Points in 60 Seconds
 
-| Configuration      | Max Points | Avg Time | Avg Tour Distance |
-| ------------------ | ---------: | -------: | ----------------: |
-| **Sonar**          |       1020 |    446μs |           4688.16 |
-| **Moore**          |       1020 |  21.93ms |           1021.89 |
-| **Sonar + 2-opt**  |       1020 |  21.87ms |           4572.88 |
-| **Moore + 2-opt**  |       1020 |  58.01ms |           1022.18 |
-| **Sonar + Zigzag** |       1020 |   1.62ms |           3537.70 |
-| **Moore + Zigzag** |       1020 |  21.92ms |           1022.13 |
+| Configuration        | Max Points | Avg Time | Avg Tour Distance |
+| -------------------- | ---------: | -------: | ----------------: |
+| **Sonar**            |      16380 |   8.29ms |         297147.87 |
+| **Moore**            |      16270 |    5.15s |          16331.30 |
+| **Sonar + Zigzag**   |      10140 |  31.23ms |         136924.04 |
+| **Sonar + 2-opt**    |       7800 |  70.04ms |         149053.50 |
+| **Moore + 2-opt**    |       1050 | 561.21ms |           4018.30 |
+| **Moore + Zigzag**   |       1030 | 330.18ms |           3827.84 |
+| **Sonar + Combined** |        900 |   37.21s |           3049.07 |
+| **Moore + Combined** |        220 | 136.48ms |           1575.28 |
+| **Brute Force**      |         10 |  69.90ms |            370.51 |
 
 ### Execution Time Growth
 
@@ -234,7 +237,7 @@ Performance tested with Bun runtime on a 32x32 Moore grid (60s time budget, 10 r
 
 **Key findings:**
 
-- **Sonar** solves the most points (1020) within 60 seconds
+- **Sonar** solves the most points (16380) within 60 seconds
 - **Sonar** is faster but produces longer tours
 - **Moore** produces significantly better tours, especially for larger problems
 - **2-opt** improves both algorithms, with larger gains on Sonar tours
