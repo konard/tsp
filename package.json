@@ -49,6 +49,11 @@
     "type": "git",
     "url": "https://github.com/konard/tsp"
   },
+  "publishConfig": {
+    "access": "public",
+    "provenance": true,
+    "registry": "https://registry.npmjs.org"
+  },
   "devDependencies": {
     "@changesets/cli": "^2.29.7",
     "@happy-dom/global-registrator": "^20.4.0",

@@ -354,6 +354,7 @@ jobs:
             echo "No screenshot changes to commit"
           else
             git commit -m "Update README screenshot [skip ci]"
+            git checkout -- .  # Discard unstaged changes (node_modules, dist) before rebase
             git pull --rebase origin main
             git push
           fi
@@ -393,6 +394,7 @@ jobs:
             echo "No benchmark changes to commit"
           else
             git commit -m "Update benchmark results [skip ci]"
+            git checkout -- .  # Discard unstaged changes (node_modules, dist) before rebase
             git pull --rebase origin main
             git push
           fi
