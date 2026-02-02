@@ -10,6 +10,10 @@ export {
   mooreCurveToPoints,
 } from './moore.js';
 export {
+  spaceFillingTreeAlgorithmSteps,
+  spaceFillingTreeSolution,
+} from './space-filling-tree.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

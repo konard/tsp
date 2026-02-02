@@ -84,10 +84,31 @@ const BruteForceLegend = ({ showOptimization, lang = 'en' }) => (
 );
 
 /**
+ * SpaceFillingTreeLegend - Legend for Space-Filling Tree algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem
+      color="rgba(255, 165, 0, 0.5)"
+      label={t(lang, 'treeStructure')}
+    />
+    <LegendItem color="#0d6efd" label={t(lang, 'tourPath')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'space-filling-tree', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */
@@ -98,8 +119,20 @@ const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
   if (algorithm === 'brute-force') {
     return <BruteForceLegend showOptimization={showOptimization} lang={lang} />;
   }
+  if (algorithm === 'space-filling-tree') {
+    return (
+      <SpaceFillingTreeLegend showOptimization={showOptimization} lang={lang} />
+    );
+  }
   return <MooreLegend showOptimization={showOptimization} lang={lang} />;
 };
 
-export { Legend, SonarLegend, MooreLegend, BruteForceLegend, LegendItem };
+export {
+  Legend,
+  SonarLegend,
+  MooreLegend,
+  SpaceFillingTreeLegend,
+  BruteForceLegend,
+  LegendItem,
+};
 export default Legend;

@@ -19,6 +19,7 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -54,6 +55,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  'space-filling-tree': {
+    title: t(lang, 'spaceFillingTreeTitle'),
+    aliases: t(lang, 'spaceFillingTreeAliases'),
+    vizType: 'space-filling-tree',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -71,6 +77,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'space-filling-tree':
+      return spaceFillingTreeAlgorithmSteps(points);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -454,6 +462,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    'space-filling-tree': 'spaceFillingTree',
     'brute-force': 'bruteForce',
   };
 

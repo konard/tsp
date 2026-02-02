@@ -98,12 +98,17 @@ const translations = {
     mooreTitle: 'Moore Curve Algorithm',
     mooreAliases:
       'Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering',
+    spaceFillingTreeTitle: 'Space-Filling Tree Algorithm',
+    spaceFillingTreeAliases:
+      'Also known as: Quadtree Ordering, Spatial Subdivision Tree, Recursive Partitioning, Z-order DFS',
     bruteForceTitle: 'Brute-Force Algorithm',
     bruteForceAliases:
       'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
     sonarVisit: 'Sonar Visit',
     mooreCurve: 'Moore Curve',
+    spaceFillingTree: 'Space-Filling Tree',
     bruteForce: 'Brute-Force',
+    treeStructure: 'Tree Structure',
     centroid: 'Centroid',
     modifiedEdge: 'Modified Edge',
   },

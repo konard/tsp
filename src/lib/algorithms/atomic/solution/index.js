@@ -4,6 +4,7 @@
 
 export { sonarSolution } from './sonar.js';
 export { mooreSolution } from './moore.js';
+export { spaceFillingTreeSolution } from './space-filling-tree.js';
 export {
   bruteForceSolution,
   calculateOptimalityRatio,
