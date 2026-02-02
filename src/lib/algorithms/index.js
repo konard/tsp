@@ -15,7 +15,8 @@
  *
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
- * - Moore Curve: Orders points along a space-filling curve
+ * - Moore Curve: Orders points along a Moore space-filling curve
+ * - Sierpiński Curve: Orders points along a Sierpiński space-filling curve
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -67,6 +68,9 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  sierpinskiAlgorithmSteps,
+  generateSierpinskiCurve,
+  sierpinskiCurveToPoints,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

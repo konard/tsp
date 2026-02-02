@@ -4,6 +4,7 @@
 
 export { sonarSolution } from './sonar.js';
 export { mooreSolution } from './moore.js';
+export { sierpinskiSolution } from './sierpinski.js';
 export {
   bruteForceSolution,
   calculateOptimalityRatio,

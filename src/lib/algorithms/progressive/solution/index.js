@@ -10,6 +10,12 @@ export {
   mooreCurveToPoints,
 } from './moore.js';
 export {
+  sierpinskiAlgorithmSteps,
+  sierpinskiSolution,
+  generateSierpinskiCurve,
+  sierpinskiCurveToPoints,
+} from './sierpinski.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
