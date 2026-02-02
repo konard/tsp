@@ -10,6 +10,12 @@ export {
   mooreCurveToPoints,
 } from './moore.js';
 export {
+  peanoAlgorithmSteps,
+  peanoSolution,
+  generatePeanoCurve,
+  peanoCurveToPoints,
+} from './peano.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
