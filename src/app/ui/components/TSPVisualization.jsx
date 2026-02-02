@@ -27,7 +27,7 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {Array<{x: number, y: number, id: number}>} props.points - Array of points
  * @param {Array<Object>} props.steps - Array of algorithm steps
  * @param {number} props.currentStep - Current step index
- * @param {string} props.algorithm - Algorithm type ('sonar' or 'moore')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'peano', or 'brute-force')
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  */
@@ -99,12 +99,13 @@ const TSPVisualization = ({
     );
   }
 
-  // Generate Moore curve path - progressive animation
+  // Generate space-filling curve path - progressive animation
   // Draw visited portion in green, remaining portion in gray
+  // Used by both Moore and Peano curve algorithms
   let mooreCurvePath = null;
   let mooreCurveGrayPath = null;
   if (
-    algorithm === 'moore' &&
+    (algorithm === 'moore' || algorithm === 'peano') &&
     step?.curvePoints &&
     step.curvePoints.length > 0
   ) {

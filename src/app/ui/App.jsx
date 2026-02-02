@@ -15,10 +15,12 @@ import { LANGUAGES, detectLanguage, t } from './i18n.js';
 // Import algorithm functions from lib
 import {
   calculateMooreGridSize,
+  calculatePeanoGridSize,
   generateRandomPoints,
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  peanoAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -54,6 +56,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  peano: {
+    title: t(lang, 'peanoTitle'),
+    aliases: t(lang, 'peanoAliases'),
+    vizType: 'peano',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -71,6 +78,11 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'peano':
+      return peanoAlgorithmSteps(
+        points,
+        calculatePeanoGridSize(mooreGridSize)
+      );
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -454,6 +466,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    peano: 'peanoCurve',
     'brute-force': 'bruteForce',
   };
 

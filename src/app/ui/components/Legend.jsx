@@ -87,7 +87,7 @@ const BruteForceLegend = ({ showOptimization, lang = 'en' }) => (
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'peano', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */
