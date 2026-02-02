@@ -19,6 +19,7 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  kochAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -54,6 +55,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  koch: {
+    title: t(lang, 'kochTitle'),
+    aliases: t(lang, 'kochAliases'),
+    vizType: 'koch',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -71,6 +77,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'koch':
+      return kochAlgorithmSteps(points, mooreGridSize);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -454,6 +462,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    koch: 'kochSnowflake',
     'brute-force': 'bruteForce',
   };
 
