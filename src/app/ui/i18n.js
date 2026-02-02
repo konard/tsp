@@ -98,6 +98,9 @@ const translations = {
     mooreTitle: 'Moore Curve Algorithm',
     mooreAliases:
       'Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Koch Snowflake Algorithm',
     kochAliases:
       'Also known as: Koch Curve, Snowflake Fractal, Fractal Space-Filling Curve',
@@ -106,6 +109,7 @@ const translations = {
       'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
     sonarVisit: 'Sonar Visit',
     mooreCurve: 'Moore Curve',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Koch Snowflake',
     bruteForce: 'Brute-Force',
     centroid: 'Centroid',
@@ -139,6 +143,9 @@ const translations = {
     mooreTitle: '\u83AB\u5C14\u66F2\u7EBF\u7B97\u6CD5',
     mooreAliases:
       '\u53C8\u79F0\uFF1A\u7A7A\u95F4\u586B\u5145\u66F2\u7EBF\u3001\u5E0C\u5C14\u4F2F\u7279\u66F2\u7EBF\u53D8\u4F53\u3001\u5206\u5F62\u6392\u5E8F',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: '科赫雪花算法',
     kochAliases: '又称：科赫曲线、雪花分形、分形空间填充曲线',
     bruteForceTitle: '\u66B4\u529B\u7B97\u6CD5',
@@ -146,6 +153,7 @@ const translations = {
       '\u53C8\u79F0\uFF1A\u7A77\u4E3E\u641C\u7D22\u3001\u7CBE\u786ETSP\u6C42\u89E3\u5668\u3001\u6392\u5217\u679A\u4E3E',
     sonarVisit: '\u58F0\u7EB3\u8BBF\u95EE',
     mooreCurve: '\u83AB\u5C14\u66F2\u7EBF',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: '科赫雪花',
     bruteForce: '\u66B4\u529B\u6C42\u89E3',
     centroid: '\u8D28\u5FC3',
@@ -188,6 +196,9 @@ const translations = {
       '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930 \u090F\u0932\u094D\u0917\u094B\u0930\u093F\u0926\u092E',
     mooreAliases:
       '\u0907\u0938\u0947 \u092F\u0939 \u092D\u0940 \u0915\u0939\u0924\u0947 \u0939\u0948\u0902: \u0938\u094D\u092A\u0947\u0938-\u092B\u093F\u0932\u093F\u0902\u0917 \u0935\u0915\u094D\u0930, \u092B\u094D\u0930\u0948\u0915\u094D\u091F\u0932 \u0911\u0930\u094D\u0921\u0930\u093F\u0902\u0917',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'कोच स्नोफ्लेक एल्गोरिदम',
     kochAliases: 'इसे यह भी कहते हैं: कोच वक्र, स्नोफ्लेक फ्रैक्टल',
     bruteForceTitle:
@@ -197,6 +208,7 @@ const translations = {
     sonarVisit:
       '\u0938\u094B\u0928\u093E\u0930 \u0935\u093F\u091C\u093C\u093F\u091F',
     mooreCurve: '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'कोच स्नोफ्लेक',
     bruteForce: '\u092C\u094D\u0930\u0942\u091F-\u092B\u094B\u0930\u094D\u0938',
     centroid: '\u0915\u0947\u0902\u0926\u094D\u0930\u0915',
@@ -231,6 +243,9 @@ const translations = {
     mooreTitle: 'Algoritmo de Curva de Moore',
     mooreAliases:
       'Tambi\u00E9n conocido como: Curva de Llenado Espacial, Variante de Hilbert, Ordenamiento Fractal',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Algoritmo del Copo de Nieve de Koch',
     kochAliases:
       'También conocido como: Curva de Koch, Fractal de Copo de Nieve',
@@ -239,6 +254,7 @@ const translations = {
       'Tambi\u00E9n conocido como: B\u00FAsqueda Exhaustiva, Solucionador Exacto TSP, Enumeraci\u00F3n de Permutaciones',
     sonarVisit: 'Visita Sonar',
     mooreCurve: 'Curva de Moore',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Copo de Koch',
     bruteForce: 'Fuerza Bruta',
     centroid: 'Centroide',
@@ -279,6 +295,9 @@ const translations = {
       '\u062E\u0648\u0627\u0631\u0632\u0645\u064A\u0629 \u0645\u0646\u062D\u0646\u0649 \u0645\u0648\u0631',
     mooreAliases:
       '\u064A\u0639\u0631\u0641 \u0623\u064A\u0636\u0627\u064B \u0628\u0627\u0633\u0645: \u0645\u0646\u062D\u0646\u0649 \u0645\u0644\u0621 \u0627\u0644\u0641\u0636\u0627\u0621\u060C \u0627\u0644\u0641\u0631\u0632 \u0627\u0644\u0643\u0633\u0631\u064A',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'خوارزمية ندفة كوخ الثلجية',
     kochAliases: 'يعرف أيضاً باسم: منحنى كوخ، فركتال ندفة الثلج',
     bruteForceTitle:
@@ -287,6 +306,7 @@ const translations = {
       '\u064A\u0639\u0631\u0641 \u0623\u064A\u0636\u0627\u064B \u0628\u0627\u0633\u0645: \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u0634\u0627\u0645\u0644\u060C \u062A\u0639\u062F\u0627\u062F \u0627\u0644\u062A\u0628\u062F\u064A\u0644\u0627\u062A',
     sonarVisit: '\u0632\u064A\u0627\u0631\u0629 \u0633\u0648\u0646\u0627\u0631',
     mooreCurve: '\u0645\u0646\u062D\u0646\u0649 \u0645\u0648\u0631',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'ندفة كوخ',
     bruteForce: '\u0642\u0648\u0629 \u063A\u0627\u0634\u0645\u0629',
     centroid: '\u0627\u0644\u0645\u0631\u0643\u0632',
@@ -330,6 +350,9 @@ const translations = {
       '\u09AE\u09C1\u09B0 \u09AC\u0995\u09CD\u09B0 \u0985\u09CD\u09AF\u09BE\u09B2\u0997\u09B0\u09BF\u09A6\u09AE',
     mooreAliases:
       '\u098F\u099F\u09BF \u098F\u0993 \u09AA\u09B0\u09BF\u099A\u09BF\u09A4: \u09B8\u09CD\u09AA\u09C7\u09B8-\u09AB\u09BF\u09B2\u09BF\u0982 \u09AC\u0995\u09CD\u09B0, \u09AB\u09CD\u09B0\u09CD\u09AF\u09BE\u0995\u09CD\u099F\u09BE\u09B2 \u09B8\u09B0\u09CD\u099F',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'কক স্নোফ্লেক অ্যালগরিদম',
     kochAliases: 'এটি এও পরিচিত: কক বক্র, স্নোফ্লেক ফ্র্যাক্টাল',
     bruteForceTitle:
@@ -338,6 +361,7 @@ const translations = {
       '\u098F\u099F\u09BF \u098F\u0993 \u09AA\u09B0\u09BF\u099A\u09BF\u09A4: \u09B8\u09AE\u09CD\u09AA\u09C2\u09B0\u09CD\u09A3 \u0985\u09A8\u09C1\u09B8\u09A8\u09CD\u09A7\u09BE\u09A8, \u09AA\u09BE\u09B0\u09AE\u09CD\u09AF\u09C1\u099F\u09C7\u09B6\u09A8 \u0997\u09A3\u09A8\u09BE',
     sonarVisit: '\u09B8\u09CB\u09A8\u09BE\u09B0 \u09AD\u09BF\u099C\u09BF\u099F',
     mooreCurve: '\u09AE\u09C1\u09B0 \u09AC\u0995\u09CD\u09B0',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'কক স্নোফ্লেক',
     bruteForce: '\u09AC\u09CD\u09B0\u09C1\u099F-\u09AB\u09CB\u09B0\u09CD\u09B8',
     centroid: '\u0995\u09C7\u09A8\u09CD\u09A6\u09CD\u09B0',
@@ -372,6 +396,9 @@ const translations = {
     mooreTitle: 'Algoritmo de Curva de Moore',
     mooreAliases:
       'Tamb\u00E9m conhecido como: Curva de Preenchimento Espacial, Variante de Hilbert, Ordena\u00E7\u00E3o Fractal',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Algoritmo do Floco de Neve de Koch',
     kochAliases:
       'Também conhecido como: Curva de Koch, Fractal de Floco de Neve',
@@ -380,6 +407,7 @@ const translations = {
       'Tamb\u00E9m conhecido como: Busca Exaustiva, Solucionador Exato TSP, Enumera\u00E7\u00E3o de Permuta\u00E7\u00F5es',
     sonarVisit: 'Visita Sonar',
     mooreCurve: 'Curva de Moore',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Floco de Koch',
     bruteForce: 'For\u00E7a Bruta',
     centroid: 'Centr\u00F3ide',
@@ -425,6 +453,9 @@ const translations = {
       '\u0410\u043B\u0433\u043E\u0440\u0438\u0442\u043C \u043A\u0440\u0438\u0432\u043E\u0439 \u041C\u0443\u0440\u0430',
     mooreAliases:
       '\u0422\u0430\u043A\u0436\u0435 \u0438\u0437\u0432\u0435\u0441\u0442\u0435\u043D \u043A\u0430\u043A: \u041A\u0440\u0438\u0432\u0430\u044F \u0437\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0430, \u0424\u0440\u0430\u043A\u0442\u0430\u043B\u044C\u043D\u044B\u0439 \u043F\u043E\u0440\u044F\u0434\u043E\u043A',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Алгоритм снежинки Коха',
     kochAliases: 'Также известен как: Кривая Коха, Фрактал снежинки',
     bruteForceTitle:
@@ -434,6 +465,7 @@ const translations = {
     sonarVisit:
       '\u0421\u043E\u043D\u0430\u0440\u043D\u044B\u0439 \u043E\u0431\u0445\u043E\u0434',
     mooreCurve: '\u041A\u0440\u0438\u0432\u0430\u044F \u041C\u0443\u0440\u0430',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Снежинка Коха',
     bruteForce:
       '\u041F\u043E\u043B\u043D\u044B\u0439 \u043F\u0435\u0440\u0435\u0431\u043E\u0440',
@@ -471,6 +503,9 @@ const translations = {
       '\u30E0\u30FC\u30A2\u66F2\u7DDA\u30A2\u30EB\u30B4\u30EA\u30BA\u30E0',
     mooreAliases:
       '\u5225\u540D: \u7A7A\u9593\u5145\u586B\u66F2\u7DDA\u3001\u30D2\u30EB\u30D9\u30EB\u30C8\u66F2\u7DDA\u5909\u7A2E\u3001\u30D5\u30E9\u30AF\u30BF\u30EB\u9806\u5E8F',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'コッホ雪片アルゴリズム',
     kochAliases: '別名: コッホ曲線、雪片フラクタル',
     bruteForceTitle: '\u7DCF\u5F53\u308A\u30A2\u30EB\u30B4\u30EA\u30BA\u30E0',
@@ -478,6 +513,7 @@ const translations = {
       '\u5225\u540D: \u5168\u63A2\u7D22\u3001\u6B63\u78BATSP\u30BD\u30EB\u30D0\u30FC\u3001\u9806\u5217\u5217\u6319',
     sonarVisit: '\u30BD\u30CA\u30FC\u30D3\u30B8\u30C3\u30C8',
     mooreCurve: '\u30E0\u30FC\u30A2\u66F2\u7DDA',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'コッホ雪片',
     bruteForce: '\u7DCF\u5F53\u308A',
     centroid: '\u91CD\u5FC3',
@@ -520,6 +556,9 @@ const translations = {
       '\u0A2E\u0A42\u0A30 \u0A35\u0A15\u0A30 \u0A10\u0A32\u0A17\u0A4B\u0A30\u0A3F\u0A26\u0A2E',
     mooreAliases:
       '\u0A07\u0A38\u0A28\u0A42\u0A70 \u0A07\u0A39 \u0A35\u0A40 \u0A15\u0A39\u0A3F\u0A70\u0A26\u0A47 \u0A39\u0A28: \u0A38\u0A2A\u0A47\u0A38-\u0A2B\u0A3F\u0A32\u0A3F\u0A70\u0A17 \u0A35\u0A15\u0A30',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'ਕੋਚ ਸਨੋਫਲੇਕ ਐਲਗੋਰਿਦਮ',
     kochAliases: 'ਇਸਨੂੰ ਇਹ ਵੀ ਕਹਿੰਦੇ ਹਨ: ਕੋਚ ਵਕਰ',
     bruteForceTitle:
@@ -529,6 +568,7 @@ const translations = {
     sonarVisit:
       '\u0A38\u0A4B\u0A28\u0A3E\u0A30 \u0A35\u0A3F\u0A1C\u0A3C\u0A3F\u0A1F',
     mooreCurve: '\u0A2E\u0A42\u0A30 \u0A35\u0A15\u0A30',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'ਕੋਚ ਸਨੋਫਲੇਕ',
     bruteForce: '\u0A2C\u0A4D\u0A30\u0A42\u0A1F-\u0A2B\u0A4B\u0A30\u0A38',
     centroid: '\u0A15\u0A47\u0A02\u0A26\u0A30',
@@ -563,6 +603,9 @@ const translations = {
     mooreTitle: 'Moore-Kurven-Algorithmus',
     mooreAliases:
       'Auch bekannt als: Raumf\u00FCllende Kurve, Hilbert-Variante, Fraktale Sortierung',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Koch-Schneeflocken-Algorithmus',
     kochAliases: 'Auch bekannt als: Koch-Kurve, Schneeflocken-Fraktal',
     bruteForceTitle: 'Brute-Force-Algorithmus',
@@ -570,6 +613,7 @@ const translations = {
       'Auch bekannt als: Ersch\u00F6pfende Suche, Exakter TSP-L\u00F6ser, Permutationsaufz\u00E4hlung',
     sonarVisit: 'Sonar-Besuch',
     mooreCurve: 'Moore-Kurve',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Koch-Schneeflocke',
     bruteForce: 'Brute-Force',
     centroid: 'Schwerpunkt',
@@ -601,6 +645,9 @@ const translations = {
     sonarAliases: 'Uga dikenal minangka: Radial Sweep, Angular Sort',
     mooreTitle: 'Algoritma Kurva Moore',
     mooreAliases: 'Uga dikenal minangka: Space-Filling Curve, Fractal Ordering',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Algoritma Koch Snowflake',
     kochAliases: 'Uga dikenal minangka: Kurva Koch, Fraktal Snowflake',
     bruteForceTitle: 'Algoritma Brute-Force',
@@ -608,6 +655,7 @@ const translations = {
       'Uga dikenal minangka: Pencarian Lengkap, Enumerasi Permutasi',
     sonarVisit: 'Kunjungan Sonar',
     mooreCurve: 'Kurva Moore',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Koch Snowflake',
     bruteForce: 'Brute-Force',
     centroid: 'Titik tengah',
@@ -641,6 +689,9 @@ const translations = {
     mooreTitle: '\uBB34\uC5B4 \uACE1\uC120 \uC54C\uACE0\uB9AC\uC998',
     mooreAliases:
       '\uB2E4\uB978 \uC774\uB984: \uACF5\uAC04 \uCC44\uC6C0 \uACE1\uC120, \uD78C\uBCA0\uB974\uD2B8 \uBCC0\uD615, \uD504\uB799\uD0C8 \uC815\uB82C',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: '코흐 눈꽃 알고리즘',
     kochAliases: '다른 이름: 코흐 곡선, 눈꽃 프랙탈',
     bruteForceTitle: '\uBE0C\uB8E8\uD2B8 \uD3EC\uC2A4 \uC54C\uACE0\uB9AC\uC998',
@@ -648,6 +699,7 @@ const translations = {
       '\uB2E4\uB978 \uC774\uB984: \uC644\uC804 \uD0D0\uC0C9, \uC21C\uC5F4 \uC5F4\uAC70',
     sonarVisit: '\uC18C\uB098 \uBC29\uBB38',
     mooreCurve: '\uBB34\uC5B4 \uACE1\uC120',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: '코흐 눈꽃',
     bruteForce: '\uBE0C\uB8E8\uD2B8 \uD3EC\uC2A4',
     centroid: '\uC911\uC2EC\uC810',
@@ -681,6 +733,9 @@ const translations = {
     mooreTitle: 'Algorithme de Courbe de Moore',
     mooreAliases:
       '\u00C9galement connu sous: Courbe de Remplissage, Variante de Hilbert, Tri Fractal',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Algorithme du Flocon de Koch',
     kochAliases:
       'Également connu sous: Courbe de Koch, Fractal Flocon de Neige',
@@ -689,6 +744,7 @@ const translations = {
       '\u00C9galement connu sous: Recherche Exhaustive, Solveur Exact TSP, \u00C9num\u00E9ration de Permutations',
     sonarVisit: 'Visite Sonar',
     mooreCurve: 'Courbe de Moore',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Flocon de Koch',
     bruteForce: 'Force Brute',
     centroid: 'Centro\u00EFde',
@@ -735,6 +791,9 @@ const translations = {
       '\u0C2E\u0C42\u0C30\u0C4D \u0C15\u0C30\u0C4D\u0C35\u0C4D \u0C05\u0C32\u0C4D\u0C17\u0C4B\u0C30\u0C3F\u0C26\u0C02',
     mooreAliases:
       '\u0C07\u0C24\u0C30 \u0C2A\u0C47\u0C30\u0C4D\u0C32\u0C41: \u0C38\u0C4D\u0C2A\u0C47\u0C38\u0C4D-\u0C2B\u0C3F\u0C32\u0C4D\u0C32\u0C3F\u0C02\u0C17\u0C4D \u0C15\u0C30\u0C4D\u0C35\u0C4D',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'కోచ్ స్నోఫ్లేక్ అల్గోరిదం',
     kochAliases: 'ఇతర పేర్లు: కోచ్ కర్వ్',
     bruteForceTitle:
@@ -744,6 +803,7 @@ const translations = {
     sonarVisit:
       '\u0C38\u0C4B\u0C28\u0C3E\u0C30\u0C4D \u0C35\u0C3F\u0C1C\u0C3F\u0C1F\u0C4D',
     mooreCurve: '\u0C2E\u0C42\u0C30\u0C4D \u0C15\u0C30\u0C4D\u0C35\u0C4D',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'కోచ్ స్నోఫ్లేక్',
     bruteForce:
       '\u0C2C\u0C4D\u0C30\u0C42\u0C1F\u0C4D-\u0C2B\u0C4B\u0C30\u0C4D\u0C38\u0C4D',
@@ -790,6 +850,9 @@ const translations = {
       '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930 \u0905\u0932\u094D\u0917\u094B\u0930\u093F\u0926\u092E',
     mooreAliases:
       '\u092F\u093E\u0932\u093E \u0905\u0938\u0947\u0939\u0940 \u092E\u094D\u0939\u0923\u0924\u093E\u0924: \u0938\u094D\u092A\u0947\u0938-\u092B\u093F\u0932\u093F\u0902\u0917 \u0935\u0915\u094D\u0930',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'कोच स्नोफ्लेक अल्गोरिदम',
     kochAliases: 'याला असेही म्हणतात: कोच वक्र',
     bruteForceTitle:
@@ -798,6 +861,7 @@ const translations = {
       '\u092F\u093E\u0932\u093E \u0905\u0938\u0947\u0939\u0940 \u092E\u094D\u0939\u0923\u0924\u093E\u0924: \u0938\u0902\u092A\u0942\u0930\u094D\u0923 \u0936\u094B\u0927',
     sonarVisit: '\u0938\u094B\u0928\u093E\u0930 \u092D\u0947\u091F',
     mooreCurve: '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'कोच स्नोफ्लेक',
     bruteForce: '\u092C\u094D\u0930\u0942\u091F-\u092B\u094B\u0930\u094D\u0938',
     centroid:
@@ -833,6 +897,9 @@ const translations = {
     mooreTitle: 'Moore E\u011Frisi Algoritmas\u0131',
     mooreAliases:
       'Ayr\u0131ca bilinen: Alan Doldurma E\u011Frisi, Hilbert Varyant\u0131, Fraktal S\u0131ralama',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Koch Kar Tanesi Algoritması',
     kochAliases: 'Ayrıca bilinen: Koch Eğrisi, Kar Tanesi Fraktalı',
     bruteForceTitle: 'Kaba Kuvvet Algoritmas\u0131',
@@ -840,6 +907,7 @@ const translations = {
       'Ayr\u0131ca bilinen: Kapsaml\u0131 Arama, Perm\u00FCtasyon Say\u0131m\u0131',
     sonarVisit: 'Sonar Ziyaret',
     mooreCurve: 'Moore E\u011Frisi',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Koch Kar Tanesi',
     bruteForce: 'Kaba Kuvvet',
     centroid: 'A\u011F\u0131rl\u0131k merkezi',
@@ -888,6 +956,9 @@ const translations = {
       '\u0BAE\u0BC2\u0BB0\u0BCD \u0BB5\u0BB3\u0BC8\u0BB5\u0BC1 \u0B85\u0BB2\u0BCD\u0B95\u0BBE\u0BB0\u0BBF\u0BA4\u0BAE\u0BCD',
     mooreAliases:
       '\u0BAE\u0BB1\u0BCD\u0BB1 \u0BAA\u0BC6\u0BAF\u0BB0\u0BCD\u0B95\u0BB3\u0BCD: \u0BB5\u0BC6\u0BB3\u0BBF \u0BA8\u0BBF\u0BB0\u0BAA\u0BCD\u0BAA\u0BC1 \u0BB5\u0BB3\u0BC8\u0BB5\u0BC1',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'கோச் ஸ்னோஃப்ளேக் அல்காரிதம்',
     kochAliases: 'மற்ற பெயர்கள்: கோச் வளைவு',
     bruteForceTitle:
@@ -897,6 +968,7 @@ const translations = {
     sonarVisit:
       '\u0B9A\u0BCB\u0BA9\u0BBE\u0BB0\u0BCD \u0BAA\u0BBE\u0BB0\u0BCD\u0BB5\u0BC8',
     mooreCurve: '\u0BAE\u0BC2\u0BB0\u0BCD \u0BB5\u0BB3\u0BC8\u0BB5\u0BC1',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'கோச் ஸ்னோஃப்ளேக்',
     bruteForce:
       '\u0BAA\u0BCD\u0BB0\u0BC2\u0B9F\u0BCD-\u0BAA\u0BCB\u0BB0\u0BCD\u0B9A\u0BCD',
@@ -934,6 +1006,9 @@ const translations = {
     mooreTitle: 'Thu\u1EADt to\u00E1n \u0110\u01B0\u1EDDng cong Moore',
     mooreAliases:
       'C\u00F2n g\u1ECDi l\u00E0: \u0110\u01B0\u1EDDng cong L\u1EA5p \u0110\u1EA7y, Bi\u1EBFn th\u1EC3 Hilbert',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Thuật toán Bông tuyết Koch',
     kochAliases: 'Còn gọi là: Đường cong Koch, Fractal Bông tuyết',
     bruteForceTitle: 'Thu\u1EADt to\u00E1n Brute-Force',
@@ -941,6 +1016,7 @@ const translations = {
       'C\u00F2n g\u1ECDi l\u00E0: T\u00ECm ki\u1EBFm To\u00E0n di\u1EC7n, Li\u1EC7t k\u00EA Ho\u00E1n v\u1ECB',
     sonarVisit: 'Sonar Visit',
     mooreCurve: '\u0110\u01B0\u1EDDng cong Moore',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Bông tuyết Koch',
     bruteForce: 'Brute-Force',
     centroid: 'Tr\u1ECDng t\u00E2m',
@@ -974,6 +1050,9 @@ const translations = {
     mooreTitle: 'Algoritmo della Curva di Moore',
     mooreAliases:
       'Noto anche come: Curva di Riempimento Spaziale, Variante di Hilbert, Ordinamento Frattale',
+    sawTitle: 'Self-Avoiding Walk Algorithm',
+    sawAliases:
+      'Also known as: Nearest-Neighbor Walk, Greedy Self-Avoiding Path, SAW Heuristic',
     kochTitle: 'Algoritmo del Fiocco di Neve di Koch',
     kochAliases: 'Noto anche come: Curva di Koch, Frattale Fiocco di Neve',
     bruteForceTitle: 'Algoritmo a Forza Bruta',
@@ -981,6 +1060,7 @@ const translations = {
       'Noto anche come: Ricerca Esaustiva, Risolutore Esatto TSP, Enumerazione di Permutazioni',
     sonarVisit: 'Visita Sonar',
     mooreCurve: 'Curva di Moore',
+    selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Fiocco di Koch',
     bruteForce: 'Forza Bruta',
     centroid: 'Baricentro',

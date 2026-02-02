@@ -84,10 +84,28 @@ const BruteForceLegend = ({ showOptimization, lang = 'en' }) => (
 );
 
 /**
+ * SAWLegend - Legend for Self-Avoiding Walk algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const SAWLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem color="#6c757d" label={t(lang, 'unvisited')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'inTour')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'koch', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'saw', 'koch', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */
@@ -95,11 +113,21 @@ const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
   if (algorithm === 'sonar') {
     return <SonarLegend showOptimization={showOptimization} lang={lang} />;
   }
+  if (algorithm === 'saw') {
+    return <SAWLegend showOptimization={showOptimization} lang={lang} />;
+  }
   if (algorithm === 'brute-force') {
     return <BruteForceLegend showOptimization={showOptimization} lang={lang} />;
   }
   return <MooreLegend showOptimization={showOptimization} lang={lang} />;
 };
 
-export { Legend, SonarLegend, MooreLegend, BruteForceLegend, LegendItem };
+export {
+  Legend,
+  SonarLegend,
+  MooreLegend,
+  SAWLegend,
+  BruteForceLegend,
+  LegendItem,
+};
 export default Legend;
