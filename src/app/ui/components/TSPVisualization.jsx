@@ -99,12 +99,13 @@ const TSPVisualization = ({
     );
   }
 
-  // Generate Moore curve path - progressive animation
+  // Generate space-filling curve path - progressive animation
+  // Used for both Moore and Gosper curves
   // Draw visited portion in green, remaining portion in gray
   let mooreCurvePath = null;
   let mooreCurveGrayPath = null;
   if (
-    algorithm === 'moore' &&
+    (algorithm === 'moore' || algorithm === 'gosper') &&
     step?.curvePoints &&
     step.curvePoints.length > 0
   ) {
