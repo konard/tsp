@@ -10,7 +10,7 @@
  *
  * Supports:
  * - Algorithm selection: sonar, moore, brute-force
- * - Optimization: 2-opt, zigzag, combined, none
+ * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
  * - Verification via lower-bound (1-tree) analysis
@@ -21,6 +21,9 @@
  *
  * # Moore curve with 2-opt optimization
  * tsp-algorithms --algorithm moore --optimization 2-opt --num-points 50
+ *
+ * # Lin-Kernighan-Helsgaun optimization
+ * tsp-algorithms --algorithm moore --optimization lkh --num-points 50
  *
  * # Manual points via links notation
  * tsp-algorithms --algorithm sonar --points "0 0 5 5 10 2 3 8 7 7"
@@ -44,8 +47,12 @@ const {
   mooreSolution,
   bruteForceSolution,
   twoOpt,
+  threeOpt,
+  kOpt,
   zigzagOpt,
   combinedOpt,
+  linKernighan,
+  lkHelsgaun,
   BRUTE_FORCE_MAX_POINTS,
 } = atomic;
 
@@ -146,6 +153,14 @@ const runOptimization = (optimization, points, tour) => {
       const result = twoOpt(points, tour);
       return { ...result, label: '2-opt' };
     }
+    case '3-opt': {
+      const result = threeOpt(points, tour);
+      return { ...result, label: '3-opt' };
+    }
+    case 'k-opt': {
+      const result = kOpt(points, tour);
+      return { ...result, label: 'k-opt' };
+    }
     case 'zigzag': {
       const result = zigzagOpt(points, tour);
       return { ...result, label: 'Zigzag' };
@@ -154,9 +169,17 @@ const runOptimization = (optimization, points, tour) => {
       const result = combinedOpt(points, tour);
       return { ...result, label: 'Combined (zigzag + 2-opt)' };
     }
+    case 'lin-kernighan': {
+      const result = linKernighan(points, tour);
+      return { ...result, label: 'Lin-Kernighan' };
+    }
+    case 'lkh': {
+      const result = lkHelsgaun(points, tour);
+      return { ...result, label: 'Lin-Kernighan-Helsgaun' };
+    }
     default:
       throw new Error(
-        `Unknown optimization: ${optimization}. Choose from: none, 2-opt, zigzag, combined`
+        `Unknown optimization: ${optimization}. Choose from: none, 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined`
       );
   }
 };
@@ -165,6 +188,7 @@ const runOptimization = (optimization, points, tour) => {
  * Main CLI entry point.
  * Parses arguments, runs the algorithm, and prints results.
  */
+// eslint-disable-next-line max-lines-per-function
 export const main = () => {
   const config = makeConfig({
     yargs: ({ yargs, getenv }) =>
@@ -181,7 +205,16 @@ export const main = () => {
           alias: 'o',
           type: 'string',
           describe: 'Optimization to apply after initial solution',
-          choices: ['none', '2-opt', 'zigzag', 'combined'],
+          choices: [
+            'none',
+            '2-opt',
+            '3-opt',
+            'k-opt',
+            'lin-kernighan',
+            'lkh',
+            'zigzag',
+            'combined',
+          ],
           default: getenv('TSP_OPTIMIZATION', 'none'),
         })
         .option('num-points', {
@@ -221,6 +254,10 @@ export const main = () => {
         .example(
           '$0 -a moore -o 2-opt -n 50 -g 32',
           'Moore + 2-opt, 50 points on 32x32 grid'
+        )
+        .example(
+          '$0 -a moore -o lkh -n 50',
+          'Moore + LKH optimization, 50 points'
         )
         .example(
           '$0 -a brute-force --points "0 0 5 5 10 2 3 8"',

@@ -26,6 +26,10 @@ import {
   // Generic optimizations that can work with any tour
   zigzagOptSteps,
   twoOptSteps,
+  threeOptSteps,
+  kOptSteps,
+  linKernighanSteps,
+  lkHelsgaunSteps,
   // Verification
   verifyOptimality,
 } from '../../lib/index.js';
@@ -234,12 +238,28 @@ const App = () => {
       const rightTour = getCurrentTour('right');
       if (leftTour.length === 0 || rightTour.length === 0) return;
 
-      const optFn = method === '2-opt' ? twoOptSteps : zigzagOptSteps;
+      const optFnMap = {
+        '2-opt': twoOptSteps,
+        '3-opt': threeOptSteps,
+        'k-opt': kOptSteps,
+        'lin-kernighan': linKernighanSteps,
+        lkh: lkHelsgaunSteps,
+        zigzag: zigzagOptSteps,
+      };
+      const optFn = optFnMap[method] || twoOptSteps;
       let newLeftOptSteps = optFn(points, leftTour);
       let newRightOptSteps = optFn(points, rightTour);
 
       const optimalDistance = optimalResult?.distance;
-      const methodLabel = method === '2-opt' ? '2-opt' : 'Zigzag';
+      const methodLabelMap = {
+        '2-opt': '2-opt',
+        '3-opt': '3-opt',
+        'k-opt': 'k-opt',
+        'lin-kernighan': 'LK',
+        lkh: 'LKH',
+        zigzag: 'Zigzag',
+      };
+      const methodLabel = methodLabelMap[method] || method;
 
       // When optimization finds no improvements, create a step with
       // comparison to the true optimal distance (if available)

@@ -7,8 +7,12 @@
 
 // Generic optimization algorithms
 export { twoOpt } from './two-opt.js';
+export { threeOpt } from './three-opt.js';
+export { kOpt } from './k-opt.js';
 export { zigzagOpt } from './zigzag-opt.js';
 export { combinedOpt } from './combined-opt.js';
+export { linKernighan } from './lin-kernighan.js';
+export { lkHelsgaun } from './lk-helsgaun.js';
 
 // Legacy aliases for backward compatibility
 export { twoOpt as mooreOptimization } from './two-opt.js';

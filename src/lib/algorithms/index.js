@@ -8,7 +8,7 @@
  *
  * Each type includes:
  * - Solutions: Initial tour construction algorithms (Sonar, Moore, Brute-Force)
- * - Optimizations: Generic tour improvement algorithms (2-opt, Zigzag)
+ * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
  * - Lower bound (1-tree): Mathematical proof when upper bound = lower bound
@@ -20,6 +20,10 @@
  *
  * Available optimizations (generic, work with any tour):
  * - 2-opt: Standard segment reversal optimization
+ * - 3-opt: Three-edge exchange optimization
+ * - k-opt: Generalized k-edge exchange (combines 2-opt and 3-opt)
+ * - Lin-Kernighan: Variable-depth edge exchange heuristic
+ * - Lin-Kernighan-Helsgaun: LK with perturbation for escaping local optima
  * - Zigzag: Adjacent pair swapping optimization
  * - Combined: Alternates zigzag and 2-opt until no improvement
  *
@@ -69,8 +73,12 @@ export {
   BRUTE_FORCE_MAX_POINTS,
   // Generic optimizations
   twoOptSteps,
+  threeOptSteps,
+  kOptSteps,
   zigzagOptSteps,
   combinedOptSteps,
+  linKernighanSteps,
+  lkHelsgaunSteps,
   // Legacy aliases for backward compatibility
   sonarOptimizationSteps,
   mooreOptimizationSteps,
