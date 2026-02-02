@@ -90,13 +90,28 @@ This algorithm uses a Moore curve (a variant of the Hilbert curve) to order poin
 
 The Moore curve is a space-filling curve that visits every cell in a grid exactly once while maintaining spatial locality, making it effective for TSP approximations.
 
-### Optimization (2-opt)
+### Optimization
 
-Both algorithms support an optional optimization phase using 2-opt improvements:
+Both algorithms support optional optimization phases. Three optimization methods are available:
 
-- Iteratively reverses segments of the tour to reduce total distance
-- Continues until no more improvements can be found
-- Typically achieves 10-30% distance reduction
+#### 2-opt (Segment Reversal)
+
+- Picks two non-adjacent edges, removes them, and reconnects by reversing the segment between them
+- Searches all pairs of edges (O(n^2) per pass)
+- Effective at removing crossing edges and untangling large detours
+
+#### ZigZag (Adjacent Pair Swap)
+
+- Examines four consecutive points and swaps the middle two if it reduces distance
+- Scans the tour linearly (O(n) per pass), making it faster per iteration than 2-opt
+- Effective at fine-tuning local ordering, especially in space-filling curve tours
+
+#### Combined (ZigZag + 2-opt)
+
+- Alternates between ZigZag and 2-opt until neither finds improvements
+- Produces the best tour quality at the cost of longer computation time
+
+For a detailed comparison of ZigZag vs 2-opt, see the [case study](docs/case-studies/issue-53/README.md).
 
 ## Usage
 
@@ -201,11 +216,13 @@ deno run your-script.ts
 
 ## Algorithm Complexity
 
-| Algorithm          | Time Complexity | Space Complexity |
-| ------------------ | --------------- | ---------------- |
-| Sonar Visit        | O(n log n)      | O(n)             |
-| Moore Curve        | O(n log n)      | O(n)             |
-| 2-opt Optimization | O(n²)           | O(n)             |
+| Algorithm             | Time Complexity | Space Complexity |
+| --------------------- | --------------- | ---------------- |
+| Sonar Visit           | O(n log n)      | O(n)             |
+| Moore Curve           | O(n log n)      | O(n)             |
+| 2-opt Optimization    | O(n²)           | O(n)             |
+| ZigZag Optimization   | O(n²)           | O(n)             |
+| Combined Optimization | O(n³)           | O(n)             |
 
 Where n is the number of points.
 
@@ -240,7 +257,8 @@ Performance tested with Bun runtime on a 128x128 Moore grid (60s time budget, 10
 - **Sonar** solves the most points (16380) within 60 seconds
 - **Sonar** is faster but produces longer tours
 - **Moore** produces significantly better tours, especially for larger problems
-- **2-opt** improves both algorithms, with larger gains on Sonar tours
+- **ZigZag** outperforms **2-opt** on space-filling curve tours due to its linear-time passes and adjacent-swap strategy that matches the local misordering pattern of these algorithms ([details](docs/case-studies/issue-53/README.md))
+- **Combined** (alternating ZigZag + 2-opt) produces the best tour quality
 
 For detailed benchmark analysis, see [BENCHMARK.md](BENCHMARK.md).
 
