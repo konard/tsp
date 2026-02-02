@@ -26,6 +26,7 @@ const ROOT_DIR = join(__dirname, '..');
 const {
   sonarSolution,
   mooreSolution,
+  sawSolution,
   bruteForceSolution,
   twoOpt,
   threeOpt,
@@ -162,6 +163,35 @@ function getAlgorithmConfigs() {
       complexityFn: (n) => n * Math.log2(n),
       run: (points) => {
         const { tour } = mooreSolution(points, MOORE_GRID_SIZE);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'SAW',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour } = sawSolution(points);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'SAW + 2-opt',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = sawSolution(points);
+        const { tour } = twoOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'SAW + Zigzag',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = sawSolution(points);
+        const { tour } = zigzagOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
     },

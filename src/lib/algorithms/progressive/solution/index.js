@@ -9,6 +9,7 @@ export {
   generateMooreCurve,
   mooreCurveToPoints,
 } from './moore.js';
+export { sawAlgorithmSteps, sawSolution } from './saw.js';
 export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,

@@ -19,6 +19,7 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  sawAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -54,6 +55,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  saw: {
+    title: t(lang, 'sawTitle'),
+    aliases: t(lang, 'sawAliases'),
+    vizType: 'saw',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -71,6 +77,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'saw':
+      return sawAlgorithmSteps(points);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -454,6 +462,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    saw: 'selfAvoidingWalk',
     'brute-force': 'bruteForce',
   };
 
