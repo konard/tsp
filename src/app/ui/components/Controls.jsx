@@ -19,6 +19,7 @@ import { t } from '../i18n.js';
 export const ALGORITHM_OPTIONS = [
   { id: 'sonar', label: 'Sonar Visit' },
   { id: 'moore', label: 'Moore Curve' },
+  { id: 'comb', label: 'Comb Scan' },
   { id: 'brute-force', label: 'Brute-Force' },
 ];
 
