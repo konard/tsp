@@ -7,8 +7,12 @@
 
 // Generic optimization algorithms (step-by-step + atomic re-exports)
 export { twoOptSteps, twoOpt, mooreOptimization } from './two-opt.js';
+export { threeOptSteps, threeOpt } from './three-opt.js';
+export { kOptSteps, kOpt } from './k-opt.js';
 export { zigzagOptSteps, zigzagOpt, sonarOptimization } from './zigzag-opt.js';
 export { combinedOptSteps, combinedOpt } from './combined-opt.js';
+export { linKernighanSteps, linKernighan } from './lin-kernighan.js';
+export { lkHelsgaunSteps, lkHelsgaun } from './lk-helsgaun.js';
 
 // Legacy step aliases for backward compatibility
 export { mooreOptimizationSteps } from './two-opt.js';

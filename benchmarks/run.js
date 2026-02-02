@@ -28,8 +28,12 @@ const {
   mooreSolution,
   bruteForceSolution,
   twoOpt,
+  threeOpt,
+  kOpt,
   zigzagOpt,
   combinedOpt,
+  linKernighan,
+  lkHelsgaun,
 } = atomic;
 
 // Configuration
@@ -121,6 +125,7 @@ function formatTime(ms) {
  * Build the list of algorithm configurations to benchmark.
  * @returns {AlgorithmConfig[]}
  */
+// eslint-disable-next-line max-lines-per-function
 function getAlgorithmConfigs() {
   return [
     {
@@ -197,6 +202,86 @@ function getAlgorithmConfigs() {
       run: (points) => {
         const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
         const { tour } = zigzagOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Sonar + 3-opt',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = sonarSolution(points);
+        const { tour } = threeOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Moore + 3-opt',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = threeOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Sonar + k-opt',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = sonarSolution(points);
+        const { tour } = kOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Moore + k-opt',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = kOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Sonar + LK',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = sonarSolution(points);
+        const { tour } = linKernighan(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Moore + LK',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = linKernighan(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Sonar + LKH',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = sonarSolution(points);
+        const { tour } = lkHelsgaun(points, initial, { perturbations: 3 });
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Moore + LKH',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = lkHelsgaun(points, initial, { perturbations: 3 });
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
     },
@@ -637,6 +722,20 @@ function generateBenchmarkMd(results) {
     '| **Sonar + Zigzag** | O(n²) | Sonar initial tour + zigzag pair swap |\n';
   md +=
     '| **Moore + Zigzag** | O(n²) | Moore initial tour + zigzag pair swap |\n';
+  md +=
+    '| **Sonar + 3-opt** | O(n³) | Sonar initial tour + 3-opt edge exchange |\n';
+  md +=
+    '| **Moore + 3-opt** | O(n³) | Moore initial tour + 3-opt edge exchange |\n';
+  md +=
+    '| **Sonar + k-opt** | O(n³) | Sonar initial tour + generalized k-opt |\n';
+  md +=
+    '| **Moore + k-opt** | O(n³) | Moore initial tour + generalized k-opt |\n';
+  md += '| **Sonar + LK** | O(n²) | Sonar initial tour + Lin-Kernighan |\n';
+  md += '| **Moore + LK** | O(n²) | Moore initial tour + Lin-Kernighan |\n';
+  md +=
+    '| **Sonar + LKH** | O(n²) | Sonar initial tour + Lin-Kernighan-Helsgaun |\n';
+  md +=
+    '| **Moore + LKH** | O(n²) | Moore initial tour + Lin-Kernighan-Helsgaun |\n';
   md +=
     '| **Sonar + Combined** | O(n³) | Sonar initial tour + alternating zigzag/2-opt |\n';
   md +=

@@ -162,6 +162,30 @@ const Controls = ({
                   2-opt
                 </button>
                 <button
+                  className={`btn-secondary${activeOptimization === '3-opt' ? ' btn-active' : ''}`}
+                  onClick={() => onOptimize('3-opt')}
+                >
+                  3-opt
+                </button>
+                <button
+                  className={`btn-secondary${activeOptimization === 'k-opt' ? ' btn-active' : ''}`}
+                  onClick={() => onOptimize('k-opt')}
+                >
+                  k-opt
+                </button>
+                <button
+                  className={`btn-secondary${activeOptimization === 'lin-kernighan' ? ' btn-active' : ''}`}
+                  onClick={() => onOptimize('lin-kernighan')}
+                >
+                  LK
+                </button>
+                <button
+                  className={`btn-secondary${activeOptimization === 'lkh' ? ' btn-active' : ''}`}
+                  onClick={() => onOptimize('lkh')}
+                >
+                  LKH
+                </button>
+                <button
                   className={`btn-secondary${activeOptimization === 'zigzag' ? ' btn-active' : ''}`}
                   onClick={() => onOptimize('zigzag')}
                 >
