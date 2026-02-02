@@ -140,8 +140,7 @@ const translations = {
     mooreAliases:
       '\u53C8\u79F0\uFF1A\u7A7A\u95F4\u586B\u5145\u66F2\u7EBF\u3001\u5E0C\u5C14\u4F2F\u7279\u66F2\u7EBF\u53D8\u4F53\u3001\u5206\u5F62\u6392\u5E8F',
     gosperTitle: '戈斯珀曲线算法',
-    gosperAliases:
-      '又称：流蛇曲线、皮亚诺-戈斯珀曲线、六角空间填充曲线',
+    gosperAliases: '又称：流蛇曲线、皮亚诺-戈斯珀曲线、六角空间填充曲线',
     gosperCurve: '戈斯珀曲线',
     bruteForceTitle: '\u66B4\u529B\u7B97\u6CD5',
     bruteForceAliases:

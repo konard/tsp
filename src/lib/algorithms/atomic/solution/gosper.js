@@ -132,10 +132,18 @@ export const calculateGosperOrder = (gridSize) => {
   // Each order covers roughly sqrt(7)^n ≈ 2.646^n units in each dimension.
   // For grid sizes: 2->1, 4->2, 8->2, 16->3, 32->3, 64->4, 128->4
   // We want enough curve points to distinguish all grid positions.
-  if (gridSize <= 2) return 1;
-  if (gridSize <= 8) return 2;
-  if (gridSize <= 32) return 3;
-  if (gridSize <= 128) return 4;
+  if (gridSize <= 2) {
+    return 1;
+  }
+  if (gridSize <= 8) {
+    return 2;
+  }
+  if (gridSize <= 32) {
+    return 3;
+  }
+  if (gridSize <= 128) {
+    return 4;
+  }
   return 5;
 };
 
