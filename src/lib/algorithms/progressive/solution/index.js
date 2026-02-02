@@ -11,6 +11,13 @@ export {
 } from './moore.js';
 export { sawAlgorithmSteps, sawSolution } from './saw.js';
 export {
+  kochAlgorithmSteps,
+  kochSolution,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
+} from './koch.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

@@ -105,7 +105,7 @@ const SAWLegend = ({ showOptimization, lang = 'en' }) => (
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'saw', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'saw', 'koch', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */

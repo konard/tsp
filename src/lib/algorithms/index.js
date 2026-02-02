@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, SAW, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, SAW, Koch, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -17,6 +17,7 @@
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
  * - Moore Curve: Orders points along a space-filling curve
  * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
+ * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -30,8 +31,9 @@
  *
  * @example
  * // Progressive (for visualization)
- * import { sonarAlgorithmSteps, sawAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
+ * import { sonarAlgorithmSteps, sawAlgorithmSteps, kochAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
  * const solutionSteps = sonarAlgorithmSteps(points);
+ * const kochSteps = kochAlgorithmSteps(points, mooreGridSize);
  * const optSteps = twoOptSteps(points, tour);
  * const bruteSteps = bruteForceAlgorithmSteps(points);
  *
@@ -70,6 +72,10 @@ export {
   mooreCurveToPoints,
   sawAlgorithmSteps,
   sawSolution,
+  kochAlgorithmSteps,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

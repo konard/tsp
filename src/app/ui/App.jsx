@@ -20,6 +20,7 @@ import {
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
   sawAlgorithmSteps,
+  kochAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -60,6 +61,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'sawAliases'),
     vizType: 'saw',
   },
+  koch: {
+    title: t(lang, 'kochTitle'),
+    aliases: t(lang, 'kochAliases'),
+    vizType: 'koch',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -79,6 +85,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return mooreAlgorithmSteps(points, mooreGridSize);
     case 'saw':
       return sawAlgorithmSteps(points);
+    case 'koch':
+      return kochAlgorithmSteps(points, mooreGridSize);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -463,6 +471,7 @@ const App = () => {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
     saw: 'selfAvoidingWalk',
+    koch: 'kochSnowflake',
     'brute-force': 'bruteForce',
   };
 
