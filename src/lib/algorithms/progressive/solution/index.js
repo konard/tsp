@@ -10,6 +10,13 @@ export {
   mooreCurveToPoints,
 } from './moore.js';
 export {
+  kochAlgorithmSteps,
+  kochSolution,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
+} from './koch.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

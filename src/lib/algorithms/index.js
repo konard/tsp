@@ -16,6 +16,7 @@
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
  * - Moore Curve: Orders points along a space-filling curve
+ * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -29,8 +30,9 @@
  *
  * @example
  * // Progressive (for visualization)
- * import { sonarAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
+ * import { sonarAlgorithmSteps, kochAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
  * const solutionSteps = sonarAlgorithmSteps(points);
+ * const kochSteps = kochAlgorithmSteps(points, mooreGridSize);
  * const optSteps = twoOptSteps(points, tour);
  * const bruteSteps = bruteForceAlgorithmSteps(points);
  *
@@ -67,6 +69,10 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  kochAlgorithmSteps,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
