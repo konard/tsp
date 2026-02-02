@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, Gosper, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -15,7 +15,8 @@
  *
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
- * - Moore Curve: Orders points along a space-filling curve
+ * - Moore Curve: Orders points along a space-filling curve (square grid)
+ * - Gosper Curve: Orders points along a hexagonal space-filling curve
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -67,6 +68,10 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  gosperAlgorithmSteps,
+  generateGosperCurve,
+  gosperCurveToPoints,
+  calculateGosperOrder,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

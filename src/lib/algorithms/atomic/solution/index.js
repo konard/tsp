@@ -4,6 +4,7 @@
 
 export { sonarSolution } from './sonar.js';
 export { mooreSolution } from './moore.js';
+export { gosperSolution } from './gosper.js';
 export {
   bruteForceSolution,
   calculateOptimalityRatio,
