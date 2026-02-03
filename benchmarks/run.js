@@ -23,9 +23,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const ROOT_DIR = join(__dirname, '..');
 
+import { calculatePeanoGridSize } from '../src/lib/algorithms/utils.js';
+
 const {
   sonarSolution,
   mooreSolution,
+  peanoSolution,
   sawSolution,
   spaceFillingTreeSolution,
   bruteForceSolution,
@@ -37,6 +40,8 @@ const {
   linKernighan,
   lkHelsgaun,
 } = atomic;
+
+const PEANO_GRID_SIZE = calculatePeanoGridSize(MOORE_GRID_SIZE);
 
 // Configuration
 const TIME_BUDGET_SECONDS = 60;
@@ -168,6 +173,15 @@ function getAlgorithmConfigs() {
       },
     },
     {
+      name: 'Peano',
+      complexity: 'O(n log n)',
+      complexityFn: (n) => n * Math.log2(n),
+      run: (points) => {
+        const { tour } = peanoSolution(points, PEANO_GRID_SIZE);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
       name: 'SAW',
       complexity: 'O(n²)',
       complexityFn: (n) => n * n,
@@ -251,6 +265,26 @@ function getAlgorithmConfigs() {
       complexityFn: (n) => n * n,
       run: (points) => {
         const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = zigzagOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Peano + 2-opt',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = peanoSolution(points, PEANO_GRID_SIZE);
+        const { tour } = twoOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Peano + Zigzag',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = peanoSolution(points, PEANO_GRID_SIZE);
         const { tour } = zigzagOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
@@ -361,6 +395,16 @@ function getAlgorithmConfigs() {
       complexityFn: (n) => n * n * n,
       run: (points) => {
         const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = combinedOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Peano + Combined',
+      complexity: 'O(n³)',
+      complexityFn: (n) => n * n * n,
+      run: (points) => {
+        const { tour: initial } = peanoSolution(points, PEANO_GRID_SIZE);
         const { tour } = combinedOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },

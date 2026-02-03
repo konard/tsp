@@ -15,10 +15,12 @@ import { LANGUAGES, detectLanguage, t } from './i18n.js';
 // Import algorithm functions from lib
 import {
   calculateMooreGridSize,
+  calculatePeanoGridSize,
   generateRandomPoints,
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  peanoAlgorithmSteps,
   sierpinskiAlgorithmSteps,
   combAlgorithmSteps,
   sawAlgorithmSteps,
@@ -58,6 +60,11 @@ const getAlgorithmMeta = (lang) => ({
     title: t(lang, 'mooreTitle'),
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
+  },
+  peano: {
+    title: t(lang, 'peanoTitle'),
+    aliases: t(lang, 'peanoAliases'),
+    vizType: 'peano',
   },
   sierpinski: {
     title: t(lang, 'sierpinskiTitle'),
@@ -101,6 +108,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'peano':
+      return peanoAlgorithmSteps(points, calculatePeanoGridSize(mooreGridSize));
     case 'sierpinski':
       return sierpinskiAlgorithmSteps(points, mooreGridSize);
     case 'comb':
@@ -494,6 +503,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    peano: 'peanoCurve',
     sierpinski: 'sierpinskiCurve',
     comb: 'combScan',
     saw: 'selfAvoidingWalk',

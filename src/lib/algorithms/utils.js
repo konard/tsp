@@ -10,6 +10,13 @@
 export const VALID_GRID_SIZES = [2, 4, 8, 16, 32, 64, 128];
 
 /**
+ * Valid grid sizes for Peano curve algorithm.
+ * A Peano curve of order n fills a 3^n x 3^n grid.
+ * These correspond to L-system iteration counts 1..4 (orders 1..4).
+ */
+export const VALID_PEANO_GRID_SIZES = [3, 9, 27, 81];
+
+/**
  * Calculate the Moore grid size based on user-specified grid size
  * Moore curve fills a grid of size 2^n x 2^n.
  * Returns the smallest valid Moore grid size >= gridSize.
@@ -24,6 +31,23 @@ export const calculateMooreGridSize = (gridSize) => {
     }
   }
   return VALID_GRID_SIZES[VALID_GRID_SIZES.length - 1];
+};
+
+/**
+ * Calculate the Peano grid size based on user-specified grid size
+ * Peano curve fills a grid of size 3^n x 3^n.
+ * Returns the smallest valid Peano grid size >= gridSize.
+ * @param {number} gridSize - User-specified grid size
+ * @returns {number} Peano grid size (power of 3)
+ */
+export const calculatePeanoGridSize = (gridSize) => {
+  // Find smallest valid Peano grid size >= gridSize
+  for (const size of VALID_PEANO_GRID_SIZES) {
+    if (size >= gridSize) {
+      return size;
+    }
+  }
+  return VALID_PEANO_GRID_SIZES[VALID_PEANO_GRID_SIZES.length - 1];
 };
 
 /**

@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -15,7 +15,8 @@
  *
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
- * - Moore Curve: Orders points along a Moore space-filling curve
+ * - Moore Curve: Orders points along a Moore space-filling curve (2^n grid)
+ * - Peano Curve: Orders points along a Peano space-filling curve (3^n grid)
  * - Sierpiński Curve: Orders points along a Sierpiński space-filling curve
  * - Comb (Serpentine Scan): Visits points row by row in alternating directions
  * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
@@ -73,6 +74,9 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  peanoAlgorithmSteps,
+  generatePeanoCurve,
+  peanoCurveToPoints,
   sierpinskiAlgorithmSteps,
   generateSierpinskiCurve,
   sierpinskiCurveToPoints,

@@ -9,7 +9,7 @@
  * Uses atomic algorithms (all-at-once computation) for benchmark-like performance.
  *
  * Supports:
- * - Algorithm selection: sonar, moore, sierpinski, comb, saw, koch, space-filling-tree, brute-force
+ * - Algorithm selection: sonar, moore, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force
  * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
@@ -39,12 +39,15 @@ import {
   calculateTotalDistance,
   generateRandomPoints,
   calculateMooreGridSize,
+  calculatePeanoGridSize,
   VALID_GRID_SIZES,
+  VALID_PEANO_GRID_SIZES,
 } from '../lib/index.js';
 
 const {
   sonarSolution,
   mooreSolution,
+  peanoSolution,
   sierpinskiSolution,
   combSolution,
   sawSolution,
@@ -123,6 +126,14 @@ const runAlgorithm = (algorithm, points, gridSize) => {
       const result = mooreSolution(points, mooreGrid);
       return { tour: result.tour, label: `Moore Curve (grid: ${mooreGrid})` };
     }
+    case 'peano': {
+      const peanoGrid = calculatePeanoGridSize(gridSize);
+      const result = peanoSolution(points, peanoGrid);
+      return {
+        tour: result.tour,
+        label: `Peano Curve (grid: ${peanoGrid})`,
+      };
+    }
     case 'sierpinski': {
       const sierpinskiGrid = calculateMooreGridSize(gridSize);
       const result = sierpinskiSolution(points, sierpinskiGrid);
@@ -168,7 +179,7 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     }
     default:
       throw new Error(
-        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
+        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
       );
   }
 };
@@ -237,6 +248,7 @@ export const main = () => {
           choices: [
             'sonar',
             'moore',
+            'peano',
             'sierpinski',
             'comb',
             'saw',
@@ -271,7 +283,7 @@ export const main = () => {
         .option('grid-size', {
           alias: 'g',
           type: 'number',
-          describe: `Grid size for point generation (valid Moore sizes: ${VALID_GRID_SIZES.join(', ')})`,
+          describe: `Grid size for point generation (Moore: ${VALID_GRID_SIZES.join(', ')}; Peano: ${VALID_PEANO_GRID_SIZES.join(', ')})`,
           default: getenv('TSP_GRID_SIZE', 16),
         })
         .option('points', {
@@ -303,6 +315,10 @@ export const main = () => {
         .example(
           '$0 -a moore -o lkh -n 50',
           'Moore + LKH optimization, 50 points'
+        )
+        .example(
+          '$0 -a peano -o 2-opt -n 50 -g 27',
+          'Peano + 2-opt, 50 points on 27x27 grid'
         )
         .example(
           '$0 -a brute-force --points "0 0 5 5 10 2 3 8"',

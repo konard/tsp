@@ -98,6 +98,9 @@ const translations = {
     mooreTitle: 'Moore Curve Algorithm',
     mooreAliases:
       'Also known as: Space-Filling Curve, Hilbert Curve Variant, Fractal Ordering',
+    peanoTitle: 'Peano Curve Algorithm',
+    peanoAliases:
+      'Also known as: Peano Space-Filling Curve, 3-adic Space-Filling Curve',
     sierpinskiTitle: 'Sierpiński Curve Algorithm',
     sierpinskiAliases:
       'Also known as: Space-Filling Curve, Sierpiński Square Curve',
@@ -118,6 +121,7 @@ const translations = {
       'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
     sonarVisit: 'Sonar Visit',
     mooreCurve: 'Moore Curve',
+    peanoCurve: 'Peano Curve',
     sierpinskiCurve: 'Sierpiński Curve',
     combScan: 'Comb Scan',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -156,6 +160,8 @@ const translations = {
     mooreTitle: '\u83AB\u5C14\u66F2\u7EBF\u7B97\u6CD5',
     mooreAliases:
       '\u53C8\u79F0\uFF1A\u7A7A\u95F4\u586B\u5145\u66F2\u7EBF\u3001\u5E0C\u5C14\u4F2F\u7279\u66F2\u7EBF\u53D8\u4F53\u3001\u5206\u5F62\u6392\u5E8F',
+    peanoTitle: 'Peano曲线算法',
+    peanoAliases: '又称：皮亚诺空间填充曲线、3进制空间填充曲线',
     sierpinskiTitle: '谢尔宾斯基曲线算法',
     sierpinskiAliases: '又称：空间填充曲线、谢尔宾斯基方形曲线',
     combTitle: '梳形算法',
@@ -171,6 +177,7 @@ const translations = {
       '\u53C8\u79F0\uFF1A\u7A77\u4E3E\u641C\u7D22\u3001\u7CBE\u786ETSP\u6C42\u89E3\u5668\u3001\u6392\u5217\u679A\u4E3E',
     sonarVisit: '\u58F0\u7EB3\u8BBF\u95EE',
     mooreCurve: '\u83AB\u5C14\u66F2\u7EBF',
+    peanoCurve: 'Peano曲线',
     sierpinskiCurve: '谢尔宾斯基曲线',
     combScan: '梳形扫描',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -217,6 +224,8 @@ const translations = {
       '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930 \u090F\u0932\u094D\u0917\u094B\u0930\u093F\u0926\u092E',
     mooreAliases:
       '\u0907\u0938\u0947 \u092F\u0939 \u092D\u0940 \u0915\u0939\u0924\u0947 \u0939\u0948\u0902: \u0938\u094D\u092A\u0947\u0938-\u092B\u093F\u0932\u093F\u0902\u0917 \u0935\u0915\u094D\u0930, \u092B\u094D\u0930\u0948\u0915\u094D\u091F\u0932 \u0911\u0930\u094D\u0921\u0930\u093F\u0902\u0917',
+    peanoTitle: 'पेआनो वक्र एल्गोरिदम',
+    peanoAliases: 'इसे यह भी कहते हैं: पेआनो स्पेस-फिलिंग वक्र',
     sierpinskiTitle: 'सिएर्पिंस्की वक्र एल्गोरिथ्म',
     sierpinskiAliases:
       'इसे यह भी कहते हैं: स्पेस-फिलिंग वक्र, सिएर्पिंस्की स्क्वेयर वक्र',
@@ -236,6 +245,7 @@ const translations = {
     sonarVisit:
       '\u0938\u094B\u0928\u093E\u0930 \u0935\u093F\u091C\u093C\u093F\u091F',
     mooreCurve: '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930',
+    peanoCurve: 'पेआनो वक्र',
     sierpinskiCurve: 'सिएर्पिंस्की वक्र',
     combScan: 'कंघी स्कैन',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -274,6 +284,9 @@ const translations = {
     mooreTitle: 'Algoritmo de Curva de Moore',
     mooreAliases:
       'Tambi\u00E9n conocido como: Curva de Llenado Espacial, Variante de Hilbert, Ordenamiento Fractal',
+    peanoTitle: 'Algoritmo de Curva de Peano',
+    peanoAliases:
+      'También conocido como: Curva de Peano, Curva de llenado espacial',
     sierpinskiTitle: 'Algoritmo de Curva de Sierpiński',
     sierpinskiAliases:
       'También conocido como: Curva de relleno espacial, Curva cuadrada de Sierpiński',
@@ -292,6 +305,7 @@ const translations = {
       'Tambi\u00E9n conocido como: B\u00FAsqueda Exhaustiva, Solucionador Exacto TSP, Enumeraci\u00F3n de Permutaciones',
     sonarVisit: 'Visita Sonar',
     mooreCurve: 'Curva de Moore',
+    peanoCurve: 'Curva de Peano',
     sierpinskiCurve: 'Curva de Sierpiński',
     combScan: 'Escaneo Peine',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -336,6 +350,8 @@ const translations = {
       '\u062E\u0648\u0627\u0631\u0632\u0645\u064A\u0629 \u0645\u0646\u062D\u0646\u0649 \u0645\u0648\u0631',
     mooreAliases:
       '\u064A\u0639\u0631\u0641 \u0623\u064A\u0636\u0627\u064B \u0628\u0627\u0633\u0645: \u0645\u0646\u062D\u0646\u0649 \u0645\u0644\u0621 \u0627\u0644\u0641\u0636\u0627\u0621\u060C \u0627\u0644\u0641\u0631\u0632 \u0627\u0644\u0643\u0633\u0631\u064A',
+    peanoTitle: 'خوارزمية منحنى بيانو',
+    peanoAliases: 'يُعرف أيضًا باسم: منحنى بيانو لملء الفضاء',
     sierpinskiTitle: 'خوارزمية منحنى سيربينسكي',
     sierpinskiAliases:
       'يُعرف أيضاً بـ: منحنى ملء الفراغ، منحنى سيربينسكي المربع',
@@ -354,6 +370,7 @@ const translations = {
       '\u064A\u0639\u0631\u0641 \u0623\u064A\u0636\u0627\u064B \u0628\u0627\u0633\u0645: \u0627\u0644\u0628\u062D\u062B \u0627\u0644\u0634\u0627\u0645\u0644\u060C \u062A\u0639\u062F\u0627\u062F \u0627\u0644\u062A\u0628\u062F\u064A\u0644\u0627\u062A',
     sonarVisit: '\u0632\u064A\u0627\u0631\u0629 \u0633\u0648\u0646\u0627\u0631',
     mooreCurve: '\u0645\u0646\u062D\u0646\u0649 \u0645\u0648\u0631',
+    peanoCurve: 'منحنى بيانو',
     sierpinskiCurve: 'منحنى سيربينسكي',
     combScan: 'مسح المشط',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -401,6 +418,8 @@ const translations = {
       '\u09AE\u09C1\u09B0 \u09AC\u0995\u09CD\u09B0 \u0985\u09CD\u09AF\u09BE\u09B2\u0997\u09B0\u09BF\u09A6\u09AE',
     mooreAliases:
       '\u098F\u099F\u09BF \u098F\u0993 \u09AA\u09B0\u09BF\u099A\u09BF\u09A4: \u09B8\u09CD\u09AA\u09C7\u09B8-\u09AB\u09BF\u09B2\u09BF\u0982 \u09AC\u0995\u09CD\u09B0, \u09AB\u09CD\u09B0\u09CD\u09AF\u09BE\u0995\u09CD\u099F\u09BE\u09B2 \u09B8\u09B0\u09CD\u099F',
+    peanoTitle: 'পিয়ানো বক্র অ্যালগরিদম',
+    peanoAliases: 'এটি এছাড়াও পরিচিত: পিয়ানো স্পেস-ফিলিং কার্ভ',
     sierpinskiTitle: 'সিয়েরপিনস্কি বক্র অ্যালগরিদম',
     sierpinskiAliases:
       'এছাড়াও পরিচিত: স্পেস-ফিলিং বক্র, সিয়েরপিনস্কি স্কোয়ার বক্র',
@@ -418,6 +437,7 @@ const translations = {
       '\u098F\u099F\u09BF \u098F\u0993 \u09AA\u09B0\u09BF\u099A\u09BF\u09A4: \u09B8\u09AE\u09CD\u09AA\u09C2\u09B0\u09CD\u09A3 \u0985\u09A8\u09C1\u09B8\u09A8\u09CD\u09A7\u09BE\u09A8, \u09AA\u09BE\u09B0\u09AE\u09CD\u09AF\u09C1\u099F\u09C7\u09B6\u09A8 \u0997\u09A3\u09A8\u09BE',
     sonarVisit: '\u09B8\u09CB\u09A8\u09BE\u09B0 \u09AD\u09BF\u099C\u09BF\u099F',
     mooreCurve: '\u09AE\u09C1\u09B0 \u09AC\u0995\u09CD\u09B0',
+    peanoCurve: 'পিয়ানো বক্র',
     sierpinskiCurve: 'সিয়েরপিনস্কি বক্র',
     combScan: 'কম্ব স্ক্যান',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -456,6 +476,9 @@ const translations = {
     mooreTitle: 'Algoritmo de Curva de Moore',
     mooreAliases:
       'Tamb\u00E9m conhecido como: Curva de Preenchimento Espacial, Variante de Hilbert, Ordena\u00E7\u00E3o Fractal',
+    peanoTitle: 'Algoritmo da Curva de Peano',
+    peanoAliases:
+      'Também conhecido como: Curva de Peano, Curva preenchimento espacial',
     sierpinskiTitle: 'Algoritmo da Curva de Sierpiński',
     sierpinskiAliases:
       'Também conhecido como: Curva de preenchimento espacial, Curva quadrada de Sierpiński',
@@ -474,6 +497,7 @@ const translations = {
       'Tamb\u00E9m conhecido como: Busca Exaustiva, Solucionador Exato TSP, Enumera\u00E7\u00E3o de Permuta\u00E7\u00F5es',
     sonarVisit: 'Visita Sonar',
     mooreCurve: 'Curva de Moore',
+    peanoCurve: 'Curva de Peano',
     sierpinskiCurve: 'Curva de Sierpiński',
     combScan: 'Varredura Pente',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -523,6 +547,9 @@ const translations = {
       '\u0410\u043B\u0433\u043E\u0440\u0438\u0442\u043C \u043A\u0440\u0438\u0432\u043E\u0439 \u041C\u0443\u0440\u0430',
     mooreAliases:
       '\u0422\u0430\u043A\u0436\u0435 \u0438\u0437\u0432\u0435\u0441\u0442\u0435\u043D \u043A\u0430\u043A: \u041A\u0440\u0438\u0432\u0430\u044F \u0437\u0430\u043F\u043E\u043B\u043D\u0435\u043D\u0438\u044F \u043F\u0440\u043E\u0441\u0442\u0440\u0430\u043D\u0441\u0442\u0432\u0430, \u0424\u0440\u0430\u043A\u0442\u0430\u043B\u044C\u043D\u044B\u0439 \u043F\u043E\u0440\u044F\u0434\u043E\u043A',
+    peanoTitle: 'Алгоритм кривой Пеано',
+    peanoAliases:
+      'Также известна как: Кривая Пеано, Заполняющая пространство кривая',
     sierpinskiTitle: 'Алгоритм кривой Серпинского',
     sierpinskiAliases:
       'Также известен как: Пространственно-заполняющая кривая, Квадратная кривая Серпинского',
@@ -542,6 +569,7 @@ const translations = {
     sonarVisit:
       '\u0421\u043E\u043D\u0430\u0440\u043D\u044B\u0439 \u043E\u0431\u0445\u043E\u0434',
     mooreCurve: '\u041A\u0440\u0438\u0432\u0430\u044F \u041C\u0443\u0440\u0430',
+    peanoCurve: 'Кривая Пеано',
     sierpinskiCurve: 'Кривая Серпинского',
     combScan: 'Гребёнка',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -583,6 +611,8 @@ const translations = {
       '\u30E0\u30FC\u30A2\u66F2\u7DDA\u30A2\u30EB\u30B4\u30EA\u30BA\u30E0',
     mooreAliases:
       '\u5225\u540D: \u7A7A\u9593\u5145\u586B\u66F2\u7DDA\u3001\u30D2\u30EB\u30D9\u30EB\u30C8\u66F2\u7DDA\u5909\u7A2E\u3001\u30D5\u30E9\u30AF\u30BF\u30EB\u9806\u5E8F',
+    peanoTitle: 'ペアノ曲線アルゴリズム',
+    peanoAliases: '別名：ペアノ空間充填曲線',
     sierpinskiTitle: 'シェルピンスキー曲線アルゴリズム',
     sierpinskiAliases: '別名：空間充填曲線、シェルピンスキー正方曲線',
     combTitle: 'コーム（櫛形）アルゴリズム',
@@ -599,6 +629,7 @@ const translations = {
       '\u5225\u540D: \u5168\u63A2\u7D22\u3001\u6B63\u78BATSP\u30BD\u30EB\u30D0\u30FC\u3001\u9806\u5217\u5217\u6319',
     sonarVisit: '\u30BD\u30CA\u30FC\u30D3\u30B8\u30C3\u30C8',
     mooreCurve: '\u30E0\u30FC\u30A2\u66F2\u7DDA',
+    peanoCurve: 'ペアノ曲線',
     sierpinskiCurve: 'シェルピンスキー曲線',
     combScan: 'コームスキャン',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -645,6 +676,8 @@ const translations = {
       '\u0A2E\u0A42\u0A30 \u0A35\u0A15\u0A30 \u0A10\u0A32\u0A17\u0A4B\u0A30\u0A3F\u0A26\u0A2E',
     mooreAliases:
       '\u0A07\u0A38\u0A28\u0A42\u0A70 \u0A07\u0A39 \u0A35\u0A40 \u0A15\u0A39\u0A3F\u0A70\u0A26\u0A47 \u0A39\u0A28: \u0A38\u0A2A\u0A47\u0A38-\u0A2B\u0A3F\u0A32\u0A3F\u0A70\u0A17 \u0A35\u0A15\u0A30',
+    peanoTitle: 'ਪੀਆਨੋ ਵਕਰ ਐਲਗੋਰਿਦਮ',
+    peanoAliases: 'ਇਸ ਨੂੰ ਇਹ ਵੀ ਕਹਿੰਦੇ ਹਨ: ਪੀਆਨੋ ਸਪੇਸ-ਫਿਲਿੰਗ ਕਰਵ',
     sierpinskiTitle: 'ਸਿਏਰਪਿੰਸਕੀ ਕਰਵ ਐਲਗੋਰਿਦਮ',
     sierpinskiAliases:
       'ਵੀ ਜਾਣਿਆ ਜਾਂਦਾ ਹੈ: ਸਪੇਸ-ਫਿਲਿੰਗ ਕਰਵ, ਸਿਏਰਪਿੰਸਕੀ ਸਕੁਏਅਰ ਕਰਵ',
@@ -663,6 +696,7 @@ const translations = {
     sonarVisit:
       '\u0A38\u0A4B\u0A28\u0A3E\u0A30 \u0A35\u0A3F\u0A1C\u0A3C\u0A3F\u0A1F',
     mooreCurve: '\u0A2E\u0A42\u0A30 \u0A35\u0A15\u0A30',
+    peanoCurve: 'ਪੀਆਨੋ ਵਕਰ',
     sierpinskiCurve: 'ਸਿਏਰਪਿੰਸਕੀ ਕਰਵ',
     combScan: 'ਕੰਘੀ ਸਕੈਨ',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -701,6 +735,8 @@ const translations = {
     mooreTitle: 'Moore-Kurven-Algorithmus',
     mooreAliases:
       'Auch bekannt als: Raumf\u00FCllende Kurve, Hilbert-Variante, Fraktale Sortierung',
+    peanoTitle: 'Peano-Kurven-Algorithmus',
+    peanoAliases: 'Auch bekannt als: Peano-Raumfüllende Kurve',
     sierpinskiTitle: 'Sierpiński-Kurven-Algorithmus',
     sierpinskiAliases:
       'Auch bekannt als: Raumfüllende Kurve, Sierpiński-Quadratkurve',
@@ -718,6 +754,7 @@ const translations = {
       'Auch bekannt als: Ersch\u00F6pfende Suche, Exakter TSP-L\u00F6ser, Permutationsaufz\u00E4hlung',
     sonarVisit: 'Sonar-Besuch',
     mooreCurve: 'Moore-Kurve',
+    peanoCurve: 'Peano-Kurve',
     sierpinskiCurve: 'Sierpiński-Kurve',
     combScan: 'Kamm-Scan',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -753,6 +790,8 @@ const translations = {
     sonarAliases: 'Uga dikenal minangka: Radial Sweep, Angular Sort',
     mooreTitle: 'Algoritma Kurva Moore',
     mooreAliases: 'Uga dikenal minangka: Space-Filling Curve, Fractal Ordering',
+    peanoTitle: 'Algoritma Kurva Peano',
+    peanoAliases: 'Uga dikenal minangka: Kurva Peano',
     sierpinskiTitle: 'Algoritma Kurva Sierpiński',
     sierpinskiAliases:
       'Uga dikenal minangka: Kurva Ngisi Ruang, Kurva Persegi Sierpiński',
@@ -769,6 +808,7 @@ const translations = {
       'Uga dikenal minangka: Pencarian Lengkap, Enumerasi Permutasi',
     sonarVisit: 'Kunjungan Sonar',
     mooreCurve: 'Kurva Moore',
+    peanoCurve: 'Kurva Peano',
     sierpinskiCurve: 'Kurva Sierpiński',
     combScan: 'Sisir Scan',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -806,6 +846,8 @@ const translations = {
     mooreTitle: '\uBB34\uC5B4 \uACE1\uC120 \uC54C\uACE0\uB9AC\uC998',
     mooreAliases:
       '\uB2E4\uB978 \uC774\uB984: \uACF5\uAC04 \uCC44\uC6C0 \uACE1\uC120, \uD78C\uBCA0\uB974\uD2B8 \uBCC0\uD615, \uD504\uB799\uD0C8 \uC815\uB82C',
+    peanoTitle: '페아노 곡선 알고리즘',
+    peanoAliases: '다른 이름: 페아노 공간 채움 곡선',
     sierpinskiTitle: '시에르핀스키 곡선 알고리즘',
     sierpinskiAliases: '다른 이름: 공간 채움 곡선, 시에르핀스키 사각 곡선',
     combTitle: '빗살 알고리즘',
@@ -822,6 +864,7 @@ const translations = {
       '\uB2E4\uB978 \uC774\uB984: \uC644\uC804 \uD0D0\uC0C9, \uC21C\uC5F4 \uC5F4\uAC70',
     sonarVisit: '\uC18C\uB098 \uBC29\uBB38',
     mooreCurve: '\uBB34\uC5B4 \uACE1\uC120',
+    peanoCurve: '페아노 곡선',
     sierpinskiCurve: '시에르핀스키 곡선',
     combScan: '빗살 스캔',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -859,6 +902,9 @@ const translations = {
     mooreTitle: 'Algorithme de Courbe de Moore',
     mooreAliases:
       '\u00C9galement connu sous: Courbe de Remplissage, Variante de Hilbert, Tri Fractal',
+    peanoTitle: 'Algorithme de courbe de Peano',
+    peanoAliases:
+      "Également connu sous: Courbe de Peano, Courbe remplissant l'espace",
     sierpinskiTitle: 'Algorithme de Courbe de Sierpiński',
     sierpinskiAliases:
       "Également connu sous: Courbe de remplissage d'espace, Courbe carrée de Sierpiński",
@@ -877,6 +923,7 @@ const translations = {
       '\u00C9galement connu sous: Recherche Exhaustive, Solveur Exact TSP, \u00C9num\u00E9ration de Permutations',
     sonarVisit: 'Visite Sonar',
     mooreCurve: 'Courbe de Moore',
+    peanoCurve: 'Courbe de Peano',
     sierpinskiCurve: 'Courbe de Sierpiński',
     combScan: 'Balayage Peigne',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -927,6 +974,8 @@ const translations = {
       '\u0C2E\u0C42\u0C30\u0C4D \u0C15\u0C30\u0C4D\u0C35\u0C4D \u0C05\u0C32\u0C4D\u0C17\u0C4B\u0C30\u0C3F\u0C26\u0C02',
     mooreAliases:
       '\u0C07\u0C24\u0C30 \u0C2A\u0C47\u0C30\u0C4D\u0C32\u0C41: \u0C38\u0C4D\u0C2A\u0C47\u0C38\u0C4D-\u0C2B\u0C3F\u0C32\u0C4D\u0C32\u0C3F\u0C02\u0C17\u0C4D \u0C15\u0C30\u0C4D\u0C35\u0C4D',
+    peanoTitle: 'పీనో కర్వ్ అల్గారిథమ్',
+    peanoAliases: 'ఇతర పేర్లు: పీనో స్పేస్-ఫిల్లింగ్ కర్వ్',
     sierpinskiTitle: 'సియర్పిన్స్కీ కర్వ్ అల్గోరిథం',
     sierpinskiAliases:
       'ఇతర పేర్లు: స్పేస్-ఫిల్లింగ్ కర్వ్, సియర్పిన్స్కీ స్క్వేర్ కర్వ్',
@@ -945,6 +994,7 @@ const translations = {
     sonarVisit:
       '\u0C38\u0C4B\u0C28\u0C3E\u0C30\u0C4D \u0C35\u0C3F\u0C1C\u0C3F\u0C1F\u0C4D',
     mooreCurve: '\u0C2E\u0C42\u0C30\u0C4D \u0C15\u0C30\u0C4D\u0C35\u0C4D',
+    peanoCurve: 'పీనో కర్వ్',
     sierpinskiCurve: 'సియర్పిన్స్కీ కర్వ్',
     combScan: 'కాంబ్ స్కాన్',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -995,6 +1045,8 @@ const translations = {
       '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930 \u0905\u0932\u094D\u0917\u094B\u0930\u093F\u0926\u092E',
     mooreAliases:
       '\u092F\u093E\u0932\u093E \u0905\u0938\u0947\u0939\u0940 \u092E\u094D\u0939\u0923\u0924\u093E\u0924: \u0938\u094D\u092A\u0947\u0938-\u092B\u093F\u0932\u093F\u0902\u0917 \u0935\u0915\u094D\u0930',
+    peanoTitle: 'पेआनो वक्र अल्गोरिदम',
+    peanoAliases: 'याला असेही म्हणतात: पेआनो स्पेस-फिलिंग वक्र',
     sierpinskiTitle: 'सिएर्पिन्स्की वक्र अल्गोरिदम',
     sierpinskiAliases:
       'असेही ओळखले जाते: स्पेस-फिलिंग वक्र, सिएर्पिन्स्की स्क्वेअर वक्र',
@@ -1012,6 +1064,7 @@ const translations = {
       '\u092F\u093E\u0932\u093E \u0905\u0938\u0947\u0939\u0940 \u092E\u094D\u0939\u0923\u0924\u093E\u0924: \u0938\u0902\u092A\u0942\u0930\u094D\u0923 \u0936\u094B\u0927',
     sonarVisit: '\u0938\u094B\u0928\u093E\u0930 \u092D\u0947\u091F',
     mooreCurve: '\u092E\u0942\u0930 \u0935\u0915\u094D\u0930',
+    peanoCurve: 'पेआनो वक्र',
     sierpinskiCurve: 'सिएर्पिन्स्की वक्र',
     combScan: 'कंगवा स्कॅन',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -1051,6 +1104,8 @@ const translations = {
     mooreTitle: 'Moore E\u011Frisi Algoritmas\u0131',
     mooreAliases:
       'Ayr\u0131ca bilinen: Alan Doldurma E\u011Frisi, Hilbert Varyant\u0131, Fraktal S\u0131ralama',
+    peanoTitle: 'Peano Eğrisi Algoritması',
+    peanoAliases: 'Diğer adları: Peano uzay doldurma eğrisi',
     sierpinskiTitle: 'Sierpiński Eğrisi Algoritması',
     sierpinskiAliases:
       'Diğer adları: Alan doldurma eğrisi, Sierpiński kare eğrisi',
@@ -1067,6 +1122,7 @@ const translations = {
       'Ayr\u0131ca bilinen: Kapsaml\u0131 Arama, Perm\u00FCtasyon Say\u0131m\u0131',
     sonarVisit: 'Sonar Ziyaret',
     mooreCurve: 'Moore E\u011Frisi',
+    peanoCurve: 'Peano Eğrisi',
     sierpinskiCurve: 'Sierpiński Eğrisi',
     combScan: 'Tarak Tarama',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -1119,6 +1175,8 @@ const translations = {
       '\u0BAE\u0BC2\u0BB0\u0BCD \u0BB5\u0BB3\u0BC8\u0BB5\u0BC1 \u0B85\u0BB2\u0BCD\u0B95\u0BBE\u0BB0\u0BBF\u0BA4\u0BAE\u0BCD',
     mooreAliases:
       '\u0BAE\u0BB1\u0BCD\u0BB1 \u0BAA\u0BC6\u0BAF\u0BB0\u0BCD\u0B95\u0BB3\u0BCD: \u0BB5\u0BC6\u0BB3\u0BBF \u0BA8\u0BBF\u0BB0\u0BAA\u0BCD\u0BAA\u0BC1 \u0BB5\u0BB3\u0BC8\u0BB5\u0BC1',
+    peanoTitle: 'பியானோ வளைவு அல்காரிதம்',
+    peanoAliases: 'இது இவ்வாறும் அறியப்படுகிறது: பியானோ இடம்-நிரப்பும் வளைவு',
     sierpinskiTitle: 'சியர்பின்ஸ்கி வளைவு அல்காரிதம்',
     sierpinskiAliases:
       'இதுவும் அழைக்கப்படுகிறது: ஸ்பேஸ்-ஃபில்லிங் வளைவு, சியர்பின்ஸ்கி சதுர வளைவு',
@@ -1137,6 +1195,7 @@ const translations = {
     sonarVisit:
       '\u0B9A\u0BCB\u0BA9\u0BBE\u0BB0\u0BCD \u0BAA\u0BBE\u0BB0\u0BCD\u0BB5\u0BC8',
     mooreCurve: '\u0BAE\u0BC2\u0BB0\u0BCD \u0BB5\u0BB3\u0BC8\u0BB5\u0BC1',
+    peanoCurve: 'பியானோ வளைவு',
     sierpinskiCurve: 'சியர்பின்ஸ்கி வளைவு',
     combScan: 'கோம்ப் ஸ்கேன்',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -1178,6 +1237,8 @@ const translations = {
     mooreTitle: 'Thu\u1EADt to\u00E1n \u0110\u01B0\u1EDDng cong Moore',
     mooreAliases:
       'C\u00F2n g\u1ECDi l\u00E0: \u0110\u01B0\u1EDDng cong L\u1EA5p \u0110\u1EA7y, Bi\u1EBFn th\u1EC3 Hilbert',
+    peanoTitle: 'Thuật toán đường cong Peano',
+    peanoAliases: 'Còn được gọi là: Đường cong Peano lấp đầy không gian',
     sierpinskiTitle: 'Thuật toán Đường cong Sierpiński',
     sierpinskiAliases:
       'Còn được gọi là: Đường cong lấp đầy không gian, Đường cong vuông Sierpiński',
@@ -1194,6 +1255,7 @@ const translations = {
       'C\u00F2n g\u1ECDi l\u00E0: T\u00ECm ki\u1EBFm To\u00E0n di\u1EC7n, Li\u1EC7t k\u00EA Ho\u00E1n v\u1ECB',
     sonarVisit: 'Sonar Visit',
     mooreCurve: '\u0110\u01B0\u1EDDng cong Moore',
+    peanoCurve: 'Đường cong Peano',
     sierpinskiCurve: 'Đường cong Sierpiński',
     combScan: 'Quét Lược',
     selfAvoidingWalk: 'Self-Avoiding Walk',
@@ -1231,6 +1293,9 @@ const translations = {
     mooreTitle: 'Algoritmo della Curva di Moore',
     mooreAliases:
       'Noto anche come: Curva di Riempimento Spaziale, Variante di Hilbert, Ordinamento Frattale',
+    peanoTitle: 'Algoritmo della Curva di Peano',
+    peanoAliases:
+      'Conosciuto anche come: Curva di Peano, Curva riempitrice di spazio',
     sierpinskiTitle: 'Algoritmo della Curva di Sierpiński',
     sierpinskiAliases:
       'Noto anche come: Curva riempitiva, Curva quadrata di Sierpiński',
@@ -1248,6 +1313,7 @@ const translations = {
       'Noto anche come: Ricerca Esaustiva, Risolutore Esatto TSP, Enumerazione di Permutazioni',
     sonarVisit: 'Visita Sonar',
     mooreCurve: 'Curva di Moore',
+    peanoCurve: 'Curva di Peano',
     sierpinskiCurve: 'Curva di Sierpiński',
     combScan: 'Scansione Pettine',
     selfAvoidingWalk: 'Self-Avoiding Walk',

@@ -29,6 +29,12 @@ export {
   sierpinskiCurveToPoints,
 } from './sierpinski.js';
 export {
+  peanoAlgorithmSteps,
+  peanoSolution,
+  generatePeanoCurve,
+  peanoCurveToPoints,
+} from './peano.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
