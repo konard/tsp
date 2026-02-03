@@ -9,7 +9,7 @@
  * Uses atomic algorithms (all-at-once computation) for benchmark-like performance.
  *
  * Supports:
- * - Algorithm selection: sonar, moore, gosper, brute-force
+ * - Algorithm selection: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force
  * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
@@ -39,13 +39,21 @@ import {
   calculateTotalDistance,
   generateRandomPoints,
   calculateMooreGridSize,
+  calculatePeanoGridSize,
   VALID_GRID_SIZES,
+  VALID_PEANO_GRID_SIZES,
 } from '../lib/index.js';
 
 const {
   sonarSolution,
   mooreSolution,
   gosperSolution,
+  peanoSolution,
+  sierpinskiSolution,
+  combSolution,
+  sawSolution,
+  kochSolution,
+  spaceFillingTreeSolution,
   bruteForceSolution,
   twoOpt,
   threeOpt,
@@ -127,6 +135,45 @@ const runAlgorithm = (algorithm, points, gridSize) => {
         label: `Gosper Curve (grid: ${gosperGrid})`,
       };
     }
+    case 'peano': {
+      const peanoGrid = calculatePeanoGridSize(gridSize);
+      const result = peanoSolution(points, peanoGrid);
+      return {
+        tour: result.tour,
+        label: `Peano Curve (grid: ${peanoGrid})`,
+      };
+    }
+    case 'sierpinski': {
+      const sierpinskiGrid = calculateMooreGridSize(gridSize);
+      const result = sierpinskiSolution(points, sierpinskiGrid);
+      return {
+        tour: result.tour,
+        label: `Sierpiński Curve (grid: ${sierpinskiGrid})`,
+      };
+    }
+    case 'comb': {
+      const result = combSolution(points);
+      return { tour: result.tour, label: 'Comb (Serpentine Scan)' };
+    }
+    case 'saw': {
+      const result = sawSolution(points);
+      return {
+        tour: result.tour,
+        label: 'Self-Avoiding Walk (Nearest Neighbor)',
+      };
+    }
+    case 'koch': {
+      const mooreGrid = calculateMooreGridSize(gridSize);
+      const result = kochSolution(points, mooreGrid);
+      return {
+        tour: result.tour,
+        label: `Koch Snowflake (grid: ${mooreGrid})`,
+      };
+    }
+    case 'space-filling-tree': {
+      const result = spaceFillingTreeSolution(points);
+      return { tour: result.tour, label: 'Space-Filling Tree (Quadtree DFS)' };
+    }
     case 'brute-force': {
       if (points.length > BRUTE_FORCE_MAX_POINTS) {
         throw new Error(
@@ -141,7 +188,7 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     }
     default:
       throw new Error(
-        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, gosper, brute-force`
+        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
       );
   }
 };
@@ -207,7 +254,18 @@ export const main = () => {
           alias: 'a',
           type: 'string',
           describe: 'TSP algorithm to use',
-          choices: ['sonar', 'moore', 'gosper', 'brute-force'],
+          choices: [
+            'sonar',
+            'moore',
+            'gosper',
+            'peano',
+            'sierpinski',
+            'comb',
+            'saw',
+            'koch',
+            'space-filling-tree',
+            'brute-force',
+          ],
           default: getenv('TSP_ALGORITHM', 'sonar'),
         })
         .option('optimization', {
@@ -235,7 +293,7 @@ export const main = () => {
         .option('grid-size', {
           alias: 'g',
           type: 'number',
-          describe: `Grid size for point generation (valid Moore sizes: ${VALID_GRID_SIZES.join(', ')})`,
+          describe: `Grid size for point generation (Moore: ${VALID_GRID_SIZES.join(', ')}; Peano: ${VALID_PEANO_GRID_SIZES.join(', ')})`,
           default: getenv('TSP_GRID_SIZE', 16),
         })
         .option('points', {
@@ -267,6 +325,10 @@ export const main = () => {
         .example(
           '$0 -a moore -o lkh -n 50',
           'Moore + LKH optimization, 50 points'
+        )
+        .example(
+          '$0 -a peano -o 2-opt -n 50 -g 27',
+          'Peano + 2-opt, 50 points on 27x27 grid'
         )
         .example(
           '$0 -a brute-force --points "0 0 5 5 10 2 3 8"',
