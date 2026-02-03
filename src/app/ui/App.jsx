@@ -19,6 +19,7 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  sierpinskiAlgorithmSteps,
   combAlgorithmSteps,
   sawAlgorithmSteps,
   kochAlgorithmSteps,
@@ -58,6 +59,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  sierpinski: {
+    title: t(lang, 'sierpinskiTitle'),
+    aliases: t(lang, 'sierpinskiAliases'),
+    vizType: 'sierpinski',
+  },
   comb: {
     title: t(lang, 'combTitle'),
     aliases: t(lang, 'combAliases'),
@@ -95,6 +101,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'sierpinski':
+      return sierpinskiAlgorithmSteps(points, mooreGridSize);
     case 'comb':
       return combAlgorithmSteps(points);
     case 'saw':
@@ -486,6 +494,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    sierpinski: 'sierpinskiCurve',
     comb: 'combScan',
     saw: 'selfAvoidingWalk',
     koch: 'kochSnowflake',

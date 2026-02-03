@@ -9,7 +9,7 @@
  * Uses atomic algorithms (all-at-once computation) for benchmark-like performance.
  *
  * Supports:
- * - Algorithm selection: sonar, moore, comb, saw, koch, space-filling-tree, brute-force
+ * - Algorithm selection: sonar, moore, sierpinski, comb, saw, koch, space-filling-tree, brute-force
  * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
@@ -45,6 +45,7 @@ import {
 const {
   sonarSolution,
   mooreSolution,
+  sierpinskiSolution,
   combSolution,
   sawSolution,
   kochSolution,
@@ -122,6 +123,14 @@ const runAlgorithm = (algorithm, points, gridSize) => {
       const result = mooreSolution(points, mooreGrid);
       return { tour: result.tour, label: `Moore Curve (grid: ${mooreGrid})` };
     }
+    case 'sierpinski': {
+      const sierpinskiGrid = calculateMooreGridSize(gridSize);
+      const result = sierpinskiSolution(points, sierpinskiGrid);
+      return {
+        tour: result.tour,
+        label: `Sierpiński Curve (grid: ${sierpinskiGrid})`,
+      };
+    }
     case 'comb': {
       const result = combSolution(points);
       return { tour: result.tour, label: 'Comb (Serpentine Scan)' };
@@ -159,7 +168,7 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     }
     default:
       throw new Error(
-        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, comb, saw, koch, space-filling-tree, brute-force`
+        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
       );
   }
 };
@@ -228,6 +237,7 @@ export const main = () => {
           choices: [
             'sonar',
             'moore',
+            'sierpinski',
             'comb',
             'saw',
             'koch',

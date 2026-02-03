@@ -4,6 +4,7 @@
 
 export { sonarSolution } from './sonar.js';
 export { mooreSolution } from './moore.js';
+export { sierpinskiSolution } from './sierpinski.js';
 export { combSolution } from './comb.js';
 export { sawSolution } from './saw.js';
 export { kochSolution } from './koch.js';

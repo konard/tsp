@@ -169,7 +169,7 @@ const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */
@@ -194,6 +194,7 @@ const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
       <SpaceFillingTreeLegend showOptimization={showOptimization} lang={lang} />
     );
   }
+  // 'moore' and 'sierpinski' both use curve-based visualization
   return <MooreLegend showOptimization={showOptimization} lang={lang} />;
 };
 

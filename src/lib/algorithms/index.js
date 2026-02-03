@@ -15,7 +15,8 @@
  *
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
- * - Moore Curve: Orders points along a space-filling curve
+ * - Moore Curve: Orders points along a Moore space-filling curve
+ * - Sierpiński Curve: Orders points along a Sierpiński space-filling curve
  * - Comb (Serpentine Scan): Visits points row by row in alternating directions
  * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
  * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
@@ -72,6 +73,9 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  sierpinskiAlgorithmSteps,
+  generateSierpinskiCurve,
+  sierpinskiCurveToPoints,
   combAlgorithmSteps,
   sawAlgorithmSteps,
   sawSolution,
