@@ -10,7 +10,7 @@
 
 import { atomic, calculateTotalDistance } from '../src/lib/index.js';
 
-const { sonarSolution, mooreSolution } = atomic;
+const { sonarSolution, mooreSolution, sawSolution } = atomic;
 
 // Example: Generate random points
 const points = [
@@ -36,4 +36,11 @@ console.log('Moore Curve Algorithm:');
 const mooreResult = mooreSolution(points, 16);
 const mooreDistance = calculateTotalDistance(mooreResult.tour, points);
 console.log(`  Tour: ${mooreResult.tour.join(' → ')}`);
-console.log(`  Distance: ${mooreDistance.toFixed(2)}`);
+console.log(`  Distance: ${mooreDistance.toFixed(2)}\n`);
+
+// Example: Using Self-Avoiding Walk (SAW) algorithm
+console.log('Self-Avoiding Walk (SAW) Algorithm:');
+const sawResult = sawSolution(points);
+const sawDistance = calculateTotalDistance(sawResult.tour, points);
+console.log(`  Tour: ${sawResult.tour.join(' → ')}`);
+console.log(`  Distance: ${sawDistance.toFixed(2)}`);
