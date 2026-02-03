@@ -158,6 +158,35 @@ const TSPVisualization = ({
     }
   }
 
+  // Generate space-filling tree edges
+  let treeEdgesPath = null;
+  if (
+    algorithm === 'space-filling-tree' &&
+    step?.treeEdges &&
+    step.treeEdges.length > 0
+  ) {
+    treeEdgesPath = (
+      <g>
+        {step.treeEdges.map((edge, i) => {
+          const from = toSvgCoords(edge.from, padding, scale);
+          const to = toSvgCoords(edge.to, padding, scale);
+          return (
+            <line
+              key={`tree-edge-${i}`}
+              x1={from.x}
+              y1={from.y}
+              x2={to.x}
+              y2={to.y}
+              stroke="rgba(255, 165, 0, 0.5)"
+              strokeWidth={Math.max(1, 3 - edge.depth * 0.3)}
+              strokeLinecap="round"
+            />
+          );
+        })}
+      </g>
+    );
+  }
+
   // Generate sweep line for Sonar
   let sweepLine = null;
   let centroidCircle = null;
@@ -304,6 +333,8 @@ const TSPVisualization = ({
         {/* Moore curve - gray (unvisited) portion first, then green (visited) on top */}
         {mooreCurveGrayPath}
         {mooreCurvePath}
+        {/* Space-filling tree edges */}
+        {treeEdgesPath}
         {/* Sweep line for Sonar */}
         {sweepLine}
         {centroidCircle}

@@ -104,6 +104,9 @@ const translations = {
     kochTitle: 'Koch Snowflake Algorithm',
     kochAliases:
       'Also known as: Koch Curve, Snowflake Fractal, Fractal Space-Filling Curve',
+    spaceFillingTreeTitle: 'Space-Filling Tree Algorithm',
+    spaceFillingTreeAliases:
+      'Also known as: Quadtree Ordering, Spatial Subdivision Tree, Recursive Partitioning, Z-order DFS',
     bruteForceTitle: 'Brute-Force Algorithm',
     bruteForceAliases:
       'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
@@ -111,7 +114,9 @@ const translations = {
     mooreCurve: 'Moore Curve',
     selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: 'Koch Snowflake',
+    spaceFillingTree: 'Space-Filling Tree',
     bruteForce: 'Brute-Force',
+    treeStructure: 'Tree Structure',
     centroid: 'Centroid',
     modifiedEdge: 'Modified Edge',
   },

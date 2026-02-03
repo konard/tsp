@@ -21,6 +21,7 @@ export const ALGORITHM_OPTIONS = [
   { id: 'moore', label: 'Moore Curve' },
   { id: 'saw', label: 'Self-Avoiding Walk' },
   { id: 'koch', label: 'Koch Snowflake' },
+  { id: 'space-filling-tree', label: 'Space-Filling Tree' },
   { id: 'brute-force', label: 'Brute-Force' },
 ];
 

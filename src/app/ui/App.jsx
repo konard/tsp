@@ -21,6 +21,7 @@ import {
   mooreAlgorithmSteps,
   sawAlgorithmSteps,
   kochAlgorithmSteps,
+  spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -66,6 +67,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'kochAliases'),
     vizType: 'koch',
   },
+  'space-filling-tree': {
+    title: t(lang, 'spaceFillingTreeTitle'),
+    aliases: t(lang, 'spaceFillingTreeAliases'),
+    vizType: 'space-filling-tree',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -87,6 +93,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sawAlgorithmSteps(points);
     case 'koch':
       return kochAlgorithmSteps(points, mooreGridSize);
+    case 'space-filling-tree':
+      return spaceFillingTreeAlgorithmSteps(points);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -472,6 +480,7 @@ const App = () => {
     moore: 'mooreCurve',
     saw: 'selfAvoidingWalk',
     koch: 'kochSnowflake',
+    'space-filling-tree': 'spaceFillingTree',
     'brute-force': 'bruteForce',
   };
 

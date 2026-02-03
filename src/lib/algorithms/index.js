@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, SAW, Koch, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, SAW, Koch, Space-Filling Tree, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -18,6 +18,7 @@
  * - Moore Curve: Orders points along a space-filling curve
  * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
  * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
+ * - Space-Filling Tree: Orders points via DFS traversal of a recursive quadtree
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -76,6 +77,7 @@ export {
   generateKochSnowflake,
   kochCurveToPoints,
   calculateKochOrder,
+  spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

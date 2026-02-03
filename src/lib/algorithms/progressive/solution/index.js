@@ -18,6 +18,10 @@ export {
   calculateKochOrder,
 } from './koch.js';
 export {
+  spaceFillingTreeAlgorithmSteps,
+  spaceFillingTreeSolution,
+} from './space-filling-tree.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
