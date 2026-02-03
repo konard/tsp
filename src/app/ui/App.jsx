@@ -19,6 +19,8 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  sawAlgorithmSteps,
+  kochAlgorithmSteps,
   spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
@@ -55,6 +57,16 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  saw: {
+    title: t(lang, 'sawTitle'),
+    aliases: t(lang, 'sawAliases'),
+    vizType: 'saw',
+  },
+  koch: {
+    title: t(lang, 'kochTitle'),
+    aliases: t(lang, 'kochAliases'),
+    vizType: 'koch',
+  },
   'space-filling-tree': {
     title: t(lang, 'spaceFillingTreeTitle'),
     aliases: t(lang, 'spaceFillingTreeAliases'),
@@ -77,6 +89,10 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'saw':
+      return sawAlgorithmSteps(points);
+    case 'koch':
+      return kochAlgorithmSteps(points, mooreGridSize);
     case 'space-filling-tree':
       return spaceFillingTreeAlgorithmSteps(points);
     case 'brute-force':
@@ -462,6 +478,8 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    saw: 'selfAvoidingWalk',
+    koch: 'kochSnowflake',
     'space-filling-tree': 'spaceFillingTree',
     'brute-force': 'bruteForce',
   };

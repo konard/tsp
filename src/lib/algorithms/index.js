@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, Space-Filling Tree, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, SAW, Koch, Space-Filling Tree, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -16,6 +16,8 @@
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
  * - Moore Curve: Orders points along a space-filling curve
+ * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
+ * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
  * - Space-Filling Tree: Orders points via DFS traversal of a recursive quadtree
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
@@ -30,14 +32,15 @@
  *
  * @example
  * // Progressive (for visualization)
- * import { sonarAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
+ * import { sonarAlgorithmSteps, sawAlgorithmSteps, kochAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
  * const solutionSteps = sonarAlgorithmSteps(points);
+ * const kochSteps = kochAlgorithmSteps(points, mooreGridSize);
  * const optSteps = twoOptSteps(points, tour);
  * const bruteSteps = bruteForceAlgorithmSteps(points);
  *
  * @example
  * // Atomic (for direct computation)
- * import { sonarSolution, bruteForceSolution } from './algorithms/atomic';
+ * import { sonarSolution, sawSolution, bruteForceSolution } from './algorithms/atomic';
  * import { twoOpt } from './algorithms/atomic';
  * const { tour } = sonarSolution(points);
  * const optimal = bruteForceSolution(points);
@@ -68,6 +71,12 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  sawAlgorithmSteps,
+  sawSolution,
+  kochAlgorithmSteps,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
   spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,

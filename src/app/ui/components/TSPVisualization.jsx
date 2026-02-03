@@ -27,7 +27,7 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {Array<{x: number, y: number, id: number}>} props.points - Array of points
  * @param {Array<Object>} props.steps - Array of algorithm steps
  * @param {number} props.currentStep - Current step index
- * @param {string} props.algorithm - Algorithm type ('sonar' or 'moore')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'koch', or 'brute-force')
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  */
@@ -99,15 +99,12 @@ const TSPVisualization = ({
     );
   }
 
-  // Generate Moore curve path - progressive animation
+  // Generate curve path for Moore/Koch - progressive animation
   // Draw visited portion in green, remaining portion in gray
   let mooreCurvePath = null;
   let mooreCurveGrayPath = null;
-  if (
-    algorithm === 'moore' &&
-    step?.curvePoints &&
-    step.curvePoints.length > 0
-  ) {
+  const isCurveAlgorithm = algorithm === 'moore' || algorithm === 'koch';
+  if (isCurveAlgorithm && step?.curvePoints && step.curvePoints.length > 0) {
     // Determine the curve position up to which we've progressed
     const curvePosition =
       step.curvePosition !== undefined ? step.curvePosition : 0;

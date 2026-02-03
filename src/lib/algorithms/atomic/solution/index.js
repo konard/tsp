@@ -4,6 +4,8 @@
 
 export { sonarSolution } from './sonar.js';
 export { mooreSolution } from './moore.js';
+export { sawSolution } from './saw.js';
+export { kochSolution } from './koch.js';
 export { spaceFillingTreeSolution } from './space-filling-tree.js';
 export {
   bruteForceSolution,
