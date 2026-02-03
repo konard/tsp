@@ -27,7 +27,6 @@ const {
   sonarSolution,
   mooreSolution,
   sawSolution,
-  kochSolution,
   spaceFillingTreeSolution,
   bruteForceSolution,
   twoOpt,
