@@ -9,6 +9,7 @@ export {
   generateMooreCurve,
   mooreCurveToPoints,
 } from './moore.js';
+export { combAlgorithmSteps, combSolution } from './comb.js';
 export { sawAlgorithmSteps, sawSolution } from './saw.js';
 export {
   kochAlgorithmSteps,

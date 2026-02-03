@@ -19,6 +19,7 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  combAlgorithmSteps,
   sawAlgorithmSteps,
   kochAlgorithmSteps,
   spaceFillingTreeAlgorithmSteps,
@@ -57,6 +58,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
   },
+  comb: {
+    title: t(lang, 'combTitle'),
+    aliases: t(lang, 'combAliases'),
+    vizType: 'comb',
+  },
   saw: {
     title: t(lang, 'sawTitle'),
     aliases: t(lang, 'sawAliases'),
@@ -89,6 +95,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'comb':
+      return combAlgorithmSteps(points);
     case 'saw':
       return sawAlgorithmSteps(points);
     case 'koch':
@@ -478,6 +486,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    comb: 'combScan',
     saw: 'selfAvoidingWalk',
     koch: 'kochSnowflake',
     'space-filling-tree': 'spaceFillingTree',

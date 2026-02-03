@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, SAW, Koch, Space-Filling Tree, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -16,6 +16,7 @@
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
  * - Moore Curve: Orders points along a space-filling curve
+ * - Comb (Serpentine Scan): Visits points row by row in alternating directions
  * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
  * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
  * - Space-Filling Tree: Orders points via DFS traversal of a recursive quadtree
@@ -71,6 +72,7 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  combAlgorithmSteps,
   sawAlgorithmSteps,
   sawSolution,
   kochAlgorithmSteps,
