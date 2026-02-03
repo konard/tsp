@@ -131,7 +131,10 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     case 'koch': {
       const mooreGrid = calculateMooreGridSize(gridSize);
       const result = kochSolution(points, mooreGrid);
-      return { tour: result.tour, label: `Koch Snowflake (grid: ${mooreGrid})` };
+      return {
+        tour: result.tour,
+        label: `Koch Snowflake (grid: ${mooreGrid})`,
+      };
     }
     case 'space-filling-tree': {
       const result = spaceFillingTreeSolution(points);
@@ -217,7 +220,14 @@ export const main = () => {
           alias: 'a',
           type: 'string',
           describe: 'TSP algorithm to use',
-          choices: ['sonar', 'moore', 'saw', 'koch', 'space-filling-tree', 'brute-force'],
+          choices: [
+            'sonar',
+            'moore',
+            'saw',
+            'koch',
+            'space-filling-tree',
+            'brute-force',
+          ],
           default: getenv('TSP_ALGORITHM', 'sonar'),
         })
         .option('optimization', {
