@@ -166,10 +166,9 @@ const translations = {
     sonarVisit: '\u58F0\u7EB3\u8BBF\u95EE',
     mooreCurve: '\u83AB\u5C14\u66F2\u7EBF',
     combScan: '梳形扫描',
-=======
     selfAvoidingWalk: 'Self-Avoiding Walk',
     kochSnowflake: '科赫雪花',
->>>>>>> origin/main
+    spaceFillingTree: 'Space-Filling Tree',
     bruteForce: '\u66B4\u529B\u6C42\u89E3',
     centroid: '\u8D28\u5FC3',
     modifiedEdge: '\u4FEE\u6539\u8FB9',
