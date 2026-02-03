@@ -20,6 +20,11 @@ export const ALGORITHM_OPTIONS = [
   { id: 'sonar', label: 'Sonar Visit' },
   { id: 'moore', label: 'Moore Curve' },
   { id: 'peano', label: 'Peano Curve' },
+  { id: 'sierpinski', label: 'Sierpiński Curve' },
+  { id: 'comb', label: 'Comb Scan' },
+  { id: 'saw', label: 'Self-Avoiding Walk' },
+  { id: 'koch', label: 'Koch Snowflake' },
+  { id: 'space-filling-tree', label: 'Space-Filling Tree' },
   { id: 'brute-force', label: 'Brute-Force' },
 ];
 

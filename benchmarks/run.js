@@ -29,6 +29,8 @@ const {
   sonarSolution,
   mooreSolution,
   peanoSolution,
+  sawSolution,
+  spaceFillingTreeSolution,
   bruteForceSolution,
   twoOpt,
   threeOpt,
@@ -180,6 +182,44 @@ function getAlgorithmConfigs() {
       },
     },
     {
+      name: 'SAW',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour } = sawSolution(points);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'SAW + 2-opt',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = sawSolution(points);
+        const { tour } = twoOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'SAW + Zigzag',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = sawSolution(points);
+        const { tour } = zigzagOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Space-Filling Tree',
+      complexity: 'O(n log n)',
+      complexityFn: (n) => n * Math.log2(n),
+      run: (points) => {
+        const { tour } = spaceFillingTreeSolution(points);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
       name: 'Sonar + 2-opt',
       complexity: 'O(n²)',
       complexityFn: (n) => n * n,
@@ -195,6 +235,16 @@ function getAlgorithmConfigs() {
       complexityFn: (n) => n * n,
       run: (points) => {
         const { tour: initial } = mooreSolution(points, MOORE_GRID_SIZE);
+        const { tour } = twoOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Space-Filling Tree + 2-opt',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = spaceFillingTreeSolution(points);
         const { tour } = twoOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
@@ -235,6 +285,16 @@ function getAlgorithmConfigs() {
       complexityFn: (n) => n * n,
       run: (points) => {
         const { tour: initial } = peanoSolution(points, PEANO_GRID_SIZE);
+        const { tour } = zigzagOpt(points, initial);
+        return { tour, distance: calculateTotalDistance(tour, points) };
+      },
+    },
+    {
+      name: 'Space-Filling Tree + Zigzag',
+      complexity: 'O(n²)',
+      complexityFn: (n) => n * n,
+      run: (points) => {
+        const { tour: initial } = spaceFillingTreeSolution(points);
         const { tour } = zigzagOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },

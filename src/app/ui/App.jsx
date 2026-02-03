@@ -21,6 +21,11 @@ import {
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
   peanoAlgorithmSteps,
+  sierpinskiAlgorithmSteps,
+  combAlgorithmSteps,
+  sawAlgorithmSteps,
+  kochAlgorithmSteps,
+  spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -61,6 +66,31 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'peanoAliases'),
     vizType: 'peano',
   },
+  sierpinski: {
+    title: t(lang, 'sierpinskiTitle'),
+    aliases: t(lang, 'sierpinskiAliases'),
+    vizType: 'sierpinski',
+  },
+  comb: {
+    title: t(lang, 'combTitle'),
+    aliases: t(lang, 'combAliases'),
+    vizType: 'comb',
+  },
+  saw: {
+    title: t(lang, 'sawTitle'),
+    aliases: t(lang, 'sawAliases'),
+    vizType: 'saw',
+  },
+  koch: {
+    title: t(lang, 'kochTitle'),
+    aliases: t(lang, 'kochAliases'),
+    vizType: 'koch',
+  },
+  'space-filling-tree': {
+    title: t(lang, 'spaceFillingTreeTitle'),
+    aliases: t(lang, 'spaceFillingTreeAliases'),
+    vizType: 'space-filling-tree',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -79,10 +109,17 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
     case 'peano':
-      return peanoAlgorithmSteps(
-        points,
-        calculatePeanoGridSize(mooreGridSize)
-      );
+      return peanoAlgorithmSteps(points, calculatePeanoGridSize(mooreGridSize));
+    case 'sierpinski':
+      return sierpinskiAlgorithmSteps(points, mooreGridSize);
+    case 'comb':
+      return combAlgorithmSteps(points);
+    case 'saw':
+      return sawAlgorithmSteps(points);
+    case 'koch':
+      return kochAlgorithmSteps(points, mooreGridSize);
+    case 'space-filling-tree':
+      return spaceFillingTreeAlgorithmSteps(points);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     default:
@@ -467,6 +504,11 @@ const App = () => {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
     peano: 'peanoCurve',
+    sierpinski: 'sierpinskiCurve',
+    comb: 'combScan',
+    saw: 'selfAvoidingWalk',
+    koch: 'kochSnowflake',
+    'space-filling-tree': 'spaceFillingTree',
     'brute-force': 'bruteForce',
   };
 

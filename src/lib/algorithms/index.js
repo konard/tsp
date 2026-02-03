@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, Peano, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -17,6 +17,11 @@
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
  * - Moore Curve: Orders points along a Moore space-filling curve (2^n grid)
  * - Peano Curve: Orders points along a Peano space-filling curve (3^n grid)
+ * - Sierpiński Curve: Orders points along a Sierpiński space-filling curve
+ * - Comb (Serpentine Scan): Visits points row by row in alternating directions
+ * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
+ * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
+ * - Space-Filling Tree: Orders points via DFS traversal of a recursive quadtree
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -30,14 +35,15 @@
  *
  * @example
  * // Progressive (for visualization)
- * import { sonarAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
+ * import { sonarAlgorithmSteps, sawAlgorithmSteps, kochAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
  * const solutionSteps = sonarAlgorithmSteps(points);
+ * const kochSteps = kochAlgorithmSteps(points, mooreGridSize);
  * const optSteps = twoOptSteps(points, tour);
  * const bruteSteps = bruteForceAlgorithmSteps(points);
  *
  * @example
  * // Atomic (for direct computation)
- * import { sonarSolution, bruteForceSolution } from './algorithms/atomic';
+ * import { sonarSolution, sawSolution, bruteForceSolution } from './algorithms/atomic';
  * import { twoOpt } from './algorithms/atomic';
  * const { tour } = sonarSolution(points);
  * const optimal = bruteForceSolution(points);
@@ -71,6 +77,17 @@ export {
   peanoAlgorithmSteps,
   generatePeanoCurve,
   peanoCurveToPoints,
+  sierpinskiAlgorithmSteps,
+  generateSierpinskiCurve,
+  sierpinskiCurveToPoints,
+  combAlgorithmSteps,
+  sawAlgorithmSteps,
+  sawSolution,
+  kochAlgorithmSteps,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
+  spaceFillingTreeAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
