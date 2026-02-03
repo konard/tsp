@@ -9,6 +9,19 @@ export {
   generateMooreCurve,
   mooreCurveToPoints,
 } from './moore.js';
+export { combAlgorithmSteps, combSolution } from './comb.js';
+export { sawAlgorithmSteps, sawSolution } from './saw.js';
+export {
+  kochAlgorithmSteps,
+  kochSolution,
+  generateKochSnowflake,
+  kochCurveToPoints,
+  calculateKochOrder,
+} from './koch.js';
+export {
+  spaceFillingTreeAlgorithmSteps,
+  spaceFillingTreeSolution,
+} from './space-filling-tree.js';
 export {
   sierpinskiAlgorithmSteps,
   sierpinskiSolution,

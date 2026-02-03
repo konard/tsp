@@ -94,6 +94,12 @@ describe('CLI algorithm selection', () => {
     expect(result.tour.length).toBe(5);
   });
 
+  it('should run comb algorithm', () => {
+    const result = runCliJson('--algorithm comb --num-points 5');
+    expect(result.algorithm).toContain('Comb');
+    expect(result.tour.length).toBe(5);
+  });
+
   it('should run brute-force algorithm', () => {
     const result = runCliJson('--algorithm brute-force --num-points 6');
     expect(result.algorithm).toContain('Brute-Force');
@@ -151,7 +157,7 @@ describe('CLI optimization selection', () => {
 // ============================================================
 
 describe('CLI algorithm + optimization combinations', () => {
-  const algorithms = ['sonar', 'moore'];
+  const algorithms = ['sonar', 'moore', 'comb'];
   const optimizations = ['2-opt', 'zigzag', 'combined'];
 
   for (const algo of algorithms) {

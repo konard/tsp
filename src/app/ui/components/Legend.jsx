@@ -84,10 +84,92 @@ const BruteForceLegend = ({ showOptimization, lang = 'en' }) => (
 );
 
 /**
+ * CombLegend - Legend for Comb algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const CombLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem color="#6c757d" label={t(lang, 'unvisited')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'inTour')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
+ * SAWLegend - Legend for Self-Avoiding Walk algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const SAWLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem color="#6c757d" label={t(lang, 'unvisited')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'inTour')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
+ * KochLegend - Legend for Koch Snowflake algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const KochLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem
+      color="rgba(34, 197, 94, 0.6)"
+      label={t(lang, 'visitedCurve')}
+    />
+    <LegendItem
+      color="rgba(156, 163, 175, 0.5)"
+      label={t(lang, 'unvisitedCurve')}
+    />
+    <LegendItem color="#0d6efd" label={t(lang, 'tourPath')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
+ * SpaceFillingTreeLegend - Legend for Space-Filling Tree algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem
+      color="rgba(255, 165, 0, 0.5)"
+      label={t(lang, 'treeStructure')}
+    />
+    <LegendItem color="#0d6efd" label={t(lang, 'tourPath')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'sierpinski', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */
@@ -95,11 +177,36 @@ const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
   if (algorithm === 'sonar') {
     return <SonarLegend showOptimization={showOptimization} lang={lang} />;
   }
+  if (algorithm === 'comb') {
+    return <CombLegend showOptimization={showOptimization} lang={lang} />;
+  }
+  if (algorithm === 'saw') {
+    return <SAWLegend showOptimization={showOptimization} lang={lang} />;
+  }
+  if (algorithm === 'koch') {
+    return <KochLegend showOptimization={showOptimization} lang={lang} />;
+  }
   if (algorithm === 'brute-force') {
     return <BruteForceLegend showOptimization={showOptimization} lang={lang} />;
   }
+  if (algorithm === 'space-filling-tree') {
+    return (
+      <SpaceFillingTreeLegend showOptimization={showOptimization} lang={lang} />
+    );
+  }
+  // 'moore' and 'sierpinski' both use curve-based visualization
   return <MooreLegend showOptimization={showOptimization} lang={lang} />;
 };
 
-export { Legend, SonarLegend, MooreLegend, BruteForceLegend, LegendItem };
+export {
+  Legend,
+  SonarLegend,
+  MooreLegend,
+  CombLegend,
+  SAWLegend,
+  KochLegend,
+  SpaceFillingTreeLegend,
+  BruteForceLegend,
+  LegendItem,
+};
 export default Legend;

@@ -27,7 +27,7 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {Array<{x: number, y: number, id: number}>} props.points - Array of points
  * @param {Array<Object>} props.steps - Array of algorithm steps
  * @param {number} props.currentStep - Current step index
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'sierpinski', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  */
@@ -101,14 +101,12 @@ const TSPVisualization = ({
 
   // Generate space-filling curve path - progressive animation
   // Draw visited portion in green, remaining portion in gray
-  // Works for both Moore and Sierpiński curves
+  // Works for Moore, Sierpiński, and Koch curves
   let mooreCurvePath = null;
   let mooreCurveGrayPath = null;
-  if (
-    (algorithm === 'moore' || algorithm === 'sierpinski') &&
-    step?.curvePoints &&
-    step.curvePoints.length > 0
-  ) {
+  const isCurveAlgorithm =
+    algorithm === 'moore' || algorithm === 'sierpinski' || algorithm === 'koch';
+  if (isCurveAlgorithm && step?.curvePoints && step.curvePoints.length > 0) {
     // Determine the curve position up to which we've progressed
     const curvePosition =
       step.curvePosition !== undefined ? step.curvePosition : 0;
@@ -160,6 +158,35 @@ const TSPVisualization = ({
         />
       );
     }
+  }
+
+  // Generate space-filling tree edges
+  let treeEdgesPath = null;
+  if (
+    algorithm === 'space-filling-tree' &&
+    step?.treeEdges &&
+    step.treeEdges.length > 0
+  ) {
+    treeEdgesPath = (
+      <g>
+        {step.treeEdges.map((edge, i) => {
+          const from = toSvgCoords(edge.from, padding, scale);
+          const to = toSvgCoords(edge.to, padding, scale);
+          return (
+            <line
+              key={`tree-edge-${i}`}
+              x1={from.x}
+              y1={from.y}
+              x2={to.x}
+              y2={to.y}
+              stroke="rgba(255, 165, 0, 0.5)"
+              strokeWidth={Math.max(1, 3 - edge.depth * 0.3)}
+              strokeLinecap="round"
+            />
+          );
+        })}
+      </g>
+    );
   }
 
   // Generate sweep line for Sonar
@@ -308,6 +335,8 @@ const TSPVisualization = ({
         {/* Moore curve - gray (unvisited) portion first, then green (visited) on top */}
         {mooreCurveGrayPath}
         {mooreCurvePath}
+        {/* Space-filling tree edges */}
+        {treeEdgesPath}
         {/* Sweep line for Sonar */}
         {sweepLine}
         {centroidCircle}
