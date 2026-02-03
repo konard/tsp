@@ -157,8 +157,7 @@ const translations = {
     mooreAliases:
       '\u53C8\u79F0\uFF1A\u7A7A\u95F4\u586B\u5145\u66F2\u7EBF\u3001\u5E0C\u5C14\u4F2F\u7279\u66F2\u7EBF\u53D8\u4F53\u3001\u5206\u5F62\u6392\u5E8F',
     sierpinskiTitle: '谢尔宾斯基曲线算法',
-    sierpinskiAliases:
-      '又称：空间填充曲线、谢尔宾斯基方形曲线',
+    sierpinskiAliases: '又称：空间填充曲线、谢尔宾斯基方形曲线',
     combTitle: '梳形算法',
     combAliases: '又称：蛇形扫描、牛耕式路径、光栅扫描、之字形行扫描',
     sawTitle: 'Self-Avoiding Walk Algorithm',
@@ -585,8 +584,7 @@ const translations = {
     mooreAliases:
       '\u5225\u540D: \u7A7A\u9593\u5145\u586B\u66F2\u7DDA\u3001\u30D2\u30EB\u30D9\u30EB\u30C8\u66F2\u7DDA\u5909\u7A2E\u3001\u30D5\u30E9\u30AF\u30BF\u30EB\u9806\u5E8F',
     sierpinskiTitle: 'シェルピンスキー曲線アルゴリズム',
-    sierpinskiAliases:
-      '別名：空間充填曲線、シェルピンスキー正方曲線',
+    sierpinskiAliases: '別名：空間充填曲線、シェルピンスキー正方曲線',
     combTitle: 'コーム（櫛形）アルゴリズム',
     combAliases:
       '別名：蛇行スキャン、牛耕式パス、ラスタースキャン、ジグザグ行スキャン',
@@ -809,8 +807,7 @@ const translations = {
     mooreAliases:
       '\uB2E4\uB978 \uC774\uB984: \uACF5\uAC04 \uCC44\uC6C0 \uACE1\uC120, \uD78C\uBCA0\uB974\uD2B8 \uBCC0\uD615, \uD504\uB799\uD0C8 \uC815\uB82C',
     sierpinskiTitle: '시에르핀스키 곡선 알고리즘',
-    sierpinskiAliases:
-      '다른 이름: 공간 채움 곡선, 시에르핀스키 사각 곡선',
+    sierpinskiAliases: '다른 이름: 공간 채움 곡선, 시에르핀스키 사각 곡선',
     combTitle: '빗살 알고리즘',
     combAliases:
       '다른 이름: 사행 스캔, 우경식 경로, 래스터 스캔, 지그재그 행 스캔',
@@ -864,7 +861,7 @@ const translations = {
       '\u00C9galement connu sous: Courbe de Remplissage, Variante de Hilbert, Tri Fractal',
     sierpinskiTitle: 'Algorithme de Courbe de Sierpiński',
     sierpinskiAliases:
-      'Également connu sous: Courbe de remplissage d'espace, Courbe carrée de Sierpiński',
+      "Également connu sous: Courbe de remplissage d'espace, Courbe carrée de Sierpiński",
     combTitle: 'Algorithme en Peigne',
     combAliases:
       'Aussi connu sous : Balayage Serpentin, Chemin Boustrophédon, Balayage par Lignes',
