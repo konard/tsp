@@ -169,7 +169,7 @@ const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
  * Legend - Generic legend component
  *
  * @param {Object} props
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'gosper', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
  */

@@ -43,6 +43,7 @@
     "algorithms",
     "visualization",
     "moore-curve",
+    "gosper-curve",
     "sonar-algorithm",
     "optimization",
     "cli"

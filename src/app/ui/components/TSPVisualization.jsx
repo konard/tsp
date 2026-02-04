@@ -100,12 +100,13 @@ const TSPVisualization = ({
   }
 
   // Generate space-filling curve path - progressive animation
+  // Used for Moore, Gosper, Peano, Sierpiński, and Koch curves
   // Draw visited portion in green, remaining portion in gray
-  // Works for Moore, Peano, Sierpiński, and Koch curves
   let mooreCurvePath = null;
   let mooreCurveGrayPath = null;
   const isCurveAlgorithm =
     algorithm === 'moore' ||
+    algorithm === 'gosper' ||
     algorithm === 'peano' ||
     algorithm === 'sierpinski' ||
     algorithm === 'koch';

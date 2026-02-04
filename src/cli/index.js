@@ -9,7 +9,7 @@
  * Uses atomic algorithms (all-at-once computation) for benchmark-like performance.
  *
  * Supports:
- * - Algorithm selection: sonar, moore, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force
+ * - Algorithm selection: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force
  * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
@@ -47,6 +47,7 @@ import {
 const {
   sonarSolution,
   mooreSolution,
+  gosperSolution,
   peanoSolution,
   sierpinskiSolution,
   combSolution,
@@ -126,6 +127,14 @@ const runAlgorithm = (algorithm, points, gridSize) => {
       const result = mooreSolution(points, mooreGrid);
       return { tour: result.tour, label: `Moore Curve (grid: ${mooreGrid})` };
     }
+    case 'gosper': {
+      const gosperGrid = calculateMooreGridSize(gridSize);
+      const result = gosperSolution(points, gosperGrid);
+      return {
+        tour: result.tour,
+        label: `Gosper Curve (grid: ${gosperGrid})`,
+      };
+    }
     case 'peano': {
       const peanoGrid = calculatePeanoGridSize(gridSize);
       const result = peanoSolution(points, peanoGrid);
@@ -179,7 +188,7 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     }
     default:
       throw new Error(
-        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
+        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
       );
   }
 };
@@ -248,6 +257,7 @@ export const main = () => {
           choices: [
             'sonar',
             'moore',
+            'gosper',
             'peano',
             'sierpinski',
             'comb',

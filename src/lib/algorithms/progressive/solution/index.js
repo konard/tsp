@@ -35,6 +35,13 @@ export {
   peanoCurveToPoints,
 } from './peano.js';
 export {
+  gosperAlgorithmSteps,
+  gosperSolution,
+  generateGosperCurve,
+  gosperCurveToPoints,
+  calculateGosperOrder,
+} from './gosper.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

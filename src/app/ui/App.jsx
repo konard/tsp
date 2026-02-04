@@ -20,6 +20,7 @@ import {
   calculateTotalDistance,
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  gosperAlgorithmSteps,
   peanoAlgorithmSteps,
   sierpinskiAlgorithmSteps,
   combAlgorithmSteps,
@@ -60,6 +61,11 @@ const getAlgorithmMeta = (lang) => ({
     title: t(lang, 'mooreTitle'),
     aliases: t(lang, 'mooreAliases'),
     vizType: 'moore',
+  },
+  gosper: {
+    title: t(lang, 'gosperTitle'),
+    aliases: t(lang, 'gosperAliases'),
+    vizType: 'gosper',
   },
   peano: {
     title: t(lang, 'peanoTitle'),
@@ -108,6 +114,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return sonarAlgorithmSteps(points);
     case 'moore':
       return mooreAlgorithmSteps(points, mooreGridSize);
+    case 'gosper':
+      return gosperAlgorithmSteps(points, mooreGridSize);
     case 'peano':
       return peanoAlgorithmSteps(points, calculatePeanoGridSize(mooreGridSize));
     case 'sierpinski':
@@ -503,6 +511,7 @@ const App = () => {
   const algorithmLabelKeys = {
     sonar: 'sonarVisit',
     moore: 'mooreCurve',
+    gosper: 'gosperCurve',
     peano: 'peanoCurve',
     sierpinski: 'sierpinskiCurve',
     comb: 'combScan',
