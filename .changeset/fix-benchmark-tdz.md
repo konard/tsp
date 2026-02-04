@@ -1,5 +1,5 @@
 ---
-'tsp': patch
+'tsp-algorithms': patch
 ---
 
 Fix benchmark TDZ error by reordering MOORE_GRID_SIZE and PEANO_GRID_SIZE declarations
