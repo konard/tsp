@@ -10,14 +10,14 @@
 
 ## Timeline of Events
 
-| Time (UTC) | Event |
-|------------|-------|
-| 10:17:47 | CI workflow triggered on push to main branch |
-| 10:17:52 | Detect Changes job completes successfully |
-| 10:18:10 | Lint and Format Check job completes successfully |
-| 10:18:56 | Update Benchmarks job starts |
-| 10:19:00 | Benchmark script fails with ReferenceError |
-| 10:19:00 | Job exits with code 1 |
+| Time (UTC) | Event                                            |
+| ---------- | ------------------------------------------------ |
+| 10:17:47   | CI workflow triggered on push to main branch     |
+| 10:17:52   | Detect Changes job completes successfully        |
+| 10:18:10   | Lint and Format Check job completes successfully |
+| 10:18:56   | Update Benchmarks job starts                     |
+| 10:19:00   | Benchmark script fails with ReferenceError       |
+| 10:19:00   | Job exits with code 1                            |
 
 ## Error Details
 
@@ -60,7 +60,7 @@ const PEANO_GRID_SIZE = calculatePeanoGridSize(MOORE_GRID_SIZE);
 const TIME_BUDGET_SECONDS = 60;
 const SAMPLES_PER_TEST = 10;
 const CALIBRATION_POINTS = 10;
-const MOORE_GRID_SIZE = 128;  // <-- declared on line 50
+const MOORE_GRID_SIZE = 128; // <-- declared on line 50
 ```
 
 ### What is the Temporal Dead Zone (TDZ)?
@@ -76,11 +76,11 @@ The **Temporal Dead Zone** is a behavior in JavaScript (introduced in ES6/ECMASc
 ### How Variables Differ
 
 | Declaration | Hoisted | Initialized | TDZ |
-|-------------|---------|-------------|-----|
-| `var` | Yes | `undefined` | No |
-| `let` | Yes | No | Yes |
-| `const` | Yes | No | Yes |
-| `function` | Yes | Yes | No |
+| ----------- | ------- | ----------- | --- |
+| `var`       | Yes     | `undefined` | No  |
+| `let`       | Yes     | No          | Yes |
+| `const`     | Yes     | No          | Yes |
+| `function`  | Yes     | Yes         | No  |
 
 ### References
 
@@ -92,16 +92,16 @@ The **Temporal Dead Zone** is a behavior in JavaScript (introduced in ES6/ECMASc
 
 ### Jobs Affected
 
-| Job | Status | Impact |
-|-----|--------|--------|
-| Detect Changes | ✅ Success | None |
-| Lint and Format Check | ✅ Success | None |
-| Build | ✅ Success | None |
-| Test (Bun) | ✅ Success | None |
-| Deploy to GitHub Pages | ✅ Success | None |
-| **Update Benchmarks** | ❌ **Failure** | **Benchmarks not updated** |
-| Release | ❌ Failure | Blocked by benchmark failure |
-| Update README Screenshot | ✅ Success | None |
+| Job                      | Status         | Impact                       |
+| ------------------------ | -------------- | ---------------------------- |
+| Detect Changes           | ✅ Success     | None                         |
+| Lint and Format Check    | ✅ Success     | None                         |
+| Build                    | ✅ Success     | None                         |
+| Test (Bun)               | ✅ Success     | None                         |
+| Deploy to GitHub Pages   | ✅ Success     | None                         |
+| **Update Benchmarks**    | ❌ **Failure** | **Benchmarks not updated**   |
+| Release                  | ❌ Failure     | Blocked by benchmark failure |
+| Update README Screenshot | ✅ Success     | None                         |
 
 ### Consequences
 
@@ -132,6 +132,7 @@ const PEANO_GRID_SIZE = calculatePeanoGridSize(MOORE_GRID_SIZE);
 1. **Declare constants at the top of the scope**: Group all configuration constants together at the beginning of the module, before any code that uses them.
 
 2. **Use linting rules**: Enable ESLint rule `no-use-before-define` to catch TDZ errors at development time:
+
    ```json
    {
      "rules": {
@@ -154,14 +155,17 @@ Add to `eslint.config.js`:
 export default [
   {
     rules: {
-      'no-use-before-define': ['error', {
-        variables: true,
-        functions: false, // function declarations are hoisted
-        classes: true,
-        allowNamedExports: false
-      }]
-    }
-  }
+      'no-use-before-define': [
+        'error',
+        {
+          variables: true,
+          functions: false, // function declarations are hoisted
+          classes: true,
+          allowNamedExports: false,
+        },
+      ],
+    },
+  },
 ];
 ```
 
