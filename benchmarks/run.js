@@ -41,14 +41,15 @@ const {
   lkHelsgaun,
 } = atomic;
 
-const PEANO_GRID_SIZE = calculatePeanoGridSize(MOORE_GRID_SIZE);
-
-// Configuration
+// Configuration - MOORE_GRID_SIZE must be declared before PEANO_GRID_SIZE calculation
 const TIME_BUDGET_SECONDS = 60;
 const SAMPLES_PER_TEST = 10;
 const CALIBRATION_POINTS = 10;
 const MOORE_GRID_SIZE = 128;
 const FIXED_STEP = 50;
+
+// PEANO_GRID_SIZE depends on MOORE_GRID_SIZE, so it must be declared after
+const PEANO_GRID_SIZE = calculatePeanoGridSize(MOORE_GRID_SIZE);
 
 /**
  * Generate random unique points within a grid.
