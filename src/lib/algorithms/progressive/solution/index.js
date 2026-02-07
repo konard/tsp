@@ -42,6 +42,11 @@ export {
   calculateGosperOrder,
 } from './gosper.js';
 export {
+  spiralAlgorithmSteps,
+  spiralSolution,
+  generateDoubleSpiralPoints,
+} from './spiral.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

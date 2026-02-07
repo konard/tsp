@@ -9,7 +9,7 @@
  * Uses atomic algorithms (all-at-once computation) for benchmark-like performance.
  *
  * Supports:
- * - Algorithm selection: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force
+ * - Algorithm selection: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, spiral, brute-force
  * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
@@ -54,6 +54,7 @@ const {
   sawSolution,
   kochSolution,
   spaceFillingTreeSolution,
+  spiralSolution,
   bruteForceSolution,
   twoOpt,
   threeOpt,
@@ -174,6 +175,14 @@ const runAlgorithm = (algorithm, points, gridSize) => {
       const result = spaceFillingTreeSolution(points);
       return { tour: result.tour, label: 'Space-Filling Tree (Quadtree DFS)' };
     }
+    case 'spiral': {
+      const mooreGrid = calculateMooreGridSize(gridSize);
+      const result = spiralSolution(points, mooreGrid);
+      return {
+        tour: result.tour,
+        label: `Double Spiral (grid: ${mooreGrid})`,
+      };
+    }
     case 'brute-force': {
       if (points.length > BRUTE_FORCE_MAX_POINTS) {
         throw new Error(
@@ -188,7 +197,7 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     }
     default:
       throw new Error(
-        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, brute-force`
+        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, spiral, brute-force`
       );
   }
 };
@@ -264,6 +273,7 @@ export const main = () => {
             'saw',
             'koch',
             'space-filling-tree',
+            'spiral',
             'brute-force',
           ],
           default: getenv('TSP_ALGORITHM', 'sonar'),
