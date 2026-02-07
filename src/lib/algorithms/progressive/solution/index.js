@@ -35,6 +35,12 @@ export {
   peanoCurveToPoints,
 } from './peano.js';
 export {
+  uForkAlgorithmSteps,
+  uForkSolution,
+  generateUForkCurve,
+  uForkCurveToPoints,
+} from './u-fork.js';
+export {
   gosperAlgorithmSteps,
   gosperSolution,
   generateGosperCurve,

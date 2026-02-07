@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, Gosper, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, U-fork, Gosper, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -16,6 +16,7 @@
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
  * - Moore Curve: Orders points along a Moore space-filling curve (2^n grid)
+ * - U-fork Fractal: Orders points along a Hilbert/U-fork space-filling curve (2^n grid)
  * - Gosper Curve: Orders points along a hexagonal space-filling curve (60° turns)
  * - Peano Curve: Orders points along a Peano space-filling curve (3^n grid)
  * - Sierpiński Curve: Orders points along a Sierpiński space-filling curve
@@ -75,6 +76,9 @@ export {
   mooreAlgorithmSteps,
   generateMooreCurve,
   mooreCurveToPoints,
+  uForkAlgorithmSteps,
+  generateUForkCurve,
+  uForkCurveToPoints,
   gosperAlgorithmSteps,
   generateGosperCurve,
   gosperCurveToPoints,
