@@ -10,6 +10,7 @@ export { sierpinskiSolution } from './sierpinski.js';
 export { combSolution } from './comb.js';
 export { sawSolution } from './saw.js';
 export { kochSolution } from './koch.js';
+export { uForkSolution } from './u-fork.js';
 export { spaceFillingTreeSolution } from './space-filling-tree.js';
 export { spiralSolution } from './spiral.js';
 export {
