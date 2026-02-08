@@ -80,6 +80,13 @@ export default [
     },
   },
   {
+    // i18n file is a data file with translations for 20 languages
+    files: ['src/app/ui/i18n.js'],
+    rules: {
+      'max-lines': 'off',
+    },
+  },
+  {
     ignores: [
       'node_modules/**',
       'coverage/**',
