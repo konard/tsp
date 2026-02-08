@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, U-fork, Gosper, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, U-fork, Gosper, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Double Spiral, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -24,6 +24,7 @@
  * - Self-Avoiding Walk (SAW): Nearest-neighbor walk that never revisits a point
  * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
  * - Space-Filling Tree: Orders points via DFS traversal of a recursive quadtree
+ * - Double Spiral: Orders points along a rectangular spiral that fills the grid
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -37,7 +38,7 @@
  *
  * @example
  * // Progressive (for visualization)
- * import { sonarAlgorithmSteps, sawAlgorithmSteps, kochAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
+ * import { sonarAlgorithmSteps, sawAlgorithmSteps, kochAlgorithmSteps, spiralAlgorithmSteps, twoOptSteps, bruteForceAlgorithmSteps } from './algorithms';
  * const solutionSteps = sonarAlgorithmSteps(points);
  * const kochSteps = kochAlgorithmSteps(points, mooreGridSize);
  * const optSteps = twoOptSteps(points, tour);
@@ -97,6 +98,8 @@ export {
   kochCurveToPoints,
   calculateKochOrder,
   spaceFillingTreeAlgorithmSteps,
+  spiralAlgorithmSteps,
+  generateDoubleSpiralPoints,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

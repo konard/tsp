@@ -27,7 +27,7 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {Array<{x: number, y: number, id: number}>} props.points - Array of points
  * @param {Array<Object>} props.steps - Array of algorithm steps
  * @param {number} props.currentStep - Current step index
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', 'spiral', or 'brute-force')
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  */
@@ -109,7 +109,8 @@ const TSPVisualization = ({
     algorithm === 'gosper' ||
     algorithm === 'peano' ||
     algorithm === 'sierpinski' ||
-    algorithm === 'koch';
+    algorithm === 'koch' ||
+    algorithm === 'spiral';
   if (isCurveAlgorithm && step?.curvePoints && step.curvePoints.length > 0) {
     // Determine the curve position up to which we've progressed
     const curvePosition =
