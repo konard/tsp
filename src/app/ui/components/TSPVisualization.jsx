@@ -27,7 +27,7 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {Array<{x: number, y: number, id: number}>} props.points - Array of points
  * @param {Array<Object>} props.steps - Array of algorithm steps
  * @param {number} props.currentStep - Current step index
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', 'spiral', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'u-fork', 'gosper', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', 'spiral', or 'brute-force')
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  */
@@ -100,12 +100,13 @@ const TSPVisualization = ({
   }
 
   // Generate space-filling curve path - progressive animation
-  // Used for Moore, Gosper, Peano, Sierpiński, and Koch curves
+  // Used for Moore, U-fork, Gosper, Peano, Sierpiński, and Koch curves
   // Draw visited portion in green, remaining portion in gray
   let mooreCurvePath = null;
   let mooreCurveGrayPath = null;
   const isCurveAlgorithm =
     algorithm === 'moore' ||
+    algorithm === 'u-fork' ||
     algorithm === 'gosper' ||
     algorithm === 'peano' ||
     algorithm === 'sierpinski' ||
