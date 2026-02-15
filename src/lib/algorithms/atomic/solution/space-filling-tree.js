@@ -8,9 +8,10 @@
  * all points in a specific order based on quadrant traversal.
  *
  * Algorithm:
- * 1. Generate a space-filling tree walk curve that fills the grid space
- *    (counter-clockwise traversal: BL → TL → TR → BR at each level,
- *    with rotations applied to child quadrants for smooth transitions)
+ * 1. Generate a space-filling tree walk curve that fills the grid space.
+ *    The curve is built iteratively: at each order, the previous order's
+ *    curve is placed into each of 4 quadrants (BL, TL, TR, BR), cyclically
+ *    shifted so it starts at the center-facing corner of that quadrant.
  * 2. Generate tree edges for visualization (X-pattern at each level)
  * 3. Map each point to its nearest position on the curve
  * 4. Sort points by their position along the curve
@@ -25,99 +26,43 @@
 
 import { distance } from '../../utils.js';
 
+/** Counter-clockwise quadrant visit order */
+const CCW_ORDER = ['BL', 'TL', 'TR', 'BR'];
+
 /**
- * Given entry and exit corners, return the 4-point visiting order.
- * The loop visits all 4 corners starting from entry and ending at exit.
+ * Get the offset (dx, dy) for placing a sub-quadrant within a region.
  *
- * @param {string} entry - Entry corner ('TL', 'TR', 'BL', 'BR')
- * @param {string} exit - Exit corner ('TL', 'TR', 'BL', 'BR')
- * @returns {string[]} Array of corner names in visiting order
+ * @param {string} quadrant - Quadrant name ('BL', 'TL', 'TR', 'BR')
+ * @param {number} half - Half the size of the parent region
+ * @returns {{dx: number, dy: number}} Offset for the sub-quadrant
  */
-const getLoopFromEntryExit = (entry, exit) => {
-  const cwOrder = ['TL', 'TR', 'BR', 'BL'];
-  const ccwOrder = ['TL', 'BL', 'BR', 'TR'];
-
-  const entryIdxCW = cwOrder.indexOf(entry);
-  const entryIdxCCW = ccwOrder.indexOf(entry);
-
-  // In CW/CCW, after 3 steps from entry, we should be at exit
-  const cwExitCheck = cwOrder[(entryIdxCW + 3) % 4];
-  const ccwExitCheck = ccwOrder[(entryIdxCCW + 3) % 4];
-
-  let result;
-  if (cwExitCheck === exit) {
-    result = [];
-    for (let i = 0; i < 4; i++) {
-      result.push(cwOrder[(entryIdxCW + i) % 4]);
-    }
-  } else if (ccwExitCheck === exit) {
-    result = [];
-    for (let i = 0; i < 4; i++) {
-      result.push(ccwOrder[(entryIdxCCW + i) % 4]);
-    }
-  } else {
-    throw new Error(`Cannot find valid path from ${entry} to ${exit}`);
+const getQuadrantOffset = (quadrant, half) => {
+  switch (quadrant) {
+    case 'BL':
+      return { dx: 0, dy: half };
+    case 'TL':
+      return { dx: 0, dy: 0 };
+    case 'TR':
+      return { dx: half, dy: 0 };
+    case 'BR':
+      return { dx: half, dy: half };
   }
-
-  return result;
 };
 
 /**
- * Get child quadrant entry/exit configurations based on parent's loop.
+ * Generate space-filling tree curve points.
  *
- * Rules:
- * 1. Entry corner is always the corner closest to the center of the parent region
- *    (BL → TR, TL → BR, TR → BL, BR → TL)
- * 2. Exit corner is the corner in the direction of the next quadrant
+ * The curve is built iteratively from order 1 upward. At each order, the
+ * previous curve is placed into 4 quadrants, each copy cyclically shifted
+ * so it starts at the center-facing corner of that quadrant:
+ *   - BL quadrant: starts at its TR corner (closest to center)
+ *   - TL quadrant: starts at its BR corner
+ *   - TR quadrant: starts at its BL corner
+ *   - BR quadrant: starts at its TL corner
  *
- * @param {string[]} parentLoop - Array of quadrant names in visiting order
- * @returns {Object} Map of quadrant name to {entry, exit} configuration
- */
-const getChildConfigs = (parentLoop) => {
-  // Corner closest to center for each quadrant
-  const centerCorner = {
-    BL: 'TR',
-    TL: 'BR',
-    TR: 'BL',
-    BR: 'TL',
-  };
-
-  // Exit corner pointing toward each quadrant
-  const exitCornerToward = {
-    TL: 'TL',
-    TR: 'TR',
-    BL: 'BL',
-    BR: 'BR',
-  };
-
-  const configs = {};
-
-  for (let i = 0; i < 4; i++) {
-    const quadrant = parentLoop[i];
-    const nextQuadrant = parentLoop[(i + 1) % 4];
-
-    // Entry is the corner closest to parent center (fixed per quadrant)
-    const entry = centerCorner[quadrant];
-
-    // Exit is toward the next quadrant
-    const exit = exitCornerToward[nextQuadrant];
-
-    configs[quadrant] = { entry, exit };
-  }
-
-  return configs;
-};
-
-/**
- * Generate space-filling tree curve points using recursive quadrant traversal.
- *
- * The walk follows a counter-clockwise pattern at each level (BL → TL → TR → BR),
- * with each child quadrant having entry/exit points that ensure smooth transitions
- * between quadrants.
- *
- * This matches the reference space-filling tree walking pattern where:
- * - Order 1: visits 4 corners in a square loop (BL → TL → TR → BR)
- * - Order 2: each quadrant is visited with appropriate rotation for smooth path
+ * Order 1 (base): BL(0,1) → TL(0,0) → TR(1,0) → BR(1,1)
+ * Order 2: 16 points forming a pinwheel/spiral pattern
+ * Higher orders: self-similar recursive structure
  *
  * @param {number} order - Order of the tree (depth of recursion)
  * @returns {Array<{x: number, y: number}>} Array of curve points on a 2^order grid
@@ -127,69 +72,56 @@ export const generateSpaceFillingTreeCurve = (order) => {
     return [];
   }
 
-  const gridSize = Math.pow(2, order);
+  // Base case: order 1 — counter-clockwise square
+  let curve = [
+    { x: 0, y: 1 },
+    { x: 0, y: 0 },
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+  ];
 
-  /**
-   * Get corner coordinate within a quadrant
-   */
-  const getCornerCoord = (quadrantX, quadrantY, halfSize, corner) => {
-    switch (corner) {
-      case 'TL':
-        return { x: quadrantX, y: quadrantY };
-      case 'TR':
-        return { x: quadrantX + halfSize - 1, y: quadrantY };
-      case 'BL':
-        return { x: quadrantX, y: quadrantY + halfSize - 1 };
-      case 'BR':
-        return { x: quadrantX + halfSize - 1, y: quadrantY + halfSize - 1 };
-    }
-  };
+  // Build up iteratively from order 1 to the target order
+  for (let o = 2; o <= order; o++) {
+    const prevCurve = curve;
+    const half = Math.pow(2, o - 1);
 
-  /**
-   * Recursive function to generate curve points
-   *
-   * @param {number} x0 - X coordinate of region top-left corner
-   * @param {number} y0 - Y coordinate of region top-left corner
-   * @param {number} size - Size of the region
-   * @param {string} entry - Entry corner for this region
-   * @param {string} exit - Exit corner for this region
-   * @returns {Array<{x: number, y: number}>} Curve points for this region
-   */
-  const recurse = (x0, y0, size, entry, exit) => {
-    if (size === 2) {
-      // Base case: 4 unit cells, return corners in order
-      const loop = getLoopFromEntryExit(entry, exit);
-      return loop.map((corner) => getCornerCoord(x0, y0, 2, corner));
-    }
-
-    const half = size / 2;
-
-    // Quadrant positions
-    const quadrants = {
-      BL: { x: x0, y: y0 + half },
-      TL: { x: x0, y: y0 },
-      TR: { x: x0 + half, y: y0 },
-      BR: { x: x0 + half, y: y0 + half },
+    // Center-facing corner coordinates for each quadrant (in absolute coords)
+    const centerCorners = {
+      BL: { x: half - 1, y: half },
+      TL: { x: half - 1, y: half - 1 },
+      TR: { x: half, y: half - 1 },
+      BR: { x: half, y: half },
     };
 
-    // Get the loop order for this level
-    const loop = getLoopFromEntryExit(entry, exit);
+    const newCurve = [];
 
-    // Get child configs based on the loop
-    const childConfigs = getChildConfigs(loop);
+    for (const q of CCW_ORDER) {
+      const { dx, dy } = getQuadrantOffset(q, half);
 
-    const result = [];
-    for (const qName of loop) {
-      const q = quadrants[qName];
-      const config = childConfigs[qName];
-      result.push(...recurse(q.x, q.y, half, config.entry, config.exit));
+      // Place the previous curve in this quadrant
+      const placed = prevCurve.map((p) => ({ x: p.x + dx, y: p.y + dy }));
+
+      // Find the index of the center-facing corner in the placed curve
+      const cc = centerCorners[q];
+      let startIdx = 0;
+      for (let i = 0; i < placed.length; i++) {
+        if (placed[i].x === cc.x && placed[i].y === cc.y) {
+          startIdx = i;
+          break;
+        }
+      }
+
+      // Cyclically rotate the curve to start from the center-facing corner
+      const len = placed.length;
+      for (let i = 0; i < len; i++) {
+        newCurve.push(placed[(startIdx + i) % len]);
+      }
     }
 
-    return result;
-  };
+    curve = newCurve;
+  }
 
-  // Start with entry at BL, exit at BR (counter-clockwise from BL)
-  return recurse(0, 0, gridSize, 'BL', 'BR');
+  return curve;
 };
 
 /**
