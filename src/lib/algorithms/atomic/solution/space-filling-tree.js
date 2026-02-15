@@ -4,12 +4,12 @@
  * Uses a space-filling tree (recursive quadrant subdivision) to order points.
  * The tree is built by recursively subdividing space into 4 quadrants,
  * connecting each center to its quadrant centers (forming X-patterns).
- * A left-to-right DFS walk through the tree produces a Z-order (Morton order)
- * space-filling curve that preserves spatial locality.
+ * The walk through the tree produces a Hilbert-like space-filling curve
+ * that visits points in a square/U-shaped pattern preserving spatial locality.
  *
  * Algorithm:
  * 1. Generate a space-filling tree curve that fills the grid space
- *    (Z-order: BL, TL, BR, TR at each subdivision level)
+ *    (Hilbert-like: BL → TL → TR → BR with rotations at each level)
  * 2. Generate tree edges for visualization (X-pattern at each level)
  * 3. Map each point to its nearest position on the curve
  * 4. Sort points by their position along the curve
@@ -25,9 +25,16 @@
 import { distance } from '../../utils.js';
 
 /**
- * Generate space-filling tree curve points using Z-order (Morton order).
- * Recursively subdivides the grid and visits quadrants in order:
- * BL (bottom-left), TL (top-left), BR (bottom-right), TR (top-right).
+ * Generate space-filling tree curve points using Hilbert-like traversal.
+ * Recursively subdivides the grid and visits quadrants in a U-shaped pattern
+ * (BL → TL → TR → BR for the base orientation), with sub-quadrants rotated
+ * to ensure smooth connections between adjacent regions.
+ *
+ * Orientation encoding:
+ * - d=0 (UP): visits BL → TL → TR → BR (U opening right)
+ * - d=1 (RIGHT): visits BL → BR → TR → TL (U opening up)
+ * - d=2 (DOWN): visits TR → BR → BL → TL (U opening left)
+ * - d=3 (LEFT): visits TR → TL → BL → BR (U opening down)
  *
  * @param {number} order - Order of the tree (depth of recursion)
  * @returns {Array<{x: number, y: number}>} Array of curve points on a 2^order grid
@@ -35,23 +42,53 @@ import { distance } from '../../utils.js';
 export const generateSpaceFillingTreeCurve = (order) => {
   const gridSize = Math.pow(2, order);
 
-  const recurse = (x0, y0, size) => {
+  const recurse = (x0, y0, size, d) => {
     if (size === 1) {
       return [{ x: x0, y: y0 }];
     }
 
     const half = size / 2;
 
-    // Z-order traversal: BL, TL, BR, TR
-    return [
-      ...recurse(x0, y0 + half, half), // BL
-      ...recurse(x0, y0, half), // TL
-      ...recurse(x0 + half, y0 + half, half), // BR
-      ...recurse(x0 + half, y0, half), // TR
-    ];
+    // Quadrant positions
+    const TL = { x: x0, y: y0 };
+    const TR = { x: x0 + half, y: y0 };
+    const BL = { x: x0, y: y0 + half };
+    const BR = { x: x0 + half, y: y0 + half };
+
+    switch (d) {
+      case 0: // U opening right: BL → TL → TR → BR
+        return [
+          ...recurse(BL.x, BL.y, half, 1), // BL sub, rotated for entry
+          ...recurse(TL.x, TL.y, half, 0), // TL sub, same orientation
+          ...recurse(TR.x, TR.y, half, 0), // TR sub, same orientation
+          ...recurse(BR.x, BR.y, half, 3), // BR sub, rotated for exit
+        ];
+      case 1: // U opening up: BL → BR → TR → TL
+        return [
+          ...recurse(BL.x, BL.y, half, 0), // BL
+          ...recurse(BR.x, BR.y, half, 1), // BR
+          ...recurse(TR.x, TR.y, half, 1), // TR
+          ...recurse(TL.x, TL.y, half, 2), // TL
+        ];
+      case 2: // U opening left: TR → BR → BL → TL
+        return [
+          ...recurse(TR.x, TR.y, half, 3),
+          ...recurse(BR.x, BR.y, half, 2),
+          ...recurse(BL.x, BL.y, half, 2),
+          ...recurse(TL.x, TL.y, half, 1),
+        ];
+      case 3: // U opening down: TR → TL → BL → BR
+      default:
+        return [
+          ...recurse(TR.x, TR.y, half, 2),
+          ...recurse(TL.x, TL.y, half, 3),
+          ...recurse(BL.x, BL.y, half, 3),
+          ...recurse(BR.x, BR.y, half, 0),
+        ];
+    }
   };
 
-  return recurse(0, 0, gridSize);
+  return recurse(0, 0, gridSize, 0);
 };
 
 /**

@@ -1,14 +1,17 @@
 /**
  * Progressive Space-Filling Tree Algorithm for TSP
  *
- * Also known as: Z-order Curve, Morton Order, Quadtree Ordering
+ * Also known as: Hilbert-like Curve, Space-Filling Tree Walk
  *
  * This algorithm provides step-by-step visualization of using a space-filling
  * tree (recursive quadrant subdivision) to order points:
- * 1. Generate the tree structure (X-pattern edges) and Z-order curve
+ * 1. Generate the tree structure (X-pattern edges) and Hilbert-like curve
  * 2. Map each point to its nearest position on the curve
  * 3. Sort points by their position along the curve
  * 4. Connect points in curve-order to form a tour, showing progress
+ *
+ * The walking pattern uses a square/U-shaped traversal at each level
+ * (BL → TL → TR → BR) with sub-quadrants rotated to ensure smooth connections.
  *
  * Reference: Kuffner & LaValle, "Space-Filling Trees" (2009)
  * https://en.wikipedia.org/wiki/Space-filling_tree
