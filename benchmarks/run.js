@@ -216,7 +216,7 @@ function getAlgorithmConfigs() {
       complexity: 'O(n log n)',
       complexityFn: (n) => n * Math.log2(n),
       run: (points) => {
-        const { tour } = spaceFillingTreeSolution(points);
+        const { tour } = spaceFillingTreeSolution(points, MOORE_GRID_SIZE);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
     },
@@ -245,7 +245,10 @@ function getAlgorithmConfigs() {
       complexity: 'O(n²)',
       complexityFn: (n) => n * n,
       run: (points) => {
-        const { tour: initial } = spaceFillingTreeSolution(points);
+        const { tour: initial } = spaceFillingTreeSolution(
+          points,
+          MOORE_GRID_SIZE
+        );
         const { tour } = twoOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },
@@ -295,7 +298,10 @@ function getAlgorithmConfigs() {
       complexity: 'O(n²)',
       complexityFn: (n) => n * n,
       run: (points) => {
-        const { tour: initial } = spaceFillingTreeSolution(points);
+        const { tour: initial } = spaceFillingTreeSolution(
+          points,
+          MOORE_GRID_SIZE
+        );
         const { tour } = zigzagOpt(points, initial);
         return { tour, distance: calculateTotalDistance(tour, points) };
       },

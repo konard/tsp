@@ -181,8 +181,12 @@ const runAlgorithm = (algorithm, points, gridSize) => {
       };
     }
     case 'space-filling-tree': {
-      const result = spaceFillingTreeSolution(points);
-      return { tour: result.tour, label: 'Space-Filling Tree (Quadtree DFS)' };
+      const mooreGrid = calculateMooreGridSize(gridSize);
+      const result = spaceFillingTreeSolution(points, mooreGrid);
+      return {
+        tour: result.tour,
+        label: `Space-Filling Tree (grid: ${mooreGrid})`,
+      };
     }
     case 'spiral': {
       const mooreGrid = calculateMooreGridSize(gridSize);

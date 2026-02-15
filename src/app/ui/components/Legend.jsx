@@ -157,6 +157,14 @@ const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
       color="rgba(255, 165, 0, 0.5)"
       label={t(lang, 'treeStructure')}
     />
+    <LegendItem
+      color="rgba(34, 197, 94, 0.6)"
+      label={t(lang, 'visitedCurve')}
+    />
+    <LegendItem
+      color="rgba(156, 163, 175, 0.5)"
+      label={t(lang, 'unvisitedCurve')}
+    />
     <LegendItem color="#0d6efd" label={t(lang, 'tourPath')} />
     <LegendItem color="#dc3545" label={t(lang, 'current')} />
     {showOptimization && (

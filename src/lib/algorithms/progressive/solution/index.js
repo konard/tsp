@@ -21,6 +21,8 @@ export {
 export {
   spaceFillingTreeAlgorithmSteps,
   spaceFillingTreeSolution,
+  generateSpaceFillingTreeCurve,
+  generateTreeEdges,
 } from './space-filling-tree.js';
 export {
   sierpinskiAlgorithmSteps,
