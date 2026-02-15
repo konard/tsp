@@ -1,4 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
-  <rect width="200" height="200" fill="white"/>
-  <path d="M 30.0 170.0 L 30.0 30.0 L 170.0 170.0 L 170.0 30.0" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200"><rect width="200" height="200" fill="white"/><text x="100" y="25" text-anchor="middle" font-size="16" font-family="sans-serif" fill="black">Order 1 Walking Pattern</text><circle cx="40" cy="40" r="4" fill="#ddd"/><circle cx="160" cy="40" r="4" fill="#ddd"/><circle cx="40" cy="160" r="4" fill="#ddd"/><circle cx="160" cy="160" r="4" fill="#ddd"/><path d="M 40 160 L 40 40 L 160 40 L 160 160 L 40 160" fill="none" stroke="black" stroke-width="3"/></svg>

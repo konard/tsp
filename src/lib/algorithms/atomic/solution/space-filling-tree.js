@@ -4,12 +4,13 @@
  * Uses a space-filling tree (recursive quadrant subdivision) to order points.
  * The tree is built by recursively subdividing space into 4 quadrants,
  * connecting each center to its quadrant centers (forming X-patterns).
- * The walk through the tree produces a Z-order (Morton) curve that
- * visits points in an N-zigzag pattern (BL → TL → BR → TR) at each level.
+ * The walk through the tree produces a space-filling curve that visits
+ * all points in a specific order based on quadrant traversal.
  *
  * Algorithm:
- * 1. Generate a space-filling tree curve that fills the grid space
- *    (Z-order: BL → TL → BR → TR recursively at each level)
+ * 1. Generate a space-filling tree walk curve that fills the grid space
+ *    (counter-clockwise traversal: BL → TL → TR → BR at each level,
+ *    with rotations applied to child quadrants for smooth transitions)
  * 2. Generate tree edges for visualization (X-pattern at each level)
  * 3. Map each point to its nearest position on the curve
  * 4. Sort points by their position along the curve
@@ -25,44 +26,170 @@
 import { distance } from '../../utils.js';
 
 /**
- * Generate space-filling tree curve points using Z-order (Morton) traversal.
- * Recursively subdivides the grid and visits quadrants in an N-zigzag pattern:
- * BL → TL → BR → TR (bottom-left up, then diagonal down-right, then up again).
+ * Given entry and exit corners, return the 4-point visiting order.
+ * The loop visits all 4 corners starting from entry and ending at exit.
+ *
+ * @param {string} entry - Entry corner ('TL', 'TR', 'BL', 'BR')
+ * @param {string} exit - Exit corner ('TL', 'TR', 'BL', 'BR')
+ * @returns {string[]} Array of corner names in visiting order
+ */
+const getLoopFromEntryExit = (entry, exit) => {
+  const cwOrder = ['TL', 'TR', 'BR', 'BL'];
+  const ccwOrder = ['TL', 'BL', 'BR', 'TR'];
+
+  const entryIdxCW = cwOrder.indexOf(entry);
+  const entryIdxCCW = ccwOrder.indexOf(entry);
+
+  // In CW/CCW, after 3 steps from entry, we should be at exit
+  const cwExitCheck = cwOrder[(entryIdxCW + 3) % 4];
+  const ccwExitCheck = ccwOrder[(entryIdxCCW + 3) % 4];
+
+  let result;
+  if (cwExitCheck === exit) {
+    result = [];
+    for (let i = 0; i < 4; i++) {
+      result.push(cwOrder[(entryIdxCW + i) % 4]);
+    }
+  } else if (ccwExitCheck === exit) {
+    result = [];
+    for (let i = 0; i < 4; i++) {
+      result.push(ccwOrder[(entryIdxCCW + i) % 4]);
+    }
+  } else {
+    throw new Error(`Cannot find valid path from ${entry} to ${exit}`);
+  }
+
+  return result;
+};
+
+/**
+ * Get child quadrant entry/exit configurations based on parent's loop.
+ *
+ * Rules:
+ * 1. Entry corner is always the corner closest to the center of the parent region
+ *    (BL → TR, TL → BR, TR → BL, BR → TL)
+ * 2. Exit corner is the corner in the direction of the next quadrant
+ *
+ * @param {string[]} parentLoop - Array of quadrant names in visiting order
+ * @returns {Object} Map of quadrant name to {entry, exit} configuration
+ */
+const getChildConfigs = (parentLoop) => {
+  // Corner closest to center for each quadrant
+  const centerCorner = {
+    BL: 'TR',
+    TL: 'BR',
+    TR: 'BL',
+    BR: 'TL',
+  };
+
+  // Exit corner pointing toward each quadrant
+  const exitCornerToward = {
+    TL: 'TL',
+    TR: 'TR',
+    BL: 'BL',
+    BR: 'BR',
+  };
+
+  const configs = {};
+
+  for (let i = 0; i < 4; i++) {
+    const quadrant = parentLoop[i];
+    const nextQuadrant = parentLoop[(i + 1) % 4];
+
+    // Entry is the corner closest to parent center (fixed per quadrant)
+    const entry = centerCorner[quadrant];
+
+    // Exit is toward the next quadrant
+    const exit = exitCornerToward[nextQuadrant];
+
+    configs[quadrant] = { entry, exit };
+  }
+
+  return configs;
+};
+
+/**
+ * Generate space-filling tree curve points using recursive quadrant traversal.
+ *
+ * The walk follows a counter-clockwise pattern at each level (BL → TL → TR → BR),
+ * with each child quadrant having entry/exit points that ensure smooth transitions
+ * between quadrants.
  *
  * This matches the reference space-filling tree walking pattern where:
- * - Order 1: visits 4 corners in N-zigzag (BL → TL → BR → TR)
- * - Order 2: each quadrant visited in N-zigzag, quadrants also in N-zigzag order
+ * - Order 1: visits 4 corners in a square loop (BL → TL → TR → BR)
+ * - Order 2: each quadrant is visited with appropriate rotation for smooth path
  *
  * @param {number} order - Order of the tree (depth of recursion)
  * @returns {Array<{x: number, y: number}>} Array of curve points on a 2^order grid
  */
 export const generateSpaceFillingTreeCurve = (order) => {
+  if (order < 1) {
+    return [];
+  }
+
   const gridSize = Math.pow(2, order);
 
-  const recurse = (x0, y0, size) => {
-    if (size === 1) {
-      return [{ x: x0, y: y0 }];
+  /**
+   * Get corner coordinate within a quadrant
+   */
+  const getCornerCoord = (quadrantX, quadrantY, halfSize, corner) => {
+    switch (corner) {
+      case 'TL':
+        return { x: quadrantX, y: quadrantY };
+      case 'TR':
+        return { x: quadrantX + halfSize - 1, y: quadrantY };
+      case 'BL':
+        return { x: quadrantX, y: quadrantY + halfSize - 1 };
+      case 'BR':
+        return { x: quadrantX + halfSize - 1, y: quadrantY + halfSize - 1 };
+    }
+  };
+
+  /**
+   * Recursive function to generate curve points
+   *
+   * @param {number} x0 - X coordinate of region top-left corner
+   * @param {number} y0 - Y coordinate of region top-left corner
+   * @param {number} size - Size of the region
+   * @param {string} entry - Entry corner for this region
+   * @param {string} exit - Exit corner for this region
+   * @returns {Array<{x: number, y: number}>} Curve points for this region
+   */
+  const recurse = (x0, y0, size, entry, exit) => {
+    if (size === 2) {
+      // Base case: 4 unit cells, return corners in order
+      const loop = getLoopFromEntryExit(entry, exit);
+      return loop.map((corner) => getCornerCoord(x0, y0, 2, corner));
     }
 
     const half = size / 2;
 
-    // Quadrant positions (Y increases downward in grid coordinates)
-    const TL = { x: x0, y: y0 };
-    const TR = { x: x0 + half, y: y0 };
-    const BL = { x: x0, y: y0 + half };
-    const BR = { x: x0 + half, y: y0 + half };
+    // Quadrant positions
+    const quadrants = {
+      BL: { x: x0, y: y0 + half },
+      TL: { x: x0, y: y0 },
+      TR: { x: x0 + half, y: y0 },
+      BR: { x: x0 + half, y: y0 + half },
+    };
 
-    // N-zigzag order: BL → TL → BR → TR
-    // This creates the characteristic pattern: up, diagonal down-right, up
-    return [
-      ...recurse(BL.x, BL.y, half), // Bottom-left quadrant
-      ...recurse(TL.x, TL.y, half), // Top-left quadrant
-      ...recurse(BR.x, BR.y, half), // Bottom-right quadrant
-      ...recurse(TR.x, TR.y, half), // Top-right quadrant
-    ];
+    // Get the loop order for this level
+    const loop = getLoopFromEntryExit(entry, exit);
+
+    // Get child configs based on the loop
+    const childConfigs = getChildConfigs(loop);
+
+    const result = [];
+    for (const qName of loop) {
+      const q = quadrants[qName];
+      const config = childConfigs[qName];
+      result.push(...recurse(q.x, q.y, half, config.entry, config.exit));
+    }
+
+    return result;
   };
 
-  return recurse(0, 0, gridSize);
+  // Start with entry at BL, exit at BR (counter-clockwise from BL)
+  return recurse(0, 0, gridSize, 'BL', 'BR');
 };
 
 /**

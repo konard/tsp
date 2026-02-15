@@ -1,17 +1,18 @@
 /**
  * Progressive Space-Filling Tree Algorithm for TSP
  *
- * Also known as: Z-order Curve, Morton Curve, Space-Filling Tree Walk
+ * Also known as: Space-Filling Tree Walk, Quadtree Traversal
  *
  * This algorithm provides step-by-step visualization of using a space-filling
  * tree (recursive quadrant subdivision) to order points:
- * 1. Generate the tree structure (X-pattern edges) and Z-order curve
+ * 1. Generate the tree structure (X-pattern edges) and curve
  * 2. Map each point to its nearest position on the curve
  * 3. Sort points by their position along the curve
  * 4. Connect points in curve-order to form a tour, showing progress
  *
- * The walking pattern uses an N-zigzag traversal at each level
- * (BL → TL → BR → TR) which creates a characteristic up-diagonal-up pattern.
+ * The walking pattern uses a counter-clockwise quadrant traversal at each level
+ * (BL → TL → TR → BR) with appropriate rotations in child quadrants to ensure
+ * smooth transitions, creating a characteristic pinwheel pattern.
  *
  * Reference: Kuffner & LaValle, "Space-Filling Trees" (2009)
  * https://en.wikipedia.org/wiki/Space-filling_tree
