@@ -39,13 +39,13 @@ describe('generateSpaceFillingTreeCurve', () => {
     expect(visited.size).toBe(gridSize * gridSize);
   });
 
-  it('should follow Hilbert-like order: BL→TL→TR→BR at order 1', () => {
+  it('should follow Z-order (N-zigzag): BL→TL→BR→TR at order 1', () => {
     const curve = generateSpaceFillingTreeCurve(1);
-    // Hilbert-like: BL(0,1), TL(0,0), TR(1,0), BR(1,1) — square pattern
+    // Z-order: BL(0,1), TL(0,0), BR(1,1), TR(1,0) — N-zigzag pattern
     expect(curve[0]).toEqual({ x: 0, y: 1 });
     expect(curve[1]).toEqual({ x: 0, y: 0 });
-    expect(curve[2]).toEqual({ x: 1, y: 0 });
-    expect(curve[3]).toEqual({ x: 1, y: 1 });
+    expect(curve[2]).toEqual({ x: 1, y: 1 });
+    expect(curve[3]).toEqual({ x: 1, y: 0 });
   });
 });
 
