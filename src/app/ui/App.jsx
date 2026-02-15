@@ -141,7 +141,7 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
     case 'koch':
       return kochAlgorithmSteps(points, mooreGridSize);
     case 'space-filling-tree':
-      return spaceFillingTreeAlgorithmSteps(points);
+      return spaceFillingTreeAlgorithmSteps(points, mooreGridSize);
     case 'spiral':
       return spiralAlgorithmSteps(points, mooreGridSize);
     case 'brute-force':

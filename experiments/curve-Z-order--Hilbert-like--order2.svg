@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300">
+  <rect width="300" height="300" fill="white"/>
+  <text x="150" y="20" font-size="14" text-anchor="middle">Z-order (Hilbert-like) Order 2</text>
+  <circle cx="40" cy="40" r="1.5" fill="#ccc"/>
+  <circle cx="40" cy="113.33333333333333" r="1.5" fill="#ccc"/>
+  <circle cx="40" cy="186.66666666666666" r="1.5" fill="#ccc"/>
+  <circle cx="40" cy="260" r="1.5" fill="#ccc"/>
+  <circle cx="113.33333333333333" cy="40" r="1.5" fill="#ccc"/>
+  <circle cx="113.33333333333333" cy="113.33333333333333" r="1.5" fill="#ccc"/>
+  <circle cx="113.33333333333333" cy="186.66666666666666" r="1.5" fill="#ccc"/>
+  <circle cx="113.33333333333333" cy="260" r="1.5" fill="#ccc"/>
+  <circle cx="186.66666666666666" cy="40" r="1.5" fill="#ccc"/>
+  <circle cx="186.66666666666666" cy="113.33333333333333" r="1.5" fill="#ccc"/>
+  <circle cx="186.66666666666666" cy="186.66666666666666" r="1.5" fill="#ccc"/>
+  <circle cx="186.66666666666666" cy="260" r="1.5" fill="#ccc"/>
+  <circle cx="260" cy="40" r="1.5" fill="#ccc"/>
+  <circle cx="260" cy="113.33333333333333" r="1.5" fill="#ccc"/>
+  <circle cx="260" cy="186.66666666666666" r="1.5" fill="#ccc"/>
+  <circle cx="260" cy="260" r="1.5" fill="#ccc"/>
+  <path d="M 40 260 L 40 186.66666666666666 L 113.33333333333333 260 L 113.33333333333333 186.66666666666666 L 40 113.33333333333333 L 40 40 L 113.33333333333333 113.33333333333333 L 113.33333333333333 40 L 186.66666666666666 260 L 186.66666666666666 186.66666666666666 L 260 260 L 260 186.66666666666666 L 186.66666666666666 113.33333333333333 L 186.66666666666666 40 L 260 113.33333333333333 L 260 40" fill="none" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="40" cy="260" r="5" fill="red"/>
+  <text x="40" y="263.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">0</text>
+  <circle cx="40" cy="186.66666666666666" r="5" fill="red"/>
+  <text x="40" y="190.16666666666666" font-size="8" text-anchor="middle" fill="white" font-weight="bold">1</text>
+  <circle cx="113.33333333333333" cy="260" r="5" fill="red"/>
+  <text x="113.33333333333333" y="263.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">2</text>
+  <circle cx="113.33333333333333" cy="186.66666666666666" r="5" fill="red"/>
+  <text x="113.33333333333333" y="190.16666666666666" font-size="8" text-anchor="middle" fill="white" font-weight="bold">3</text>
+  <circle cx="40" cy="113.33333333333333" r="5" fill="red"/>
+  <text x="40" y="116.83333333333333" font-size="8" text-anchor="middle" fill="white" font-weight="bold">4</text>
+  <circle cx="40" cy="40" r="5" fill="red"/>
+  <text x="40" y="43.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">5</text>
+  <circle cx="113.33333333333333" cy="113.33333333333333" r="5" fill="red"/>
+  <text x="113.33333333333333" y="116.83333333333333" font-size="8" text-anchor="middle" fill="white" font-weight="bold">6</text>
+  <circle cx="113.33333333333333" cy="40" r="5" fill="red"/>
+  <text x="113.33333333333333" y="43.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">7</text>
+  <circle cx="186.66666666666666" cy="260" r="5" fill="red"/>
+  <text x="186.66666666666666" y="263.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">8</text>
+  <circle cx="186.66666666666666" cy="186.66666666666666" r="5" fill="red"/>
+  <text x="186.66666666666666" y="190.16666666666666" font-size="8" text-anchor="middle" fill="white" font-weight="bold">9</text>
+  <circle cx="260" cy="260" r="5" fill="red"/>
+  <text x="260" y="263.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">10</text>
+  <circle cx="260" cy="186.66666666666666" r="5" fill="red"/>
+  <text x="260" y="190.16666666666666" font-size="8" text-anchor="middle" fill="white" font-weight="bold">11</text>
+  <circle cx="186.66666666666666" cy="113.33333333333333" r="5" fill="red"/>
+  <text x="186.66666666666666" y="116.83333333333333" font-size="8" text-anchor="middle" fill="white" font-weight="bold">12</text>
+  <circle cx="186.66666666666666" cy="40" r="5" fill="red"/>
+  <text x="186.66666666666666" y="43.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">13</text>
+  <circle cx="260" cy="113.33333333333333" r="5" fill="red"/>
+  <text x="260" y="116.83333333333333" font-size="8" text-anchor="middle" fill="white" font-weight="bold">14</text>
+  <circle cx="260" cy="40" r="5" fill="red"/>
+  <text x="260" y="43.5" font-size="8" text-anchor="middle" fill="white" font-weight="bold">15</text>
+</svg>

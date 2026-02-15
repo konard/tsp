@@ -111,6 +111,7 @@ const TSPVisualization = ({
     algorithm === 'peano' ||
     algorithm === 'sierpinski' ||
     algorithm === 'koch' ||
+    algorithm === 'space-filling-tree' ||
     algorithm === 'spiral';
   if (isCurveAlgorithm && step?.curvePoints && step.curvePoints.length > 0) {
     // Determine the curve position up to which we've progressed

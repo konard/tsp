@@ -98,6 +98,8 @@ export {
   kochCurveToPoints,
   calculateKochOrder,
   spaceFillingTreeAlgorithmSteps,
+  generateSpaceFillingTreeCurve,
+  generateTreeEdges,
   spiralAlgorithmSteps,
   generateDoubleSpiralPoints,
   bruteForceAlgorithmSteps,

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="900" viewBox="0 0 900 900">
+  <rect width="900" height="900" fill="white"/>
+  <text x="100" y="30" font-size="20" text-anchor="middle">Tree Order 1</text>
+  <text x="550" y="30" font-size="20" text-anchor="middle">Tree Order 2</text>
+  <text x="100" y="480" font-size="20" text-anchor="middle">Walk Order 1</text>
+  <text x="550" y="480" font-size="20" text-anchor="middle">Walk Order 2</text>
+  <line x1="100" y1="250" x2="70" y2="220" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="100" y1="250" x2="130" y2="220" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="100" y1="250" x2="70" y2="280" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="100" y1="250" x2="130" y2="280" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="550" y1="250" x2="470" y2="170" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="550" y1="250" x2="630" y2="170" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="550" y1="250" x2="470" y2="330" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="550" y1="250" x2="630" y2="330" stroke="black" stroke-width="4" stroke-linecap="round"/>
+  <line x1="470" y1="170" x2="430" y2="130" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="170" x2="510" y2="130" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="170" x2="430" y2="210" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="170" x2="510" y2="210" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="170" x2="590" y2="130" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="170" x2="670" y2="130" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="170" x2="590" y2="210" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="170" x2="670" y2="210" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="330" x2="430" y2="290" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="330" x2="510" y2="290" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="330" x2="430" y2="370" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="470" y1="330" x2="510" y2="370" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="330" x2="590" y2="290" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="330" x2="670" y2="290" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="330" x2="590" y2="370" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <line x1="630" y1="330" x2="670" y2="370" stroke="black" stroke-width="3" stroke-linecap="round"/>
+  <path d="M 70 730 L 70 670 L 130 730 L 130 670" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="70" cy="730" r="4" fill="black"/>
+  <circle cx="70" cy="670" r="4" fill="black"/>
+  <circle cx="130" cy="730" r="4" fill="black"/>
+  <circle cx="130" cy="670" r="4" fill="black"/>
+  <path d="M 430 820 L 430 740 L 510 820 L 510 740 L 430 660 L 430 580 L 510 660 L 510 580 L 590 820 L 590 740 L 670 820 L 670 740 L 590 660 L 590 580 L 670 660 L 670 580" fill="none" stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="430" cy="820" r="4" fill="black"/>
+  <circle cx="430" cy="740" r="4" fill="black"/>
+  <circle cx="510" cy="820" r="4" fill="black"/>
+  <circle cx="510" cy="740" r="4" fill="black"/>
+  <circle cx="430" cy="660" r="4" fill="black"/>
+  <circle cx="430" cy="580" r="4" fill="black"/>
+  <circle cx="510" cy="660" r="4" fill="black"/>
+  <circle cx="510" cy="580" r="4" fill="black"/>
+  <circle cx="590" cy="820" r="4" fill="black"/>
+  <circle cx="590" cy="740" r="4" fill="black"/>
+  <circle cx="670" cy="820" r="4" fill="black"/>
+  <circle cx="670" cy="740" r="4" fill="black"/>
+  <circle cx="590" cy="660" r="4" fill="black"/>
+  <circle cx="590" cy="580" r="4" fill="black"/>
+  <circle cx="670" cy="660" r="4" fill="black"/>
+  <circle cx="670" cy="580" r="4" fill="black"/>
+</svg>
