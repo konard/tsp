@@ -140,6 +140,12 @@ const translations = {
     spaceFillingTree: 'Space-Filling Tree',
     doubleSpiral: 'Double Spiral',
     bruteForce: 'Brute-Force',
+    manualDrawing: 'Manual Drawing',
+    manualTitle: 'Manual Drawing Algorithm',
+    manualAliases:
+      'Also known as: Human Solver, Hand-drawn Tour, Interactive Drawing',
+    manualStepMode: 'Manual (step-by-step)',
+    clickable: 'Clickable',
     treeStructure: 'Tree Structure',
     centroid: 'Centroid',
     modifiedEdge: 'Modified Edge',
