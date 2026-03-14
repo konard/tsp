@@ -4,7 +4,6 @@
  * Create a changeset file for manual releases
  * Usage: node scripts/create-manual-changeset.mjs --bump-type <major|minor|patch> [--description <description>]
  *
- * IMPORTANT: Update the PACKAGE_NAME constant below to match your package.json
  *
  * Uses link-foundation libraries:
  * - use-m: Dynamic package loading without package.json dependencies
@@ -15,8 +14,7 @@
 import { writeFileSync } from 'fs';
 import { randomBytes } from 'crypto';
 
-// TODO: Update this to match your package name in package.json
-const PACKAGE_NAME = 'my-package';
+const PACKAGE_NAME = 'tsp-algorithms';
 
 // Load use-m dynamically
 const { use } = eval(
