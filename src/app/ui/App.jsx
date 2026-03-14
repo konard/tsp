@@ -173,6 +173,12 @@ const App = () => {
   const [leftAlgorithm, setLeftAlgorithm] = useState('sonar');
   const [rightAlgorithm, setRightAlgorithm] = useState('moore');
 
+  // Tree edges visibility toggle (for space-filling-tree legend interaction)
+  const [showTreeEdges, setShowTreeEdges] = useState(true);
+  const toggleTreeEdges = useCallback(() => {
+    setShowTreeEdges((prev) => !prev);
+  }, []);
+
   // Calculate Moore grid size - this is the unified grid both algorithms use
   const mooreGridSize = calculateMooreGridSize(gridSize);
   const maxPoints = mooreGridSize * mooreGridSize;
@@ -617,6 +623,7 @@ const App = () => {
               algorithm={leftMeta.vizType}
               mooreGridSize={mooreGridSize}
               showOptimization={showOptimization}
+              showTreeEdges={showTreeEdges}
             />
           }
           stepDescription={getLeftStep()?.description}
@@ -626,6 +633,8 @@ const App = () => {
               algorithm={leftMeta.vizType}
               showOptimization={showOptimization}
               lang={lang}
+              showTreeEdges={showTreeEdges}
+              onToggleTreeEdges={toggleTreeEdges}
             />
           }
         />
@@ -645,6 +654,7 @@ const App = () => {
               algorithm={rightMeta.vizType}
               mooreGridSize={mooreGridSize}
               showOptimization={showOptimization}
+              showTreeEdges={showTreeEdges}
             />
           }
           stepDescription={getRightStep()?.description}
@@ -654,6 +664,8 @@ const App = () => {
               algorithm={rightMeta.vizType}
               showOptimization={showOptimization}
               lang={lang}
+              showTreeEdges={showTreeEdges}
+              onToggleTreeEdges={toggleTreeEdges}
             />
           }
         />

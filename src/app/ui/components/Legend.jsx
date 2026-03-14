@@ -13,13 +13,21 @@ import { t } from '../i18n.js';
  * @param {Object} props
  * @param {string} props.color - Background color for the legend marker
  * @param {string} props.label - Text label for the legend entry
+ * @param {function} [props.onClick] - Optional click handler for toggling visibility
+ * @param {boolean} [props.active] - Whether the item is active (visible), default true
  */
-const LegendItem = ({ color, label }) => (
-  <div className="legend-item">
-    <div className="legend-color" style={{ background: color }}></div>
-    <span>{label}</span>
-  </div>
-);
+const LegendItem = ({ color, label, onClick, active }) => {
+  const isActive = active !== false;
+  const style = onClick
+    ? { cursor: 'pointer', opacity: isActive ? 1 : 0.4 }
+    : {};
+  return (
+    <div className="legend-item" style={style} onClick={onClick}>
+      <div className="legend-color" style={{ background: color }}></div>
+      <span>{label}</span>
+    </div>
+  );
+};
 
 /**
  * SonarLegend - Legend for Sonar algorithm visualization
@@ -150,12 +158,21 @@ const KochLegend = ({ showOptimization, lang = 'en' }) => (
  * @param {Object} props
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
+ * @param {boolean} [props.showTreeEdges] - Whether tree edges are visible
+ * @param {function} [props.onToggleTreeEdges] - Toggle tree edges visibility
  */
-const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
+const SpaceFillingTreeLegend = ({
+  showOptimization,
+  lang = 'en',
+  showTreeEdges,
+  onToggleTreeEdges,
+}) => (
   <div className="legend">
     <LegendItem
-      color="rgba(255, 165, 0, 0.5)"
+      color="rgba(255, 165, 0, 0.25)"
       label={t(lang, 'treeStructure')}
+      onClick={onToggleTreeEdges}
+      active={showTreeEdges}
     />
     <LegendItem
       color="rgba(34, 197, 94, 0.6)"
@@ -180,8 +197,16 @@ const SpaceFillingTreeLegend = ({ showOptimization, lang = 'en' }) => (
  * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'u-fork', 'gosper', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', 'spiral', or 'brute-force')
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {string} props.lang - Language code
+ * @param {boolean} [props.showTreeEdges] - Whether tree edges are visible
+ * @param {function} [props.onToggleTreeEdges] - Toggle tree edges visibility
  */
-const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
+const Legend = ({
+  algorithm,
+  showOptimization,
+  lang = 'en',
+  showTreeEdges,
+  onToggleTreeEdges,
+}) => {
   if (algorithm === 'sonar') {
     return <SonarLegend showOptimization={showOptimization} lang={lang} />;
   }
@@ -199,7 +224,12 @@ const Legend = ({ algorithm, showOptimization, lang = 'en' }) => {
   }
   if (algorithm === 'space-filling-tree') {
     return (
-      <SpaceFillingTreeLegend showOptimization={showOptimization} lang={lang} />
+      <SpaceFillingTreeLegend
+        showOptimization={showOptimization}
+        lang={lang}
+        showTreeEdges={showTreeEdges}
+        onToggleTreeEdges={onToggleTreeEdges}
+      />
     );
   }
   // 'moore', 'u-fork', 'gosper', 'peano', 'sierpinski', and 'spiral' all use curve-based visualization
