@@ -30,6 +30,7 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'u-fork', 'gosper', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', 'spiral', or 'brute-force')
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {boolean} props.showTreeEdges - Whether to show tree edges (default: true)
  */
 const TSPVisualization = ({
   points,
@@ -38,6 +39,7 @@ const TSPVisualization = ({
   algorithm,
   mooreGridSize,
   showOptimization,
+  showTreeEdges,
 }) => {
   const containerRef = useRef(null);
   const [svgSize, setSvgSize] = useState(400);
@@ -169,7 +171,9 @@ const TSPVisualization = ({
 
   // Generate space-filling tree edges
   let treeEdgesPath = null;
+  const showTree = showTreeEdges !== false;
   if (
+    showTree &&
     algorithm === 'space-filling-tree' &&
     step?.treeEdges &&
     step.treeEdges.length > 0
@@ -186,7 +190,7 @@ const TSPVisualization = ({
               y1={from.y}
               x2={to.x}
               y2={to.y}
-              stroke="rgba(255, 165, 0, 0.5)"
+              stroke="rgba(255, 165, 0, 0.25)"
               strokeWidth={Math.max(1, 3 - edge.depth * 0.3)}
               strokeLinecap="round"
             />

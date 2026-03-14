@@ -158,8 +158,11 @@ export const generateTreeEdges = (order, treeGridSize) => {
     }
   };
 
-  const halfGrid = (treeGridSize - 1) / 2;
-  recurse(halfGrid, halfGrid, halfGrid, halfGrid, 0);
+  // Center of [0, treeGridSize-1] coordinate range
+  const center = (treeGridSize - 1) / 2;
+  // Half-extent uses treeGridSize/2 so leaf nodes land on integer grid coordinates
+  const halfGrid = treeGridSize / 2;
+  recurse(center, center, halfGrid, halfGrid, 0);
 
   return edges;
 };
