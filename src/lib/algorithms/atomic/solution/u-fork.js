@@ -73,9 +73,9 @@ export const uForkCurveToPoints = (sequence, gridSize) => {
   let y = 0;
 
   // Direction: 0=up, 1=right, 2=down, 3=left
-  // Start facing right to produce the correct U-fork orientation
-  // matching the target pattern: bottom-left → top-left → top-right → bottom-right
-  let direction = 1;
+  // Start facing down to produce the correct U-fork orientation
+  // matching the target pattern: vertically symmetric C-shape opening left
+  let direction = 2;
 
   curvePoints.push({ x, y });
 

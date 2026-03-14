@@ -1,12 +1,12 @@
 /**
  * Generate individual SVG files for the first 5 steps of the U-fork fractal
- * Using the correct orientation (initial direction = RIGHT)
+ * Using the correct orientation (initial direction = DOWN)
  *
  * L-system rules (standard Hilbert):
  *   Axiom: A
  *   A → -BF+AFA+FB-
  *   B → +AF-BFB-FA+
- *   Initial direction: RIGHT (1)
+ *   Initial direction: DOWN (2)
  */
 
 import { writeFileSync } from 'fs';
@@ -23,7 +23,7 @@ function generateCurve(axiom, rules, order) {
   return sequence;
 }
 
-function sequenceToPoints(sequence, initialDir = 1) {
+function sequenceToPoints(sequence, initialDir = 2) {
   const points = [];
   let x = 0, y = 0;
   let dir = initialDir;
@@ -110,7 +110,7 @@ const rules = { A: '-BF+AFA+FB-', B: '+AF-BFB-FA+' };
 for (let order = 1; order <= 5; order++) {
   const gridSize = Math.pow(2, order);
   const seq = generateCurve('A', rules, order);
-  const pts = sequenceToPoints(seq, 1); // initial dir = RIGHT
+  const pts = sequenceToPoints(seq, 2); // initial dir = RIGHT
   const norm = normalize(pts, gridSize);
 
   const size = Math.min(400 + gridSize * 5, 600);
@@ -166,7 +166,7 @@ const allSteps = [];
 for (let order = 1; order <= 5; order++) {
   const gridSize = Math.pow(2, order);
   const seq = generateCurve('A', rules, order);
-  const pts = sequenceToPoints(seq, 1);
+  const pts = sequenceToPoints(seq, 2);
   const norm = normalize(pts, gridSize);
   allSteps.push({ points: norm, gridSize, order });
 }

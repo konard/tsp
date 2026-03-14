@@ -6,7 +6,7 @@
   <circle cx="50" cy="360" r="2" fill="#e0e0e0"/>
   <circle cx="360" cy="50" r="2" fill="#e0e0e0"/>
   <circle cx="360" cy="360" r="2" fill="#e0e0e0"/>
-  <path d="M 50 360 L 50 50 L 360 50 L 360 360" stroke="#333" stroke-width="4.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="50" cy="360" r="5" fill="#22c55e"/>
-  <circle cx="360" cy="360" r="5" fill="#ef4444"/>
+  <path d="M 50 50 L 360 50 L 360 360 L 50 360" stroke="#333" stroke-width="4.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="50" cy="50" r="5" fill="#22c55e"/>
+  <circle cx="50" cy="360" r="5" fill="#ef4444"/>
 </svg>
