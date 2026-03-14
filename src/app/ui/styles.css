@@ -119,6 +119,10 @@ body {
   border-color: #0d6efd;
 }
 
+.theme-toggle:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.98);
+}
+
 /* Controls Panel */
 .controls {
   display: flex;
