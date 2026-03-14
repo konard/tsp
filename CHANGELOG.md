@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.6.1
+
+### Patch Changes
+
+- bcc25b5: Fix space-filling tree structure to render with uniform color by applying SVG group-level opacity instead of per-element alpha
+
 ## 0.6.0
 
 ### Minor Changes
