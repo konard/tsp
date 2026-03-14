@@ -34,6 +34,10 @@ const VisualizationPanel = ({
   stepDescription,
   defaultStepText,
   legend,
+  isManualDrawing,
+  onManualUndo,
+  canDownloadSvg,
+  onDownloadSvg,
 }) => {
   return (
     <div className="visualization">
@@ -57,6 +61,20 @@ const VisualizationPanel = ({
       <div className="step-info">
         {stepDescription || defaultStepText || 'Click Start to begin'}
       </div>
+      {(isManualDrawing || canDownloadSvg) && (
+        <div className="manual-actions">
+          {isManualDrawing && onManualUndo && (
+            <button className="btn-outline btn-small" onClick={onManualUndo}>
+              ↩ Undo
+            </button>
+          )}
+          {canDownloadSvg && onDownloadSvg && (
+            <button className="btn-outline btn-small" onClick={onDownloadSvg}>
+              ⬇ SVG
+            </button>
+          )}
+        </div>
+      )}
       {legend}
     </div>
   );

@@ -33,6 +33,9 @@ import {
   bruteForceSolution,
   calculateOptimalityRatio,
   BRUTE_FORCE_MAX_POINTS,
+  // Manual drawing
+  manualAlgorithmSteps,
+  createManualStep,
   // Generic optimizations that can work with any tour
   zigzagOptSteps,
   twoOptSteps,
@@ -114,6 +117,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'bruteForceAliases'),
     vizType: 'brute-force',
   },
+  manual: {
+    title: t(lang, 'manualTitle'),
+    aliases: t(lang, 'manualAliases'),
+    vizType: 'manual',
+  },
 });
 
 /**
@@ -146,6 +154,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return spiralAlgorithmSteps(points, mooreGridSize);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
+    case 'manual':
+      return manualAlgorithmSteps(points);
     default:
       return [];
   }
@@ -178,6 +188,10 @@ const App = () => {
   const toggleTreeEdges = useCallback(() => {
     setShowTreeEdges((prev) => !prev);
   }, []);
+
+  // Manual drawing state: tracks tours being built by clicking points
+  const [leftManualTour, setLeftManualTour] = useState([]);
+  const [rightManualTour, setRightManualTour] = useState([]);
 
   // Calculate Moore grid size - this is the unified grid both algorithms use
   const mooreGridSize = calculateMooreGridSize(gridSize);
@@ -221,6 +235,8 @@ const App = () => {
     setActiveOptimization(null);
     setOptimalResult(null);
     setVerificationResult(null);
+    setLeftManualTour([]);
+    setRightManualTour([]);
   }, [mooreGridSize, numPoints, maxPoints]);
 
   useEffect(() => {
@@ -279,7 +295,24 @@ const App = () => {
     setActiveOptimization(null);
     setLeftOptSteps([]);
     setRightOptSteps([]);
-    setIsRunning(true);
+    setLeftManualTour([]);
+    setRightManualTour([]);
+
+    // For manual algorithms, don't start animation — user draws interactively
+    const bothManual =
+      leftAlgorithm === 'manual' && rightAlgorithm === 'manual';
+    const leftManual = leftAlgorithm === 'manual';
+    const rightManual = rightAlgorithm === 'manual';
+
+    if (bothManual) {
+      // Both manual: no animation needed
+      setIsRunning(false);
+    } else if (leftManual || rightManual) {
+      // One side is manual, the other runs normally
+      setIsRunning(true);
+    } else {
+      setIsRunning(true);
+    }
   }, [points, mooreGridSize, leftAlgorithm, rightAlgorithm, startDisabled]);
 
   const stopAnimation = useCallback(() => {
@@ -288,6 +321,115 @@ const App = () => {
       clearTimeout(animationRef.current);
     }
   }, []);
+
+  // Manual drawing: handle point click for building tour
+  const handleManualPointClick = useCallback(
+    (side, pointIndex) => {
+      const algorithm = side === 'left' ? leftAlgorithm : rightAlgorithm;
+      if (algorithm !== 'manual') return;
+
+      const manualTour = side === 'left' ? leftManualTour : rightManualTour;
+      const setManualTour =
+        side === 'left' ? setLeftManualTour : setRightManualTour;
+      const setSteps = side === 'left' ? setLeftSteps : setRightSteps;
+      const setCurrentStep =
+        side === 'left' ? setLeftCurrentStep : setRightCurrentStep;
+
+      // Don't add if already in tour or tour is complete
+      if (manualTour.includes(pointIndex)) return;
+      if (manualTour.length >= points.length) return;
+
+      const newTour = [...manualTour, pointIndex];
+      setManualTour(newTour);
+
+      // Update the steps to reflect the new tour state
+      const newStep = createManualStep(newTour, points.length);
+      setSteps([newStep]);
+      setCurrentStep(0);
+    },
+    [
+      leftAlgorithm,
+      rightAlgorithm,
+      leftManualTour,
+      rightManualTour,
+      points.length,
+    ]
+  );
+
+  // Undo last point in manual tour
+  const handleManualUndo = useCallback(
+    (side) => {
+      const manualTour = side === 'left' ? leftManualTour : rightManualTour;
+      const setManualTour =
+        side === 'left' ? setLeftManualTour : setRightManualTour;
+      const setSteps = side === 'left' ? setLeftSteps : setRightSteps;
+      const setCurrentStep =
+        side === 'left' ? setLeftCurrentStep : setRightCurrentStep;
+
+      if (manualTour.length === 0) return;
+
+      const newTour = manualTour.slice(0, -1);
+      setManualTour(newTour);
+
+      const newStep = createManualStep(newTour, points.length);
+      setSteps([newStep]);
+      setCurrentStep(0);
+    },
+    [leftManualTour, rightManualTour, points.length]
+  );
+
+  // Download SVG of the current tour
+  const handleDownloadSvg = (side) => {
+    const step = side === 'left' ? getLeftStep() : getRightStep();
+    if (!step?.tour || step.tour.length < 2) return;
+
+    const tour = step.tour;
+    const svgSize = 400;
+    const svgPadding = 20;
+    const displayGrid = mooreGridSize - 1;
+    const svgScale = (svgSize - 2 * svgPadding) / displayGrid;
+
+    const toCoord = (p) => ({
+      x: svgPadding + p.x * svgScale,
+      y: svgPadding + p.y * svgScale,
+    });
+
+    // Build path data
+    const tourCoords = tour.map((idx) => toCoord(points[idx]));
+    let pathD = tourCoords
+      .map((p, i) => (i === 0 ? `M ${p.x} ${p.y}` : `L ${p.x} ${p.y}`))
+      .join(' ');
+    if (tour.length === points.length) {
+      pathD += ' Z';
+    }
+
+    // Build point circles
+    const circles = points
+      .map((pt) => {
+        const c = toCoord(pt);
+        return `<circle cx="${c.x}" cy="${c.y}" r="4" fill="black"/>`;
+      })
+      .join('\n    ');
+
+    const svgContent = `<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="${svgSize}" height="${svgSize}" viewBox="0 0 ${svgSize} ${svgSize}">
+  <rect width="${svgSize}" height="${svgSize}" fill="white"/>
+  <path d="${pathD}" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  <g>
+    ${circles}
+  </g>
+</svg>`;
+
+    const blob = new Blob([svgContent], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tsp-tour.svg';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
 
   // Issue #6: Get the current tour for a side (considering optimization)
   const getCurrentTour = useCallback(
@@ -472,16 +614,46 @@ const App = () => {
     return calculateTotalDistance(step.tour, points);
   };
 
-  // Issue #6: canOptimize when solution is done (not running) and we have steps
-  const solutionComplete =
-    leftSteps.length > 0 &&
-    rightSteps.length > 0 &&
-    !isRunning &&
-    (showOptimization
-      ? leftCurrentStep >= leftOptSteps.length - 1
-      : leftCurrentStep >= leftSteps.length - 1);
+  // Check if manual tours are complete
+  const leftManualComplete =
+    leftAlgorithm === 'manual' && leftManualTour.length === points.length;
+  const rightManualComplete =
+    rightAlgorithm === 'manual' && rightManualTour.length === points.length;
+
+  // A side is "done" if it's a regular algorithm that finished, or a manual tour that is complete
+  const leftSideDone =
+    leftAlgorithm === 'manual'
+      ? leftManualComplete
+      : leftSteps.length > 0 &&
+        (showOptimization
+          ? leftCurrentStep >= leftOptSteps.length - 1
+          : leftCurrentStep >= leftSteps.length - 1);
+  const rightSideDone =
+    rightAlgorithm === 'manual'
+      ? rightManualComplete
+      : rightSteps.length > 0 &&
+        (showOptimization
+          ? rightCurrentStep >= rightOptSteps.length - 1
+          : rightCurrentStep >= rightSteps.length - 1);
+
+  // Issue #6: canOptimize when both sides are done and not running
+  const solutionComplete = leftSideDone && rightSideDone && !isRunning;
 
   const canOptimize = solutionComplete;
+
+  // Whether each side is in manual drawing mode (started but not complete)
+  const leftIsManualDrawing =
+    leftAlgorithm === 'manual' && leftSteps.length > 0 && !leftManualComplete;
+  const rightIsManualDrawing =
+    rightAlgorithm === 'manual' &&
+    rightSteps.length > 0 &&
+    !rightManualComplete;
+
+  // Whether SVG download is available for each side
+  const leftCanDownloadSvg =
+    leftSteps.length > 0 && getLeftStep()?.tour?.length >= 2;
+  const rightCanDownloadSvg =
+    rightSteps.length > 0 && getRightStep()?.tour?.length >= 2;
 
   // Issue #1: Format distance info with % of optimal and exact length
   const formatDistanceInfo = (dist) => {
@@ -543,6 +715,7 @@ const App = () => {
     'space-filling-tree': 'spaceFillingTree',
     spiral: 'doubleSpiral',
     'brute-force': 'bruteForce',
+    manual: 'manualDrawing',
   };
 
   // Translated algorithm options
@@ -624,6 +797,14 @@ const App = () => {
               mooreGridSize={mooreGridSize}
               showOptimization={showOptimization}
               showTreeEdges={showTreeEdges}
+              onPointClick={
+                leftIsManualDrawing
+                  ? (idx) => handleManualPointClick('left', idx)
+                  : undefined
+              }
+              manualTour={
+                leftAlgorithm === 'manual' ? leftManualTour : undefined
+              }
             />
           }
           stepDescription={getLeftStep()?.description}
@@ -637,6 +818,10 @@ const App = () => {
               onToggleTreeEdges={toggleTreeEdges}
             />
           }
+          isManualDrawing={leftIsManualDrawing}
+          onManualUndo={() => handleManualUndo('left')}
+          canDownloadSvg={leftCanDownloadSvg}
+          onDownloadSvg={() => handleDownloadSvg('left')}
         />
 
         <VisualizationPanel
@@ -655,6 +840,14 @@ const App = () => {
               mooreGridSize={mooreGridSize}
               showOptimization={showOptimization}
               showTreeEdges={showTreeEdges}
+              onPointClick={
+                rightIsManualDrawing
+                  ? (idx) => handleManualPointClick('right', idx)
+                  : undefined
+              }
+              manualTour={
+                rightAlgorithm === 'manual' ? rightManualTour : undefined
+              }
             />
           }
           stepDescription={getRightStep()?.description}
@@ -668,6 +861,10 @@ const App = () => {
               onToggleTreeEdges={toggleTreeEdges}
             />
           }
+          isManualDrawing={rightIsManualDrawing}
+          onManualUndo={() => handleManualUndo('right')}
+          canDownloadSvg={rightCanDownloadSvg}
+          onDownloadSvg={() => handleDownloadSvg('right')}
         />
       </div>
     </div>

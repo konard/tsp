@@ -106,6 +106,9 @@ export {
   bruteForceSolution,
   calculateOptimalityRatio,
   BRUTE_FORCE_MAX_POINTS,
+  // Manual drawing
+  manualAlgorithmSteps,
+  createManualStep,
   // Generic optimizations
   twoOptSteps,
   threeOptSteps,
