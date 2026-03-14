@@ -409,6 +409,10 @@ svg {
   font-size: 0.8rem;
 }
 
+.manual-speed-label {
+  font-style: italic;
+}
+
 /* Legend */
 .legend {
   display: flex;

@@ -299,17 +299,13 @@ const App = () => {
     setRightManualTour([]);
 
     // For manual algorithms, don't start animation — user draws interactively
-    const bothManual =
-      leftAlgorithm === 'manual' && rightAlgorithm === 'manual';
+    // When one side is manual, the other side steps in sync with manual clicks
     const leftManual = leftAlgorithm === 'manual';
     const rightManual = rightAlgorithm === 'manual';
 
-    if (bothManual) {
-      // Both manual: no animation needed
+    if (leftManual || rightManual) {
+      // Any manual mode: no auto-animation, stepping is driven by clicks
       setIsRunning(false);
-    } else if (leftManual || rightManual) {
-      // One side is manual, the other runs normally
-      setIsRunning(true);
     } else {
       setIsRunning(true);
     }
@@ -323,6 +319,7 @@ const App = () => {
   }, []);
 
   // Manual drawing: handle point click for building tour
+  // Also advances the compared (non-manual) algorithm by one step for fair comparison
   const handleManualPointClick = useCallback(
     (side, pointIndex) => {
       const algorithm = side === 'left' ? leftAlgorithm : rightAlgorithm;
@@ -346,6 +343,17 @@ const App = () => {
       const newStep = createManualStep(newTour, points.length);
       setSteps([newStep]);
       setCurrentStep(0);
+
+      // Advance the compared (non-manual) algorithm by one step for synchronized comparison
+      const otherAlgorithm = side === 'left' ? rightAlgorithm : leftAlgorithm;
+      if (otherAlgorithm !== 'manual') {
+        const otherSteps = side === 'left' ? rightSteps : leftSteps;
+        const setOtherCurrentStep =
+          side === 'left' ? setRightCurrentStep : setLeftCurrentStep;
+        setOtherCurrentStep((prev) =>
+          Math.min(prev + 1, otherSteps.length - 1)
+        );
+      }
     },
     [
       leftAlgorithm,
@@ -353,10 +361,13 @@ const App = () => {
       leftManualTour,
       rightManualTour,
       points.length,
+      leftSteps,
+      rightSteps,
     ]
   );
 
   // Undo last point in manual tour
+  // Also steps back the compared (non-manual) algorithm for synchronized comparison
   const handleManualUndo = useCallback(
     (side) => {
       const manualTour = side === 'left' ? leftManualTour : rightManualTour;
@@ -374,8 +385,22 @@ const App = () => {
       const newStep = createManualStep(newTour, points.length);
       setSteps([newStep]);
       setCurrentStep(0);
+
+      // Step back the compared (non-manual) algorithm
+      const otherAlgorithm = side === 'left' ? rightAlgorithm : leftAlgorithm;
+      if (otherAlgorithm !== 'manual') {
+        const setOtherCurrentStep =
+          side === 'left' ? setRightCurrentStep : setLeftCurrentStep;
+        setOtherCurrentStep((prev) => Math.max(prev - 1, 0));
+      }
     },
-    [leftManualTour, rightManualTour, points.length]
+    [
+      leftManualTour,
+      rightManualTour,
+      points.length,
+      leftAlgorithm,
+      rightAlgorithm,
+    ]
   );
 
   // Download SVG of the current tour
@@ -778,6 +803,7 @@ const App = () => {
         startDisabled={startDisabled}
         startDisabledReason={startDisabledReason}
         lang={lang}
+        isManualMode={leftAlgorithm === 'manual' || rightAlgorithm === 'manual'}
       />
 
       <div className="visualization-container">

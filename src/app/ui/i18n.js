@@ -144,6 +144,7 @@ const translations = {
     manualTitle: 'Manual Drawing Algorithm',
     manualAliases:
       'Also known as: Human Solver, Hand-drawn Tour, Interactive Drawing',
+    manualStepMode: 'Manual (step-by-step)',
     clickable: 'Clickable',
     treeStructure: 'Tree Structure',
     centroid: 'Centroid',

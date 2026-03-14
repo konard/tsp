@@ -138,6 +138,20 @@ describe('Controls', () => {
       expect(getByText('Fast')).toBeDefined();
       expect(getByText('Slow')).toBeDefined();
     });
+
+    it('should show manual step mode label when isManualMode is true', () => {
+      const props = createDefaultProps({ isManualMode: true });
+      const { getByText, queryByRole } = render(<Controls {...props} />);
+      expect(getByText('Manual (step-by-step)')).toBeDefined();
+      expect(queryByRole('slider')).toBeNull();
+    });
+
+    it('should hide Fast/Slow labels when isManualMode is true', () => {
+      const props = createDefaultProps({ isManualMode: true });
+      const { queryByText } = render(<Controls {...props} />);
+      expect(queryByText('Fast')).toBeNull();
+      expect(queryByText('Slow')).toBeNull();
+    });
   });
 
   describe('New Points Button', () => {
