@@ -39,7 +39,7 @@ export const uForkAlgorithmSteps = (points, gridSize) => {
     return [];
   }
 
-  // Determine L-system order: gridSize = 2^n, so order = log2(gridSize)
+  // Determine curve order: gridSize = 2^n, so order = log2(gridSize)
   const order = Math.max(1, Math.round(Math.log2(gridSize)));
   const curveSequence = generateUForkCurve(order);
   // Generate curve points using the grid size for alignment
