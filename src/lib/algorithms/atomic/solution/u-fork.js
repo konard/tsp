@@ -30,9 +30,7 @@ import { distance } from '../../utils.js';
  * @param {number} order - Order of the U-fork curve (gridSize = 2^order)
  * @returns {string} Order identifier string used by uForkCurveToPoints
  */
-export const generateUForkCurve = (order) => {
-  return `UFORK_ORDER_${order}`;
-};
+export const generateUForkCurve = (order) => `UFORK_ORDER_${order}`;
 
 /**
  * Generate the zigzag spiral path for a grid of size n.
@@ -246,7 +244,6 @@ function generateUForkPath(order) {
 
   // For order >= 4: recursive construction
   const innerPath = generateUForkPath(order - 1);
-  const innerN = n / 2;
   const offset = n / 4;
   const shift = computeShift(order);
 
