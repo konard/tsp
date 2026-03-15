@@ -394,6 +394,25 @@ svg {
     color 0.3s ease;
 }
 
+/* Manual Drawing Actions */
+.manual-actions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  border-top: 1px solid var(--border-color);
+  justify-content: center;
+}
+
+.btn-small {
+  padding: 4px 12px;
+  height: 28px;
+  font-size: 0.8rem;
+}
+
+.manual-speed-label {
+  font-style: italic;
+}
+
 /* Legend */
 .legend {
   display: flex;

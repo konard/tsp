@@ -40,6 +40,8 @@ const TSPVisualization = ({
   mooreGridSize,
   showOptimization,
   showTreeEdges,
+  onPointClick,
+  manualTour,
 }) => {
   const containerRef = useRef(null);
   const [svgSize, setSvgSize] = useState(400);
@@ -179,7 +181,7 @@ const TSPVisualization = ({
     step.treeEdges.length > 0
   ) {
     treeEdgesPath = (
-      <g>
+      <g opacity="0.25">
         {step.treeEdges.map((edge, i) => {
           const from = toSvgCoords(edge.from, padding, scale);
           const to = toSvgCoords(edge.to, padding, scale);
@@ -190,7 +192,7 @@ const TSPVisualization = ({
               y1={from.y}
               x2={to.x}
               y2={to.y}
-              stroke="rgba(255, 165, 0, 0.25)"
+              stroke="rgb(255, 165, 0)"
               strokeWidth={Math.max(1, 3 - edge.depth * 0.3)}
               strokeLinecap="round"
             />
@@ -306,6 +308,9 @@ const TSPVisualization = ({
     }
   }
 
+  // Whether we're in manual drawing mode
+  const isManualMode = algorithm === 'manual' && onPointClick;
+
   // Generate point circles
   const pointCircles = points.map((point, idx) => {
     const p = toSvgCoords(point, padding, scale);
@@ -319,13 +324,41 @@ const TSPVisualization = ({
       fill = '#0d6efd';
     }
 
+    // In manual mode, unvisited points are highlighted as clickable
+    const isClickable = isManualMode && !isInTour;
+    const radius = isLastAdded ? 6 : isClickable ? 5 : 4;
+
     return (
-      <g key={`point-${idx}`}>
-        <circle cx={p.x} cy={p.y} r={isLastAdded ? 6 : 4} fill={fill}>
+      <g
+        key={`point-${idx}`}
+        onPointerDown={
+          isClickable
+            ? (e) => {
+                e.preventDefault();
+                onPointClick(idx);
+              }
+            : undefined
+        }
+        style={isClickable ? { cursor: 'pointer' } : undefined}
+      >
+        {/* Larger invisible hit area for touch/stylus */}
+        {isClickable && <circle cx={p.x} cy={p.y} r={12} fill="transparent" />}
+        <circle cx={p.x} cy={p.y} r={radius} fill={fill}>
           <title>
             Point {idx} ({point.x}, {point.y})
           </title>
         </circle>
+        {/* Highlight ring for clickable points */}
+        {isClickable && (
+          <circle
+            cx={p.x}
+            cy={p.y}
+            r={8}
+            fill="none"
+            stroke="rgba(13, 110, 253, 0.3)"
+            strokeWidth="1.5"
+          />
+        )}
       </g>
     );
   });
@@ -340,6 +373,7 @@ const TSPVisualization = ({
         height={size}
         viewBox={`0 0 ${size} ${size}`}
         className="tsp-svg"
+        style={isManualMode ? { touchAction: 'none' } : undefined}
       >
         {/* Grid lines */}
         <g>{gridLines}</g>

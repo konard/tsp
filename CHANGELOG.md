@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.7.0
+
+### Minor Changes
+
+- Add Manual Drawing algorithm for interactive TSP tour creation with mouse, touch, and stylus support, plus SVG download
+
+  Cancel in-progress CI runs when a new commit is pushed to the same branch, preventing deploy delays caused by long-running benchmark jobs blocking subsequent workflow runs
+
+## 0.6.1
+
+### Patch Changes
+
+- bcc25b5: Fix space-filling tree structure to render with uniform color by applying SVG group-level opacity instead of per-element alpha
+
 ## 0.6.0
 
 ### Minor Changes

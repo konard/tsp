@@ -18,3 +18,4 @@ export {
   calculateOptimalityRatio,
   BRUTE_FORCE_MAX_POINTS,
 } from './brute-force.js';
+export { manualSolution } from './manual.js';

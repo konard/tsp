@@ -29,6 +29,7 @@ export const ALGORITHM_OPTIONS = [
   { id: 'space-filling-tree', label: 'Space-Filling Tree' },
   { id: 'spiral', label: 'Double Spiral' },
   { id: 'brute-force', label: 'Brute-Force' },
+  { id: 'manual', label: 'Manual Drawing' },
 ];
 
 /**
@@ -53,6 +54,7 @@ export const ALGORITHM_OPTIONS = [
  * @param {boolean} props.startDisabled - Whether Start button should be disabled
  * @param {string} props.startDisabledReason - Tooltip explaining why Start is disabled
  * @param {string} props.lang - Current language code
+ * @param {boolean} props.isManualMode - Whether either panel has Manual Drawing selected
  */
 const Controls = ({
   gridSize,
@@ -73,6 +75,7 @@ const Controls = ({
   startDisabled,
   startDisabledReason,
   lang = 'en',
+  isManualMode = false,
 }) => {
   const maxPoints = mooreGridSize * mooreGridSize;
   return (
@@ -124,17 +127,25 @@ const Controls = ({
 
       <div className="control-group">
         <label>{t(lang, 'animationSpeed')}</label>
-        <div className="speed-control">
-          <span>{t(lang, 'fast')}</span>
-          <input
-            type="range"
-            min="50"
-            max="1000"
-            value={speed}
-            onChange={(e) => setSpeed(parseInt(e.target.value))}
-          />
-          <span>{t(lang, 'slow')}</span>
-        </div>
+        {isManualMode ? (
+          <div className="speed-control">
+            <span className="manual-speed-label">
+              {t(lang, 'manualStepMode')}
+            </span>
+          </div>
+        ) : (
+          <div className="speed-control">
+            <span>{t(lang, 'fast')}</span>
+            <input
+              type="range"
+              min="50"
+              max="1000"
+              value={speed}
+              onChange={(e) => setSpeed(parseInt(e.target.value))}
+            />
+            <span>{t(lang, 'slow')}</span>
+          </div>
+        )}
       </div>
 
       <div className="buttons">

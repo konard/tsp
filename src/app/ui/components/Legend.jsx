@@ -191,6 +191,25 @@ const SpaceFillingTreeLegend = ({
 );
 
 /**
+ * ManualLegend - Legend for Manual Drawing algorithm visualization
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const ManualLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem color="#6c757d" label={t(lang, 'unvisited')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'inTour')} />
+    <LegendItem color="#dc3545" label={t(lang, 'current')} />
+    <LegendItem color="rgba(13, 110, 253, 0.3)" label={t(lang, 'clickable')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
  * Legend - Generic legend component
  *
  * @param {Object} props
@@ -222,6 +241,9 @@ const Legend = ({
   if (algorithm === 'brute-force') {
     return <BruteForceLegend showOptimization={showOptimization} lang={lang} />;
   }
+  if (algorithm === 'manual') {
+    return <ManualLegend showOptimization={showOptimization} lang={lang} />;
+  }
   if (algorithm === 'space-filling-tree') {
     return (
       <SpaceFillingTreeLegend
@@ -245,6 +267,7 @@ export {
   KochLegend,
   SpaceFillingTreeLegend,
   BruteForceLegend,
+  ManualLegend,
   LegendItem,
 };
 export default Legend;
