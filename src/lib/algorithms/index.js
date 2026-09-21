@@ -7,7 +7,7 @@
  * 2. Atomic (all-at-once) - Returns final result directly
  *
  * Each type includes:
- * - Solutions: Initial tour construction algorithms (Sonar, Moore, U-fork, Gosper, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Double Spiral, Brute-Force)
+ * - Solutions: Initial tour construction algorithms (Sonar, Moore, U-fork, Gosper, Peano, Sierpiński, Comb, SAW, Koch, Space-Filling Tree, Double Spiral, Two-Edge-Trees, Brute-Force)
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
@@ -25,6 +25,7 @@
  * - Koch Snowflake: Orders points along a Koch snowflake fractal curve
  * - Space-Filling Tree: Orders points via DFS traversal of a recursive quadtree
  * - Double Spiral: Orders points along a rectangular spiral that fills the grid
+ * - Two-Edge-Trees: Grows two spatial trees inward from the point-cloud diameter
  * - Brute-Force: Exhaustive search for the true optimal tour (small instances)
  *
  * Available optimizations (generic, work with any tour):
@@ -102,6 +103,8 @@ export {
   generateTreeEdges,
   spiralAlgorithmSteps,
   generateDoubleSpiralPoints,
+  twoEdgeTreesAlgorithmSteps,
+  twoEdgeTreesSolution,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,

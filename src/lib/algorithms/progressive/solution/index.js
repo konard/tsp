@@ -55,6 +55,10 @@ export {
   generateDoubleSpiralPoints,
 } from './spiral.js';
 export {
+  twoEdgeTreesAlgorithmSteps,
+  twoEdgeTreesSolution,
+} from './two-edge-trees.js';
+export {
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
