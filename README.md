@@ -98,9 +98,9 @@ This geometric heuristic works in three visible phases:
 
 1. Find the two points with maximum Euclidean separation and use them as opposite perimeter roots.
 2. Grow red and blue spatial trees inward in concurrent rounds, attaching points to their nearest existing tree branch.
-3. Traverse the first tree and the reversed second tree, then connect their open boundaries into one closed tour.
+3. Turn both tree traversals into local cycles, cut the best edge in each, and reconnect them with the minimum-cost pair of cross-tree bridges.
 
-The two root points use larger anchor markers, and both tree colors can be customized through the `twoEdgeTreeColors` visualization prop. The synthesized tour is compatible with every generic post-optimization method.
+The bridge search evaluates both orientations for every pair of cuts, so the final loop does not have to connect the deliberately distant roots directly. The two root points use larger anchor markers, and both tree colors can be customized through the `twoEdgeTreeColors` visualization prop. The synthesized tour is compatible with every generic post-optimization method.
 
 ### Optimization
 

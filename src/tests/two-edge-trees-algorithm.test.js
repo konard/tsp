@@ -18,6 +18,13 @@ const POINTS = [
   { x: 6, y: 2, id: 5 },
 ];
 
+const SQUARE = [
+  { x: 0, y: 0, id: 0 },
+  { x: 10, y: 0, id: 1 },
+  { x: 10, y: 10, id: 2 },
+  { x: 0, y: 10, id: 3 },
+];
+
 describe('twoEdgeTreesSolution', () => {
   it('grows independent trees from the furthest pair and synthesizes a tour', () => {
     const result = twoEdgeTreesSolution(POINTS);
@@ -38,22 +45,21 @@ describe('twoEdgeTreesSolution', () => {
   });
 
   it('balances points that are equally close to both trees', () => {
-    const square = [
-      { x: 0, y: 0, id: 0 },
-      { x: 10, y: 0, id: 1 },
-      { x: 10, y: 10, id: 2 },
-      { x: 0, y: 10, id: 3 },
-    ];
-
-    const result = twoEdgeTreesSolution(square);
+    const result = twoEdgeTreesSolution(SQUARE);
 
     expect(result.rootIndices).toEqual([0, 2]);
     expect(result.treeANodes).toEqual([0, 1]);
     expect(result.treeBNodes).toEqual([2, 3]);
-    expect(result.tour).toEqual([0, 1, 3, 2]);
+    expect(result.tour).toEqual([1, 0, 3, 2]);
   });
 
-  it('handles empty and single-point inputs', () => {
+  it('joins the two tree traversals using the shortest cross-tree bridges', () => {
+    const { tour } = twoEdgeTreesSolution(SQUARE);
+
+    expect(calculateTotalDistance(tour, SQUARE)).toBe(40);
+  });
+
+  it('handles empty, single-point, and two-point inputs', () => {
     expect(twoEdgeTreesSolution([])).toEqual({
       tour: [],
       rootIndices: [],
@@ -71,6 +77,8 @@ describe('twoEdgeTreesSolution', () => {
       treeAEdges: [],
       treeBEdges: [],
     });
+
+    expect(twoEdgeTreesSolution(POINTS.slice(0, 2)).tour).toEqual([0, 1]);
   });
 
   it('produces a standard tour accepted by post-optimization', () => {

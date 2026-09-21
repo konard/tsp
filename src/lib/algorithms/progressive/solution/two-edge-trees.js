@@ -60,7 +60,7 @@ export const twoEdgeTreesAlgorithmSteps = (points) => {
     treeBNodes: [...result.treeBNodes],
     treeAEdges: result.treeAEdges.map((edge) => ({ ...edge })),
     treeBEdges: result.treeBEdges.map((edge) => ({ ...edge })),
-    description: `Tour synthesis: joined both tree traversals into a closed ${result.tour.length}-point tour`,
+    description: `Tour synthesis: joined both tree traversals with minimum-cost bridges into a closed ${result.tour.length}-point tour`,
   });
 
   return steps;

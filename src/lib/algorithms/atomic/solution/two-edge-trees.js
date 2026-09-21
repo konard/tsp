@@ -4,8 +4,9 @@
  * The algorithm starts at the diameter endpoints of the point cloud and grows
  * two independent spatial trees inward. Each growth round assigns every
  * unvisited point to its nearest tree branch, then extends each tree by its
- * closest eligible point. A depth-first order of the first tree and the
- * reversed depth-first order of the second tree are joined into a TSP tour.
+ * closest eligible point. Each tree's depth-first order forms a local cycle;
+ * the cheapest pair of cycle edges is replaced by two cross-tree bridges to
+ * synthesize the final TSP tour.
  *
  * Time Complexity: O(n²)
  * Space Complexity: O(n), excluding optional visualization snapshots
@@ -16,6 +17,8 @@ const squaredDistance = (a, b) => {
   const dy = a.y - b.y;
   return dx * dx + dy * dy;
 };
+
+const pointDistance = (a, b) => Math.sqrt(squaredDistance(a, b));
 
 /**
  * Find the two points with maximum Euclidean distance.
@@ -97,17 +100,83 @@ const depthFirstOrder = (root, edges) => {
   return order;
 };
 
+const cycleAfterEdge = (cycle, edgeIndex) => [
+  ...cycle.slice(edgeIndex + 1),
+  ...cycle.slice(0, edgeIndex + 1),
+];
+
+/**
+ * Merge two tree traversal cycles using their cheapest pair of bridges.
+ *
+ * Cutting one edge in each cycle creates two paths. The paths can be joined
+ * in either orientation, so every pair of cuts and both orientations are
+ * evaluated. This avoids forcing the diameter roots to be adjacent in the
+ * final tour while preserving each tree-derived traversal.
+ */
+const spliceTreeCycles = (cycleA, cycleB, points) => {
+  if (cycleA.length === 0) {
+    return [...cycleB];
+  }
+  if (cycleB.length === 0) {
+    return [...cycleA];
+  }
+
+  let bestSplice = null;
+  for (let indexA = 0; indexA < cycleA.length; indexA++) {
+    const nextA = (indexA + 1) % cycleA.length;
+    for (let indexB = 0; indexB < cycleB.length; indexB++) {
+      const nextB = (indexB + 1) % cycleB.length;
+      const removedDistance =
+        pointDistance(points[cycleA[indexA]], points[cycleA[nextA]]) +
+        pointDistance(points[cycleB[indexB]], points[cycleB[nextB]]);
+      const sameDirectionIncrease =
+        pointDistance(points[cycleA[indexA]], points[cycleB[nextB]]) +
+        pointDistance(points[cycleA[nextA]], points[cycleB[indexB]]) -
+        removedDistance;
+      const oppositeDirectionIncrease =
+        pointDistance(points[cycleA[indexA]], points[cycleB[indexB]]) +
+        pointDistance(points[cycleA[nextA]], points[cycleB[nextB]]) -
+        removedDistance;
+
+      if (bestSplice === null || sameDirectionIncrease < bestSplice.increase) {
+        bestSplice = {
+          indexA,
+          indexB,
+          reverseB: false,
+          increase: sameDirectionIncrease,
+        };
+      }
+      if (oppositeDirectionIncrease < bestSplice.increase) {
+        bestSplice = {
+          indexA,
+          indexB,
+          reverseB: true,
+          increase: oppositeDirectionIncrease,
+        };
+      }
+    }
+  }
+
+  const pathA = cycleAfterEdge(cycleA, bestSplice.indexA);
+  let pathB = cycleAfterEdge(cycleB, bestSplice.indexB);
+  if (bestSplice.reverseB) {
+    pathB = pathB.reverse();
+  }
+  return [...pathA, ...pathB];
+};
+
 const createResult = (
   rootIndices,
   treeANodes,
   treeBNodes,
   treeAEdges,
-  treeBEdges
+  treeBEdges,
+  points
 ) => {
   const treeAOrder = depthFirstOrder(rootIndices[0], treeAEdges);
-  const treeBOrder = depthFirstOrder(rootIndices[1], treeBEdges).reverse();
+  const treeBOrder = depthFirstOrder(rootIndices[1], treeBEdges);
   return {
-    tour: [...treeAOrder, ...treeBOrder],
+    tour: spliceTreeCycles(treeAOrder, treeBOrder, points),
     rootIndices,
     treeANodes,
     treeBNodes,
@@ -203,7 +272,8 @@ export const buildTwoEdgeTrees = (points, { captureRounds = false } = {}) => {
       treeANodes,
       treeBNodes,
       treeAEdges,
-      treeBEdges
+      treeBEdges,
+      points
     );
     return includeRounds(result, captureRounds, rounds);
   }
@@ -256,7 +326,8 @@ export const buildTwoEdgeTrees = (points, { captureRounds = false } = {}) => {
     treeANodes,
     treeBNodes,
     treeAEdges,
-    treeBEdges
+    treeBEdges,
+    points
   );
   return includeRounds(result, captureRounds, rounds);
 };
