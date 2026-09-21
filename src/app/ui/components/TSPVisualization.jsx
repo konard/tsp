@@ -8,6 +8,11 @@
 
 import { useState, useEffect, useRef } from 'react';
 
+const DEFAULT_TWO_EDGE_TREE_COLORS = {
+  treeA: '#dc3545',
+  treeB: '#0d6efd',
+};
+
 /**
  * Convert point coordinates to SVG space
  * @param {{x: number, y: number}} p - Point in grid coordinates
@@ -27,10 +32,11 @@ const toSvgCoords = (p, padding, scale) => ({
  * @param {Array<{x: number, y: number, id: number}>} props.points - Array of points
  * @param {Array<Object>} props.steps - Array of algorithm steps
  * @param {number} props.currentStep - Current step index
- * @param {string} props.algorithm - Algorithm type ('sonar', 'moore', 'u-fork', 'gosper', 'peano', 'sierpinski', 'comb', 'saw', 'koch', 'space-filling-tree', 'spiral', or 'brute-force')
+ * @param {string} props.algorithm - Algorithm type
  * @param {number} props.mooreGridSize - Size of the grid
  * @param {boolean} props.showOptimization - Whether showing optimization phase
  * @param {boolean} props.showTreeEdges - Whether to show tree edges (default: true)
+ * @param {{treeA?: string, treeB?: string}} props.twoEdgeTreeColors - Custom dual-tree colors
  */
 const TSPVisualization = ({
   points,
@@ -42,6 +48,7 @@ const TSPVisualization = ({
   showTreeEdges,
   onPointClick,
   manualTour,
+  twoEdgeTreeColors = DEFAULT_TWO_EDGE_TREE_COLORS,
 }) => {
   const containerRef = useRef(null);
   const [svgSize, setSvgSize] = useState(400);
@@ -64,6 +71,10 @@ const TSPVisualization = ({
   }, []);
 
   const size = svgSize;
+  const treeAColor =
+    twoEdgeTreeColors.treeA || DEFAULT_TWO_EDGE_TREE_COLORS.treeA;
+  const treeBColor =
+    twoEdgeTreeColors.treeB || DEFAULT_TWO_EDGE_TREE_COLORS.treeB;
 
   // Get current step data
   const step =
@@ -100,6 +111,38 @@ const TSPVisualization = ({
         className="grid-line"
         strokeWidth="1"
       />
+    );
+  }
+
+  // Generate the two independently growing spatial trees.
+  let twoEdgeTreesPath = null;
+  if (algorithm === 'two-edge-trees' && step) {
+    const renderTree = (edges, color, className) => (
+      <g className={className}>
+        {(edges || []).map((edge, index) => {
+          const from = toSvgCoords(points[edge.from], padding, scale);
+          const to = toSvgCoords(points[edge.to], padding, scale);
+          return (
+            <line
+              key={`${className}-${index}`}
+              x1={from.x}
+              y1={from.y}
+              x2={to.x}
+              y2={to.y}
+              stroke={color}
+              strokeWidth="3"
+              strokeLinecap="round"
+            />
+          );
+        })}
+      </g>
+    );
+
+    twoEdgeTreesPath = (
+      <g className="two-edge-trees">
+        {renderTree(step.treeAEdges, treeAColor, 'two-edge-tree-a')}
+        {renderTree(step.treeBEdges, treeBColor, 'two-edge-tree-b')}
+      </g>
     );
   }
 
@@ -235,6 +278,7 @@ const TSPVisualization = ({
   let tourPath = null;
   if (step?.tour && step.tour.length > 1) {
     const isOptimization = step.type === 'optimize' || showOptimization;
+    const tourColor = algorithm === 'two-edge-trees' ? '#6f42c1' : '#0d6efd';
     const tourPoints = step.tour.map((idx) =>
       toSvgCoords(points[idx], padding, scale)
     );
@@ -299,7 +343,7 @@ const TSPVisualization = ({
         <path
           d={pathData}
           fill="none"
-          stroke={isOptimization ? '#198754' : '#0d6efd'}
+          stroke={isOptimization ? '#198754' : tourColor}
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
@@ -316,6 +360,11 @@ const TSPVisualization = ({
     const p = toSvgCoords(point, padding, scale);
     const isInTour = step?.tour?.includes(idx);
     const isLastAdded = step?.tour && step.tour[step.tour.length - 1] === idx;
+    const isTreeANode = step?.treeANodes?.includes(idx);
+    const isTreeBNode = step?.treeBNodes?.includes(idx);
+    const rootPosition = step?.rootIndices?.indexOf(idx) ?? -1;
+    const isTwoEdgeRoot = algorithm === 'two-edge-trees' && rootPosition >= 0;
+    const rootColor = rootPosition === 0 ? treeAColor : treeBColor;
 
     let fill = '#6c757d';
     if (isLastAdded) {
@@ -323,10 +372,15 @@ const TSPVisualization = ({
     } else if (isInTour) {
       fill = '#0d6efd';
     }
+    if (algorithm === 'two-edge-trees' && isTreeANode) {
+      fill = treeAColor;
+    } else if (algorithm === 'two-edge-trees' && isTreeBNode) {
+      fill = treeBColor;
+    }
 
     // In manual mode, unvisited points are highlighted as clickable
     const isClickable = isManualMode && !isInTour;
-    const radius = isLastAdded ? 6 : isClickable ? 5 : 4;
+    const radius = isTwoEdgeRoot ? 7 : isLastAdded ? 6 : isClickable ? 5 : 4;
 
     return (
       <g
@@ -343,7 +397,27 @@ const TSPVisualization = ({
       >
         {/* Larger invisible hit area for touch/stylus */}
         {isClickable && <circle cx={p.x} cy={p.y} r={12} fill="transparent" />}
-        <circle cx={p.x} cy={p.y} r={radius} fill={fill}>
+        {isTwoEdgeRoot && (
+          <circle
+            className="two-edge-root-ring"
+            cx={p.x}
+            cy={p.y}
+            r="11"
+            fill="none"
+            stroke={rootColor}
+            strokeWidth="2"
+            opacity="0.45"
+          />
+        )}
+        <circle
+          className={isTwoEdgeRoot ? 'two-edge-root' : undefined}
+          cx={p.x}
+          cy={p.y}
+          r={radius}
+          fill={fill}
+          stroke={isTwoEdgeRoot ? 'white' : undefined}
+          strokeWidth={isTwoEdgeRoot ? 2 : undefined}
+        >
           <title>
             Point {idx} ({point.x}, {point.y})
           </title>
@@ -382,6 +456,8 @@ const TSPVisualization = ({
         {mooreCurvePath}
         {/* Space-filling tree edges */}
         {treeEdgesPath}
+        {/* Two independently growing edge trees */}
+        {twoEdgeTreesPath}
         {/* Sweep line for Sonar */}
         {sweepLine}
         {centroidCircle}

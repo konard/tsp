@@ -29,6 +29,7 @@ import {
   kochAlgorithmSteps,
   spaceFillingTreeAlgorithmSteps,
   spiralAlgorithmSteps,
+  twoEdgeTreesAlgorithmSteps,
   bruteForceAlgorithmSteps,
   bruteForceSolution,
   calculateOptimalityRatio,
@@ -112,6 +113,11 @@ const getAlgorithmMeta = (lang) => ({
     aliases: t(lang, 'spiralAliases'),
     vizType: 'spiral',
   },
+  'two-edge-trees': {
+    title: t(lang, 'twoEdgeTreesTitle'),
+    aliases: t(lang, 'twoEdgeTreesAliases'),
+    vizType: 'two-edge-trees',
+  },
   'brute-force': {
     title: t(lang, 'bruteForceTitle'),
     aliases: t(lang, 'bruteForceAliases'),
@@ -152,6 +158,8 @@ const runAlgorithmSteps = (algorithmId, points, mooreGridSize) => {
       return spaceFillingTreeAlgorithmSteps(points, mooreGridSize);
     case 'spiral':
       return spiralAlgorithmSteps(points, mooreGridSize);
+    case 'two-edge-trees':
+      return twoEdgeTreesAlgorithmSteps(points);
     case 'brute-force':
       return bruteForceAlgorithmSteps(points);
     case 'manual':
@@ -739,6 +747,7 @@ const App = () => {
     koch: 'kochSnowflake',
     'space-filling-tree': 'spaceFillingTree',
     spiral: 'doubleSpiral',
+    'two-edge-trees': 'twoEdgeTrees',
     'brute-force': 'bruteForce',
     manual: 'manualDrawing',
   };

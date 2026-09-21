@@ -283,6 +283,63 @@ describe('TSPVisualization', () => {
     });
   });
 
+  describe('Two-Edge-Trees Algorithm', () => {
+    const growthSteps = [
+      {
+        type: 'two-edge-trees',
+        phase: 'growth',
+        tour: [],
+        rootIndices: [0, 2],
+        treeANodes: [0, 3],
+        treeBNodes: [2, 1],
+        treeAEdges: [{ from: 0, to: 3 }],
+        treeBEdges: [{ from: 2, to: 1 }],
+      },
+    ];
+
+    it('should render both trees with distinct colors and root anchors', () => {
+      const { container } = render(
+        <TSPVisualization
+          points={samplePoints}
+          steps={growthSteps}
+          currentStep={0}
+          algorithm="two-edge-trees"
+          mooreGridSize={16}
+          showOptimization={false}
+        />
+      );
+
+      expect(
+        container.querySelector('.two-edge-tree-a line').getAttribute('stroke')
+      ).toBe('#dc3545');
+      expect(
+        container.querySelector('.two-edge-tree-b line').getAttribute('stroke')
+      ).toBe('#0d6efd');
+      expect(container.querySelectorAll('.two-edge-root')).toHaveLength(2);
+    });
+
+    it('should allow callers to customize both tree colors', () => {
+      const { container } = render(
+        <TSPVisualization
+          points={samplePoints}
+          steps={growthSteps}
+          currentStep={0}
+          algorithm="two-edge-trees"
+          mooreGridSize={16}
+          showOptimization={false}
+          twoEdgeTreeColors={{ treeA: '#ff00ff', treeB: '#00ffff' }}
+        />
+      );
+
+      expect(
+        container.querySelector('.two-edge-tree-a line').getAttribute('stroke')
+      ).toBe('#ff00ff');
+      expect(
+        container.querySelector('.two-edge-tree-b line').getAttribute('stroke')
+      ).toBe('#00ffff');
+    });
+  });
+
   describe('Edge Cases', () => {
     it('should handle empty points array', () => {
       const { container } = render(

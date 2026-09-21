@@ -5,6 +5,8 @@
 import { describe, expect, it } from 'bun:test';
 
 import { twoEdgeTreesSolution } from '../lib/algorithms/atomic/solution/two-edge-trees.js';
+import { twoOpt } from '../lib/algorithms/atomic/optimization/two-opt.js';
+import { calculateTotalDistance } from '../lib/algorithms/utils.js';
 import { twoEdgeTreesAlgorithmSteps } from '../lib/algorithms/progressive/solution/two-edge-trees.js';
 
 const POINTS = [
@@ -69,6 +71,17 @@ describe('twoEdgeTreesSolution', () => {
       treeAEdges: [],
       treeBEdges: [],
     });
+  });
+
+  it('produces a standard tour accepted by post-optimization', () => {
+    const { tour } = twoEdgeTreesSolution(POINTS);
+    const optimized = twoOpt(POINTS, tour);
+
+    expect(optimized.tour).toHaveLength(POINTS.length);
+    expect(new Set(optimized.tour).size).toBe(POINTS.length);
+    expect(calculateTotalDistance(optimized.tour, POINTS)).toBeLessThanOrEqual(
+      calculateTotalDistance(tour, POINTS)
+    );
   });
 });
 

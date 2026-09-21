@@ -127,6 +127,9 @@ const translations = {
     spiralTitle: 'Double Spiral Algorithm',
     spiralAliases:
       'Also known as: Rectangular Spiral, Square Spiral, Inward Spiral Scan',
+    twoEdgeTreesTitle: 'Two Edge Trees Algorithm',
+    twoEdgeTreesAliases:
+      'Also known as: Dual-Root Spatial Forest, Diameter-Rooted Tree Heuristic',
     bruteForceTitle: 'Brute-Force Algorithm',
     bruteForceAliases:
       'Also known as: Exhaustive Search, Exact TSP Solver, Permutation Enumeration',
@@ -139,6 +142,7 @@ const translations = {
     kochSnowflake: 'Koch Snowflake',
     spaceFillingTree: 'Space-Filling Tree',
     doubleSpiral: 'Double Spiral',
+    twoEdgeTrees: 'Two Edge Trees',
     bruteForce: 'Brute-Force',
     manualDrawing: 'Manual Drawing',
     manualTitle: 'Manual Drawing Algorithm',
@@ -147,6 +151,9 @@ const translations = {
     manualStepMode: 'Manual (step-by-step)',
     clickable: 'Clickable',
     treeStructure: 'Tree Structure',
+    treeA: 'Tree A',
+    treeB: 'Tree B',
+    rootAnchors: 'Root Anchors',
     centroid: 'Centroid',
     modifiedEdge: 'Modified Edge',
   },

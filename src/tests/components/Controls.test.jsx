@@ -9,7 +9,10 @@
 import { describe, it, expect, mock } from 'bun:test';
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { Controls } from '../../app/ui/components/Controls.jsx';
+import {
+  ALGORITHM_OPTIONS,
+  Controls,
+} from '../../app/ui/components/Controls.jsx';
 
 const createDefaultProps = (overrides = {}) => ({
   gridSize: 16,
@@ -48,6 +51,15 @@ const findSelectByLabel = (container, labelText) => {
 };
 
 describe('Controls', () => {
+  describe('Algorithm Options', () => {
+    it('should expose Two Edge Trees as a selectable algorithm', () => {
+      expect(ALGORITHM_OPTIONS).toContainEqual({
+        id: 'two-edge-trees',
+        label: 'Two Edge Trees',
+      });
+    });
+  });
+
   describe('Grid Size Selector', () => {
     it('should render grid size dropdown with correct value', () => {
       const props = createDefaultProps();

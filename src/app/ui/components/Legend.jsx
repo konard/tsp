@@ -191,6 +191,28 @@ const SpaceFillingTreeLegend = ({
 );
 
 /**
+ * TwoEdgeTreesLegend - Legend for the dual-tree growth and synthesized tour
+ *
+ * @param {Object} props
+ * @param {boolean} props.showOptimization - Whether showing optimization phase
+ * @param {string} props.lang - Language code
+ */
+const TwoEdgeTreesLegend = ({ showOptimization, lang = 'en' }) => (
+  <div className="legend">
+    <LegendItem color="#dc3545" label={t(lang, 'treeA')} />
+    <LegendItem color="#0d6efd" label={t(lang, 'treeB')} />
+    <LegendItem
+      color="linear-gradient(135deg, #dc3545 50%, #0d6efd 50%)"
+      label={t(lang, 'rootAnchors')}
+    />
+    <LegendItem color="#6f42c1" label={t(lang, 'tourPath')} />
+    {showOptimization && (
+      <LegendItem color="#198754" label={t(lang, 'modifiedEdge')} />
+    )}
+  </div>
+);
+
+/**
  * ManualLegend - Legend for Manual Drawing algorithm visualization
  *
  * @param {Object} props
@@ -254,6 +276,11 @@ const Legend = ({
       />
     );
   }
+  if (algorithm === 'two-edge-trees') {
+    return (
+      <TwoEdgeTreesLegend showOptimization={showOptimization} lang={lang} />
+    );
+  }
   // 'moore', 'u-fork', 'gosper', 'peano', 'sierpinski', and 'spiral' all use curve-based visualization
   return <MooreLegend showOptimization={showOptimization} lang={lang} />;
 };
@@ -266,6 +293,7 @@ export {
   SAWLegend,
   KochLegend,
   SpaceFillingTreeLegend,
+  TwoEdgeTreesLegend,
   BruteForceLegend,
   ManualLegend,
   LegendItem,

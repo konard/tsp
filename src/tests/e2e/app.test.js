@@ -3,7 +3,7 @@
  * Tests the full user workflow using browser-commander with Playwright
  */
 
-/* global setTimeout */
+/* global Event, setTimeout */
 
 import {
   describe,
@@ -214,6 +214,26 @@ describe('TSP Solver E2E', () => {
       await new Promise((r) => setTimeout(r, 2000));
       const pageContent = await page.content();
       expect(pageContent).toContain('Distance');
+    }, 30000);
+
+    it('should select and visualize Two Edge Trees', async () => {
+      await page.waitForSelector('.algorithm-select', { timeout: 20000 });
+      const selectors = await page.$$('.algorithm-select');
+      await selectors[0].selectOption('two-edge-trees');
+      await page.$eval('input[type="range"]', (slider) => {
+        slider.value = '50';
+        slider.dispatchEvent(new Event('change', { bubbles: true }));
+      });
+      await page.click('button:has-text("Start")');
+
+      await page.waitForSelector('.two-edge-tree-a line', {
+        state: 'attached',
+        timeout: 20000,
+      });
+      expect(await page.$('.two-edge-tree-b line')).toBeTruthy();
+      expect((await page.$$('.two-edge-root')).length).toBe(2);
+      expect(await page.$('.legend-item:has-text("Tree A")')).toBeTruthy();
+      expect(await page.$('.legend-item:has-text("Tree B")')).toBeTruthy();
     }, 30000);
   });
 

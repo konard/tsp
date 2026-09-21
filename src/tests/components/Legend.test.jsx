@@ -10,6 +10,7 @@ import {
   SonarLegend,
   MooreLegend,
   BruteForceLegend,
+  TwoEdgeTreesLegend,
   LegendItem,
 } from '../../app/ui/components/Legend.jsx';
 
@@ -93,6 +94,26 @@ describe('BruteForceLegend', () => {
       <BruteForceLegend showOptimization={false} />
     );
     expect(queryByText('Modified Edge')).toBeNull();
+  });
+});
+
+describe('TwoEdgeTreesLegend', () => {
+  it('should identify both trees, root anchors, and synthesized tour', () => {
+    const { getByText } = render(
+      <TwoEdgeTreesLegend showOptimization={false} />
+    );
+    expect(getByText('Tree A')).toBeDefined();
+    expect(getByText('Tree B')).toBeDefined();
+    expect(getByText('Root Anchors')).toBeDefined();
+    expect(getByText('Tour Path')).toBeDefined();
+  });
+
+  it('should be selected by the generic legend', () => {
+    const { getByText } = render(
+      <Legend algorithm="two-edge-trees" showOptimization={false} />
+    );
+    expect(getByText('Tree A')).toBeDefined();
+    expect(getByText('Tree B')).toBeDefined();
   });
 });
 
