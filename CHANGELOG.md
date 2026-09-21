@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.8.0
+
+### Minor Changes
+
+- ce80b4b: Add the Two Edge Trees heuristic with atomic, progressive, CLI, optimization, and dual-color visualization support.
+
 ## 0.7.1
 
 ### Patch Changes
