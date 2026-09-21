@@ -28,6 +28,7 @@ export const ALGORITHM_OPTIONS = [
   { id: 'koch', label: 'Koch Snowflake' },
   { id: 'space-filling-tree', label: 'Space-Filling Tree' },
   { id: 'spiral', label: 'Double Spiral' },
+  { id: 'two-edge-trees', label: 'Two Edge Trees' },
   { id: 'brute-force', label: 'Brute-Force' },
   { id: 'manual', label: 'Manual Drawing' },
 ];

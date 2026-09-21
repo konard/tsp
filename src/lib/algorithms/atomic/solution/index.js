@@ -13,6 +13,7 @@ export { kochSolution } from './koch.js';
 export { uForkSolution } from './u-fork.js';
 export { spaceFillingTreeSolution } from './space-filling-tree.js';
 export { spiralSolution } from './spiral.js';
+export { twoEdgeTreesSolution, findFurthestPair } from './two-edge-trees.js';
 export {
   bruteForceSolution,
   calculateOptimalityRatio,

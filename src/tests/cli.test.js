@@ -106,6 +106,15 @@ describe('CLI algorithm selection', () => {
     expect(result.tour.length).toBe(6);
   });
 
+  it('should run two-edge-trees with post-optimization', () => {
+    const result = runCliJson(
+      '--algorithm two-edge-trees --optimization 2-opt --num-points 12'
+    );
+    expect(result.algorithm).toContain('Two Edge Trees');
+    expect(result.tour.length).toBe(12);
+    expect(result.finalDistance).toBeLessThanOrEqual(result.initialDistance);
+  });
+
   it('should use short alias -a for algorithm', () => {
     const result = runCliJson('-a moore -n 5 -g 8');
     expect(result.algorithm).toContain('Moore Curve');

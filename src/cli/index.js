@@ -9,7 +9,7 @@
  * Uses atomic algorithms (all-at-once computation) for benchmark-like performance.
  *
  * Supports:
- * - Algorithm selection: sonar, moore, u-fork, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, spiral, brute-force
+ * - Algorithm selection: sonar, moore, u-fork, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, spiral, two-edge-trees, brute-force
  * - Optimization: 2-opt, 3-opt, k-opt, lin-kernighan, lkh, zigzag, combined, none
  * - Random point generation with configurable grid size and point count
  * - Manual point input via links notation (coordinate pairs as links)
@@ -56,6 +56,7 @@ const {
   kochSolution,
   spaceFillingTreeSolution,
   spiralSolution,
+  twoEdgeTreesSolution,
   bruteForceSolution,
   twoOpt,
   threeOpt,
@@ -196,6 +197,13 @@ const runAlgorithm = (algorithm, points, gridSize) => {
         label: `Double Spiral (grid: ${mooreGrid})`,
       };
     }
+    case 'two-edge-trees': {
+      const result = twoEdgeTreesSolution(points);
+      return {
+        tour: result.tour,
+        label: 'Two Edge Trees (Diameter-Rooted Forest)',
+      };
+    }
     case 'brute-force': {
       if (points.length > BRUTE_FORCE_MAX_POINTS) {
         throw new Error(
@@ -210,7 +218,7 @@ const runAlgorithm = (algorithm, points, gridSize) => {
     }
     default:
       throw new Error(
-        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, u-fork, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, spiral, brute-force`
+        `Unknown algorithm: ${algorithm}. Choose from: sonar, moore, u-fork, gosper, peano, sierpinski, comb, saw, koch, space-filling-tree, spiral, two-edge-trees, brute-force`
       );
   }
 };
@@ -288,6 +296,7 @@ export const main = () => {
             'koch',
             'space-filling-tree',
             'spiral',
+            'two-edge-trees',
             'brute-force',
           ],
           default: getenv('TSP_ALGORITHM', 'sonar'),
@@ -353,6 +362,10 @@ export const main = () => {
         .example(
           '$0 -a peano -o 2-opt -n 50 -g 27',
           'Peano + 2-opt, 50 points on 27x27 grid'
+        )
+        .example(
+          '$0 -a two-edge-trees -o 2-opt -n 50',
+          'Two Edge Trees + 2-opt, 50 points'
         )
         .example(
           '$0 -a brute-force --points "0 0 5 5 10 2 3 8"',
