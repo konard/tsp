@@ -1,6 +1,6 @@
 # TSP Visual Solver
 
-An interactive visualization tool for the Traveling Salesman Problem (TSP) that demonstrates and compares two space-filling curve-based heuristic algorithms.
+An interactive visualization tool for the Traveling Salesman Problem (TSP) that demonstrates and compares geometric, space-filling, tree-based, exact, and manually drawn tours.
 
 ![TSP Visual Solver](https://raw.githubusercontent.com/konard/tsp/main/screenshot.png)
 
@@ -11,10 +11,10 @@ Visit [https://konard.github.io/tsp](https://konard.github.io/tsp) to try the so
 ## Features
 
 - **Interactive Visualization**: Watch algorithms solve TSP step-by-step with animated demonstrations
-- **Two Algorithm Comparison**: Side-by-side comparison of Sonar Visit and Moore Curve algorithms
+- **Side-by-Side Comparison**: Compare any two selectable solution algorithms on the same point cloud
 - **Grid-Aligned Points**: All points are placed on grid intersections for clean visualization
-- **Progress Tracking**: Real-time progress display (angle for Sonar, percentage for Moore Curve)
-- **Optimization Phase**: Optional 2-opt optimization to improve initial solutions
+- **Progress Tracking**: Real-time, algorithm-specific construction phases and metrics
+- **Optimization Phase**: Apply 2-opt, 3-opt, k-opt, LK, LKH, or Zigzag to completed tours
 - **Responsive Design**: Works on desktop, tablet, and mobile devices
 - **Adjustable Parameters**: Customize grid size, number of points, and animation speed
 
@@ -90,9 +90,21 @@ This algorithm uses a Moore curve (a variant of the Hilbert curve) to order poin
 
 The Moore curve is a space-filling curve that visits every cell in a grid exactly once while maintaining spatial locality, making it effective for TSP approximations.
 
+### Two Edge Trees Algorithm
+
+Also known as: Dual-Root Spatial Forest, Diameter-Rooted Tree Heuristic
+
+This geometric heuristic works in three visible phases:
+
+1. Find the two points with maximum Euclidean separation and use them as opposite perimeter roots.
+2. Grow red and blue spatial trees inward in concurrent rounds, attaching points to their nearest existing tree branch.
+3. Traverse the first tree and the reversed second tree, then connect their open boundaries into one closed tour.
+
+The two root points use larger anchor markers, and both tree colors can be customized through the `twoEdgeTreeColors` visualization prop. The synthesized tour is compatible with every generic post-optimization method.
+
 ### Optimization
 
-Both algorithms support optional optimization phases. Three optimization methods are available:
+All completed algorithm tours support optional optimization phases, including:
 
 #### 2-opt (Segment Reversal)
 
@@ -137,12 +149,13 @@ The algorithms can be used as a standalone JavaScript library:
 import {
   sonarAlgorithmSteps,
   mooreAlgorithmSteps,
+  twoEdgeTreesAlgorithmSteps,
   sonarOptimizationSteps,
   mooreOptimizationSteps,
   calculateMooreGridSize,
   generateRandomPoints,
   calculateTotalDistance,
-} from './src/algorithms/index.js';
+} from './src/lib/index.js';
 
 // Generate points
 const gridSize = 10;
@@ -152,6 +165,7 @@ const points = generateRandomPoints(mooreGridSize, 15);
 // Get step-by-step solution (for animation)
 const sonarSteps = sonarAlgorithmSteps(points);
 const mooreSteps = mooreAlgorithmSteps(points, mooreGridSize);
+const twoTreeSteps = twoEdgeTreesAlgorithmSteps(points);
 
 // Optimize the tour
 const sonarTour = sonarSteps[sonarSteps.length - 1].tour;
@@ -164,7 +178,11 @@ const distance = calculateTotalDistance(finalTour, points);
 
 ```javascript
 // Atomic (all-at-once) - for direct computation
-import { sonarSolution, mooreSolution } from './src/algorithms/atomic/index.js';
+import {
+  sonarSolution,
+  mooreSolution,
+  twoEdgeTreesSolution,
+} from './src/lib/algorithms/atomic/index.js';
 import {
   sonarOptimization,
   mooreOptimization,
@@ -172,6 +190,7 @@ import {
 
 const { tour: sonarTour, centroid } = sonarSolution(points);
 const { tour: mooreTour, curvePoints } = mooreSolution(points, mooreGridSize);
+const { tour: twoTreeTour, rootIndices } = twoEdgeTreesSolution(points);
 
 const { tour: optimizedTour, improvement } = sonarOptimization(
   points,
@@ -220,6 +239,7 @@ deno run your-script.ts
 | --------------------- | --------------- | ---------------- |
 | Sonar Visit           | O(n log n)      | O(n)             |
 | Moore Curve           | O(n log n)      | O(n)             |
+| Two Edge Trees        | O(n²)           | O(n)             |
 | 2-opt Optimization    | O(n²)           | O(n)             |
 | ZigZag Optimization   | O(n²)           | O(n)             |
 | Combined Optimization | O(n³)           | O(n)             |
