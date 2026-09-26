@@ -11,7 +11,7 @@
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
- * - Lower bound (1-tree): Mathematical proof when upper bound = lower bound
+ * - Lower bounds (1-tree and control zones): Proof when upper bound = lower bound
  *
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
@@ -128,6 +128,7 @@ export {
 // Export verification functions at top level for convenience
 export {
   oneTreeLowerBound,
+  controlZoneLowerBound,
   verifyOptimality,
   // Backward-compatible aliases
   bruteForceOptimalTour,

@@ -2,9 +2,9 @@
  * Verification Algorithms - Prove tour optimality
  *
  * These algorithms verify whether a given tour is optimal:
- * - Lower bound (1-tree): Computes a mathematical lower bound on the optimal tour.
+ * - Lower bounds (1-tree and control zones): Compute mathematical lower bounds.
  *   When tour distance equals the lower bound, the tour is proven optimal.
- *   Works for any number of points in O(n^2) time.
+ *   Work for any number of points in O(n^2) time.
  *
  * Note: Brute-force exact solving has been moved to the solution algorithms
  * (progressive/solution/brute-force.js and atomic/solution/brute-force.js)
@@ -13,6 +13,7 @@
 
 // Lower-bound verification (works for any problem size)
 export { oneTreeLowerBound, verifyOptimality } from './lower-bound.js';
+export { controlZoneLowerBound } from './control-zone-bound.js';
 
 // Re-export brute-force functions for backward compatibility
 export {

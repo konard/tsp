@@ -123,6 +123,16 @@ All completed algorithm tours support optional optimization phases, including:
 - Alternates between ZigZag and 2-opt until neither finds improvements
 - Produces the best tour quality at the cost of longer computation time
 
+### Geometric Lower Bounds
+
+The solver compares a completed tour against the stronger of its 1-tree bound
+and a [control-zone packing bound](https://www.math.uwaterloo.ca/tsp/app/diy.html).
+For the latter, it places non-overlapping disks around the points, so any tour
+must travel at least twice the sum of their radii. It tries several feasible
+packings, but does not solve Waterloo's optimal packing LP. Matching the bound
+proves that a tour is optimal; a tour length below the bound is inconsistent
+and is never certified.
+
 For a detailed comparison of ZigZag vs 2-opt, see the [case study](docs/case-studies/issue-53/README.md).
 
 ## Usage
