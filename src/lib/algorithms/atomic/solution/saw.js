@@ -52,9 +52,18 @@ const findNearestUnvisited = (currentIdx, points, visited) => {
  * Returns the final tour without intermediate steps.
  *
  * @param {Array<{x: number, y: number, id: number}>} points - Array of points
+ * @param {{start?: number}} options - Chosen starting point (default 0)
  * @returns {{tour: number[]}} Final tour
  */
-export const sawSolution = (points) => {
+export const sawSolution = (points, options = {}) => {
+  const start = options.start ?? 0;
+  if (
+    !Number.isInteger(start) ||
+    start < 0 ||
+    (points.length && start >= points.length)
+  ) {
+    throw new RangeError('invalid starting point');
+  }
   if (points.length === 0) {
     return { tour: [] };
   }
@@ -66,8 +75,8 @@ export const sawSolution = (points) => {
   const tour = [];
   const visited = new Set();
 
-  // Start from point 0
-  let current = 0;
+  // Start from the requested point.
+  let current = start;
   tour.push(current);
   visited.add(current);
 

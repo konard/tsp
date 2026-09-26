@@ -11,7 +11,7 @@
  * - Optimizations: Generic tour improvement algorithms (2-opt, 3-opt, k-opt, LK, LKH, Zigzag)
  *
  * Additionally, verification algorithms prove tour optimality:
- * - Lower bound (1-tree): Mathematical proof when upper bound = lower bound
+ * - Lower bounds (1-tree and control zones): Proof when upper bound = lower bound
  *
  * Available solution algorithms:
  * - Sonar (Radial Sweep): Sorts points by polar angle from centroid
@@ -67,6 +67,17 @@ export * as progressive from './progressive/index.js';
 
 // Atomic algorithms (all-at-once)
 export * as atomic from './atomic/index.js';
+export {
+  directedTourLength,
+  nearestNeighborDirected,
+  directedConstraintPenalty,
+  directedLocalSearch,
+  iteratedDirectedLocalSearch,
+  solveDirectedTsp,
+  learnZonePrecedence,
+  learnClusterPrecedence,
+  inferZoneHierarchy,
+} from './atomic/solution/directed-tsp.js';
 
 // Verification algorithms (optimality proofs)
 export * as verification from './verification/index.js';
@@ -128,6 +139,16 @@ export {
 // Export verification functions at top level for convenience
 export {
   oneTreeLowerBound,
+  controlZoneLowerBound,
+  minimumCut,
+  globalMinimumCut,
+  subtourCut,
+  combCut,
+  findSimpleBlossoms,
+  solveTspRelaxation,
+  branchAndCut,
+  optimalControlZoneLowerBound,
+  zoneAndMoatLowerBound,
   verifyOptimality,
   // Backward-compatible aliases
   bruteForceOptimalTour,
