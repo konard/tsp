@@ -19,6 +19,10 @@
 
 import { distance } from '../utils.js';
 import { controlZoneLowerBound } from './control-zone-bound.js';
+import {
+  optimalControlZoneLowerBound,
+  zoneAndMoatLowerBound,
+} from './zone-moat-bound.js';
 
 /**
  * Compute the Minimum Spanning Tree weight using Prim's algorithm.
@@ -134,18 +138,25 @@ export const oneTreeLowerBound = (points) => {
  *
  * @param {number} tourDistance - Distance of the tour to verify
  * @param {Array<{x: number, y: number}>} points - Array of points
+ * @param {{lp?: boolean}} options - Include LP-optimized zones and moats
  * @returns {{isOptimal: boolean, lowerBound: number, gap: number, gapPercent: number, method: string}}
  */
-export const verifyOptimality = (tourDistance, points) => {
+export const verifyOptimality = (tourDistance, points, options = {}) => {
   const oneTree = oneTreeLowerBound(points);
   const controlZones = controlZoneLowerBound(points);
-  const { lowerBound, method } =
-    controlZones.lowerBound > oneTree.lowerBound ? controlZones : oneTree;
+  const bounds = [oneTree, controlZones];
+  if (options.lp) {
+    bounds.push(optimalControlZoneLowerBound(points));
+    bounds.push(zoneAndMoatLowerBound(points));
+  }
+  const { lowerBound, method } = bounds.reduce((best, next) =>
+    next.lowerBound > best.lowerBound ? next : best
+  );
   const gap = tourDistance - lowerBound;
   const gapPercent = lowerBound > 0 ? (gap / lowerBound) * 100 : 0;
 
   return {
-    isOptimal: Math.abs(gap) < 0.001, // Floating point tolerance
+    isOptimal: gap >= 0 && gap <= 1e-9 * Math.max(1, lowerBound, tourDistance),
     lowerBound,
     gap,
     gapPercent,

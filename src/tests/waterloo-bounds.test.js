@@ -85,6 +85,9 @@ describe('Waterloo geometric lower bounds', () => {
     const result = verifyOptimality(0, points);
     expect(result.isOptimal).toBe(false);
     expect(result.gap).toBeLessThan(0);
+    expect(verifyOptimality(result.lowerBound - 0.0005, points).isOptimal).toBe(
+      false
+    );
   });
 
   it('keeps the strongest available geometric bound', () => {

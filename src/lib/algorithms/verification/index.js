@@ -14,6 +14,19 @@
 // Lower-bound verification (works for any problem size)
 export { oneTreeLowerBound, verifyOptimality } from './lower-bound.js';
 export { controlZoneLowerBound } from './control-zone-bound.js';
+export {
+  minimumCut,
+  globalMinimumCut,
+  subtourCut,
+  combCut,
+  findSimpleBlossoms,
+  solveTspRelaxation,
+  branchAndCut,
+} from './tsp-lp.js';
+export {
+  optimalControlZoneLowerBound,
+  zoneAndMoatLowerBound,
+} from './zone-moat-bound.js';
 
 // Re-export brute-force functions for backward compatibility
 export {

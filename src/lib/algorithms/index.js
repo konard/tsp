@@ -67,6 +67,17 @@ export * as progressive from './progressive/index.js';
 
 // Atomic algorithms (all-at-once)
 export * as atomic from './atomic/index.js';
+export {
+  directedTourLength,
+  nearestNeighborDirected,
+  directedConstraintPenalty,
+  directedLocalSearch,
+  iteratedDirectedLocalSearch,
+  solveDirectedTsp,
+  learnZonePrecedence,
+  learnClusterPrecedence,
+  inferZoneHierarchy,
+} from './atomic/solution/directed-tsp.js';
 
 // Verification algorithms (optimality proofs)
 export * as verification from './verification/index.js';
@@ -129,6 +140,15 @@ export {
 export {
   oneTreeLowerBound,
   controlZoneLowerBound,
+  minimumCut,
+  globalMinimumCut,
+  subtourCut,
+  combCut,
+  findSimpleBlossoms,
+  solveTspRelaxation,
+  branchAndCut,
+  optimalControlZoneLowerBound,
+  zoneAndMoatLowerBound,
   verifyOptimality,
   // Backward-compatible aliases
   bruteForceOptimalTour,
