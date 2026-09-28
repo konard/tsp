@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.0
+
+### Minor Changes
+
+- 49c5bf3: Add Waterloo-inspired LP packings, cutting planes, branch-and-cut, and directed zone-constrained routing. Reject tour distances below a proven lower bound.
+
 ## 0.8.0
 
 ### Minor Changes
