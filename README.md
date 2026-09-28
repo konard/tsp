@@ -123,6 +123,25 @@ All completed algorithm tours support optional optimization phases, including:
 - Alternates between ZigZag and 2-opt until neither finds improvements
 - Produces the best tour quality at the cost of longer computation time
 
+### Geometric Lower Bounds
+
+The solver compares a completed tour against the stronger of its 1-tree bound
+and a [control-zone packing bound](https://www.math.uwaterloo.ca/tsp/app/diy.html).
+For the latter, it places non-overlapping disks around the points, so any tour
+must travel at least twice the sum of their radii. `verifyOptimality` uses fast
+greedy packings by default. Pass `{ lp: true }` to include LP-optimized control
+zones and moats. The library also exports degree and subtour LP relaxations,
+comb and blossom cuts, and exact branch-and-cut search for Euclidean points.
+Matching a proven bound certifies a tour; a distance below the bound never does.
+
+For asymmetric travel-time matrices, `solveDirectedTsp` supports contiguous
+sort zones, nested super clusters, zone and super-cluster precedence
+constraints, and local search.
+The route solver repeats local search after perturbing the current tour.
+Pass `{ exact: true }` for a proof on small routes (12 stops by default).
+See the [Waterloo methods guide](docs/case-studies/issue-62/README.md) and
+[runnable example](examples/waterloo-routing.mjs) for the available APIs.
+
 For a detailed comparison of ZigZag vs 2-opt, see the [case study](docs/case-studies/issue-53/README.md).
 
 ## Usage

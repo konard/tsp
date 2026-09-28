@@ -96,6 +96,15 @@ describe('sawAlgorithmSteps', () => {
 });
 
 describe('sawSolution', () => {
+  it('supports a chosen nearest-neighbor start', () => {
+    const points = [
+      { x: 0, y: 0 },
+      { x: 10, y: 0 },
+      { x: 20, y: 0 },
+    ];
+    expect(sawSolution(points, { start: 2 }).tour).toEqual([2, 1, 0]);
+    expect(sawAlgorithmSteps(points, { start: 2 })[0].tour).toEqual([2]);
+  });
   it('should return empty tour for empty points', () => {
     const result = sawSolution([]);
     expect(result.tour).toEqual([]);

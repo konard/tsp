@@ -20,3 +20,14 @@ export {
   BRUTE_FORCE_MAX_POINTS,
 } from './brute-force.js';
 export { manualSolution } from './manual.js';
+export {
+  directedTourLength,
+  nearestNeighborDirected,
+  directedConstraintPenalty,
+  directedLocalSearch,
+  iteratedDirectedLocalSearch,
+  solveDirectedTsp,
+  learnZonePrecedence,
+  learnClusterPrecedence,
+  inferZoneHierarchy,
+} from './directed-tsp.js';

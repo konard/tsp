@@ -1,11 +1,11 @@
 /**
  * Lower Bound Verification for TSP
  *
- * Computes a mathematical lower bound on the optimal TSP tour distance.
+ * Computes mathematical lower bounds on the optimal TSP tour distance.
  * When the best known tour distance equals the lower bound, the tour
  * is proven optimal without exhaustive search.
  *
- * Method: 1-tree lower bound (Held-Karp style)
+ * Methods: 1-tree and disjoint geometric control zones.
  *
  * A 1-tree for vertex 0 is:
  * 1. Compute MST on vertices {1, ..., n-1}
@@ -14,10 +14,15 @@
  * The weight of any 1-tree is a lower bound on the optimal TSP tour,
  * because every TSP tour is a 1-tree (but not every 1-tree is a tour).
  *
- * This runs in O(n^2) time using Prim's algorithm for the MST.
+ * Verification uses the stronger of the two bounds. Both run in O(n^2).
  */
 
 import { distance } from '../utils.js';
+import { controlZoneLowerBound } from './control-zone-bound.js';
+import {
+  optimalControlZoneLowerBound,
+  zoneAndMoatLowerBound,
+} from './zone-moat-bound.js';
 
 /**
  * Compute the Minimum Spanning Tree weight using Prim's algorithm.
@@ -126,21 +131,32 @@ export const oneTreeLowerBound = (points) => {
 };
 
 /**
- * Verify if a tour is optimal by comparing its distance to the lower bound.
+ * Verify if a tour is optimal by comparing its distance to the strongest bound.
  *
  * If tour distance equals the lower bound, the tour is proven optimal.
+ * A distance below the lower bound is inconsistent and cannot be certified.
  *
  * @param {number} tourDistance - Distance of the tour to verify
  * @param {Array<{x: number, y: number}>} points - Array of points
+ * @param {{lp?: boolean}} options - Include LP-optimized zones and moats
  * @returns {{isOptimal: boolean, lowerBound: number, gap: number, gapPercent: number, method: string}}
  */
-export const verifyOptimality = (tourDistance, points) => {
-  const { lowerBound, method } = oneTreeLowerBound(points);
+export const verifyOptimality = (tourDistance, points, options = {}) => {
+  const oneTree = oneTreeLowerBound(points);
+  const controlZones = controlZoneLowerBound(points);
+  const bounds = [oneTree, controlZones];
+  if (options.lp) {
+    bounds.push(optimalControlZoneLowerBound(points));
+    bounds.push(zoneAndMoatLowerBound(points));
+  }
+  const { lowerBound, method } = bounds.reduce((best, next) =>
+    next.lowerBound > best.lowerBound ? next : best
+  );
   const gap = tourDistance - lowerBound;
   const gapPercent = lowerBound > 0 ? (gap / lowerBound) * 100 : 0;
 
   return {
-    isOptimal: gap < 0.001, // Floating point tolerance
+    isOptimal: gap >= 0 && gap <= 1e-9 * Math.max(1, lowerBound, tourDistance),
     lowerBound,
     gap,
     gapPercent,

@@ -28,9 +28,18 @@ export { sawSolution } from '../../atomic/solution/saw.js';
  * At each step, walks to the nearest unvisited point.
  *
  * @param {Array<{x: number, y: number, id: number}>} points - Array of points
+ * @param {{start?: number}} options - Chosen starting point (default 0)
  * @returns {Array<Object>} Array of steps for visualization
  */
-export const sawAlgorithmSteps = (points) => {
+export const sawAlgorithmSteps = (points, options = {}) => {
+  const start = options.start ?? 0;
+  if (
+    !Number.isInteger(start) ||
+    start < 0 ||
+    (points.length && start >= points.length)
+  ) {
+    throw new RangeError('invalid starting point');
+  }
   if (points.length === 0) {
     return [];
   }
@@ -39,8 +48,8 @@ export const sawAlgorithmSteps = (points) => {
   const tour = [];
   const visited = new Set();
 
-  // Start from point 0
-  let current = 0;
+  // Start from the requested point.
+  let current = start;
   tour.push(current);
   visited.add(current);
 
